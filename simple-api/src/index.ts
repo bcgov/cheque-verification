@@ -52,10 +52,10 @@ async function getCheckFromDatabase(
     // Simple query that only selects check_number and status
     const result = await connection.execute(
       `SELECT 
-        check_number, 
-        status
-      FROM checks 
-      WHERE check_number = :checkNumber`,
+        CHEQUE_NUMBER, 
+        CHEQUE_STATUS
+      FROM ods.irsd_cheque_verification
+      WHERE CHEQUE_NUMBER = :checkNumber`,
       { checkNumber },
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
@@ -69,13 +69,17 @@ async function getCheckFromDatabase(
 
     // Minimal response with only check number and status
     const checkStatus: CheckStatus = {
-      checkNumber: row.CHECK_NUMBER,
-      status: row.STATUS,
+      chequeNumber: row.CHEQUE_NUMBER,
+      chequeStatus: row.CHEQUE_STATUS,
     };
 
     return { success: true, data: checkStatus };
   } catch (error) {
     console.error("Error querying database:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
     return { success: false, error: "Database error" };
   } finally {
     if (connection) {

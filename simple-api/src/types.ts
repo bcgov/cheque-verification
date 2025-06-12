@@ -1,6 +1,6 @@
 export interface CheckStatus {
-  checkNumber: string;
-  status: string;
+  chequeNumber: string;
+  chequeStatus: string;
 }
 
 export interface ApiResponse<T> {
