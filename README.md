@@ -1,1 +1,1 @@
-# cheque-verification
+# Cheque Verification
