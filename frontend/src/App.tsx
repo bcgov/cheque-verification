@@ -14,6 +14,7 @@ function App() {
 
     if (!chequeNumber.trim()) {
       setError("Please enter a cheque number");
+      setStatus(null);
       return;
     }
 
