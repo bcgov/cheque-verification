@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import oracledb from "oracledb";
 import dotenv from "dotenv";
 import cors from "cors";
-import { CheckStatus, ApiResponse } from "./types";
+import { ChequeStatus, ApiResponse } from "./types";
 
 // Load environment variables
 dotenv.config();
@@ -41,10 +41,10 @@ async function initializeDbPool(): Promise<void> {
   }
 }
 
-// Get check status from database
-async function getCheckFromDatabase(
-  checkNumber: string
-): Promise<ApiResponse<CheckStatus>> {
+// Get cheque status from database
+async function getChequeFromDatabase(
+  chequeNumber: string
+): Promise<ApiResponse<ChequeStatus>> {
   let connection;
   try {
     connection = await dbPool.getConnection();
@@ -55,25 +55,25 @@ async function getCheckFromDatabase(
         CHEQUE_NUMBER, 
         CHEQUE_STATUS
       FROM ods.irsd_cheque_verification
-      WHERE CHEQUE_NUMBER = :checkNumber`,
-      { checkNumber },
+      WHERE CHEQUE_NUMBER = :chequeNumber`,
+      { chequeNumber },
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
 
     if (!result.rows || result.rows.length === 0) {
-      return { success: false, error: "Check not found" };
+      return { success: false, error: "Cheque not found" };
     }
 
     // Oracle returns column names in uppercase by default
     const row = result.rows[0] as Record<string, any>;
 
-    // Minimal response with only check number and status
-    const checkStatus: CheckStatus = {
+    // Minimal response with only cheque number and status
+    const chequeStatus: ChequeStatus = {
       chequeNumber: row.CHEQUE_NUMBER,
       chequeStatus: row.CHEQUE_STATUS,
     };
 
-    return { success: true, data: checkStatus };
+    return { success: true, data: chequeStatus };
   } catch (error) {
     console.error("Error querying database:", error);
     if (error instanceof Error) {
@@ -92,21 +92,21 @@ async function getCheckFromDatabase(
   }
 }
 
-// Main endpoint for check verification
-app.get("/api/check/:checkNumber", async (req: Request, res: Response) => {
+// Main endpoint for cheque verification
+app.get("/api/v1/cheque/:chequeNumber", async (req: Request, res: Response) => {
   try {
-    const { checkNumber } = req.params;
+    const { chequeNumber } = req.params;
 
     // Validate input
-    if (!checkNumber) {
+    if (!chequeNumber) {
       return res
         .status(400)
-        .json({ success: false, error: "Check number is required" });
+        .json({ success: false, error: "Cheque number is required" });
     }
 
     // Query database
-    console.log("Querying database for check", checkNumber);
-    const response = await getCheckFromDatabase(checkNumber);
+    console.log("Querying database for cheque", chequeNumber);
+    const response = await getChequeFromDatabase(chequeNumber);
 
     // Return appropriate response
     if (!response.success) {
