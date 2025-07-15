@@ -10,7 +10,7 @@ export async function getChequeFromDatabase(
     const dbPool = getDbPool();
     connection = await dbPool.getConnection();
 
-    // Simple query that only selects check_number and status
+    // Simple query that only selects cheque_number and status
     const result = await connection.execute(
       `SELECT 
         CHEQUE_NUMBER, 
@@ -36,19 +36,12 @@ export async function getChequeFromDatabase(
 
     return { success: true, data: chequeStatus };
   } catch (error) {
-    console.error("Error querying database:", error);
-    if (error instanceof Error) {
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
-    }
     return { success: false, error: "Database error" };
   } finally {
     if (connection) {
       try {
         await connection.close();
-      } catch (err) {
-        console.error("Error closing connection:", err);
-      }
+      } catch (err) {}
     }
   }
 }
