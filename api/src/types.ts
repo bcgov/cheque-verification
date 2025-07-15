@@ -1,4 +1,4 @@
-export interface CheckStatus {
+export interface ChequeStatus {
   chequeNumber: string;
   chequeStatus: string;
 }
