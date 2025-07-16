@@ -1,5 +1,5 @@
-export interface ChequeStatus {
-  chequeNumber: string;
+// Response type without sensitive data
+export interface ChequeStatusResponse {
   chequeStatus: string;
 }
 

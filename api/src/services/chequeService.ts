@@ -1,19 +1,18 @@
 import oracledb from "oracledb";
-import { ChequeStatus, ApiResponse } from "../types";
+import { ChequeStatusResponse, ApiResponse } from "../types";
 import { getDbPool } from "../config/database";
 
 export async function getChequeFromDatabase(
   chequeNumber: string
-): Promise<ApiResponse<ChequeStatus>> {
+): Promise<ApiResponse<ChequeStatusResponse>> {
   let connection;
   try {
     const dbPool = getDbPool();
     connection = await dbPool.getConnection();
 
-    // Simple query that only selects check_number and status
+    // Query only returns the status - no need to select cheque number
     const result = await connection.execute(
       `SELECT 
-        CHEQUE_NUMBER, 
         CHEQUE_STATUS
       FROM ods.irsd_cheque_verification
       WHERE CHEQUE_NUMBER = :chequeNumber`,
@@ -28,27 +27,19 @@ export async function getChequeFromDatabase(
     // Oracle returns column names in uppercase by default
     const row = result.rows[0] as Record<string, any>;
 
-    // Minimal response with only cheque number and status
-    const chequeStatus: ChequeStatus = {
-      chequeNumber: row.CHEQUE_NUMBER,
+    // Sanitized response - only return status, not the cheque number
+    const chequeStatusResponse: ChequeStatusResponse = {
       chequeStatus: row.CHEQUE_STATUS,
     };
 
-    return { success: true, data: chequeStatus };
+    return { success: true, data: chequeStatusResponse };
   } catch (error) {
-    console.error("Error querying database:", error);
-    if (error instanceof Error) {
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
-    }
     return { success: false, error: "Database error" };
   } finally {
     if (connection) {
       try {
         await connection.close();
-      } catch (err) {
-        console.error("Error closing connection:", err);
-      }
+      } catch (err) {}
     }
   }
 }
