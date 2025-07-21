@@ -1,22 +1,28 @@
 import { Request, Response, NextFunction } from "express";
-import { param, validationResult, ValidationError } from "express-validator";
+import {
+  param,
+  validationResult,
+  ValidationError as ExpressValidationError,
+} from "express-validator";
+
+/**
+ * Simple error class - just extend Error with a statusCode
+ */
+export class HttpError extends Error {
+  constructor(message: string, public statusCode: number = 500) {
+    super(message);
+  }
+}
 
 /**
  * Formats express-validator errors into a clean array.
  */
-const formatValidationErrors = (errors: ValidationError[]) =>
+const formatValidationErrors = (errors: ExpressValidationError[]) =>
   errors.map((error) => {
     if (error.type === "field") {
       const { location, path: field, msg: message, value } = error;
-      return {
-        field,
-        location,
-        message,
-        value,
-      };
+      return { field, location, message, value };
     }
-
-    // Handle other error types (unknown fields, alternatives, etc.)
     return {
       field: "unknown",
       location: "unknown",
@@ -48,10 +54,10 @@ export const validateChequeNumber = [
     .trim()
     .isLength({ min: 1, max: 20 })
     .withMessage("Cheque number must be between 1 and 20 characters")
-    .bail() // Stop on first error
+    .bail()
     .isInt({ min: 1 })
     .withMessage("Cheque number must be a positive integer")
-    .toInt(), // Convert to integer
+    .toInt(),
 
-  handleValidationErrors, // Reusable error handler
+  handleValidationErrors,
 ];

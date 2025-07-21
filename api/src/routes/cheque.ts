@@ -9,24 +9,16 @@ router.get(
   "/:chequeNumber",
   validateChequeNumber,
   async (req: Request, res: Response) => {
-    try {
-      const { chequeNumber } = req.params;
+    const { chequeNumber } = req.params;
 
-      // Query database (input is already validated and sanitized)
-      const response = await getChequeFromDatabase(chequeNumber);
+    // Query database - errors are automatically handled by express-async-errors
+    const chequeStatus = await getChequeFromDatabase(chequeNumber);
 
-      // Return appropriate response
-      if (!response.success) {
-        return res.status(404).json(response);
-      }
-
-      return res.status(200).json(response);
-    } catch (error) {
-      // Error details removed - will implement proper logging in next PR
-      return res
-        .status(500)
-        .json({ success: false, error: "Internal server error" });
-    }
+    // Return successful response
+    res.status(200).json({
+      success: true,
+      data: chequeStatus,
+    });
   }
 );
 
