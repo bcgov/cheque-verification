@@ -21,9 +21,7 @@ export async function getChequeFromDatabase(
     );
 
     if (!result.rows || result.rows.length === 0) {
-      const error = new Error("Cheque not found");
-      (error as any).statusCode = 404;
-      throw error;
+      throw new HttpError("Cheque not found", 404);
     }
 
     // Oracle returns column names in uppercase by default
