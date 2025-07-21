@@ -1,10 +1,10 @@
 import oracledb from "oracledb";
-import { ChequeStatusResponse, ApiResponse } from "../types";
+import { ChequeStatusResponse } from "../types";
 import { getDbPool } from "../config/database";
 
 export async function getChequeFromDatabase(
   chequeNumber: string
-): Promise<ApiResponse<ChequeStatusResponse>> {
+): Promise<ChequeStatusResponse> {
   let connection;
   try {
     const dbPool = getDbPool();
@@ -21,25 +21,32 @@ export async function getChequeFromDatabase(
     );
 
     if (!result.rows || result.rows.length === 0) {
-      return { success: false, error: "Cheque not found" };
+      throw new HttpError("Cheque not found", 404);
     }
 
     // Oracle returns column names in uppercase by default
     const row = result.rows[0] as Record<string, any>;
 
-    // Sanitized response - only return status, not the cheque number
-    const chequeStatusResponse: ChequeStatusResponse = {
+    // Sanitized response - only return status
+    return {
       chequeStatus: row.CHEQUE_STATUS,
     };
-
-    return { success: true, data: chequeStatusResponse };
   } catch (error) {
-    return { success: false, error: "Database error" };
+    // Re-throw errors that already have status codes
+    if ((error as any).statusCode) {
+      throw error;
+    }
+    // Wrap database errors
+    const dbError = new Error("Failed to retrieve cheque information");
+    (dbError as any).statusCode = 500;
+    throw dbError;
   } finally {
     if (connection) {
       try {
         await connection.close();
-      } catch (err) {}
+      } catch (err) {
+        console.warn("Failed to close database connection:", err);
+      }
     }
   }
 }

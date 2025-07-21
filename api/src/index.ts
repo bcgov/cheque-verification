@@ -1,51 +1,52 @@
-import express, { Request, Response } from "express";
-import dotenv from "dotenv";
+import "express-async-errors"; // catches async throws for you
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { requestLogger } from "./middleware/logger";
 import routes from "./routes";
 import { initializeDbPool, closeDbPool } from "./config/database";
 
-// Load environment variables
 dotenv.config();
 
-// Initialize Express app
 const app = express();
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
 
-// Enable CORS for API requests
 app.use(cors());
-
-// Request logger middleware
+app.use(express.json()); // parse JSON bodies
 app.use(requestLogger);
-
-// Use routes
 app.use(routes);
 
-// Start server
-async function startServer() {
-  try {
-    // Initialize DB pool
-    await initializeDbPool();
+// 404 handler
+app.use((req, res) =>
+  res.status(404).json({ success: false, error: "Not found" })
+);
 
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-      console.log("Connected to Oracle database");
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-}
-
-// Handle graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("Server shutting down...");
-  await closeDbPool();
-  process.exit(0);
+// Error handler
+app.use((err: HttpError, req: Request, res: Response, _next: NextFunction) => {
+  console.error(err.stack || err); // swap in Winston later
+  const status = err.statusCode || 500;
+  const message = err.message || "Internal server error";
+  res.status(status).json({ success: false, error: message });
 });
 
-// Start the server
-startServer().catch((error) => {
-  console.error("Fatal error starting server:", error);
+async function startServer() {
+  await initializeDbPool();
+  const server = app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+  });
+
+  // graceful shutdown
+  const shutdown = async () => {
+    console.log("Shutting down…");
+    server.close();
+    await closeDbPool();
+    process.exit(0);
+  };
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
+}
+
+startServer().catch((err) => {
+  console.error("Startup error:", err);
   process.exit(1);
 });
