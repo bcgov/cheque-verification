@@ -22,9 +22,9 @@ app.use((req, res) =>
 );
 
 // Error handler
-app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+app.use((err: HttpError, req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack || err); // swap in Winston later
-  const status = err.statusCode || err.status || 500;
+  const status = err.statusCode || 500;
   const message = err.message || "Internal server error";
   res.status(status).json({ success: false, error: message });
 });
