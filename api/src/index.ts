@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { requestLogger } from "./middleware/logger";
 import routes from "./routes";
 import { initializeDbPool, closeDbPool } from "./config/database";
+import { HttpError} from "./middleware/validation";
 
 dotenv.config();
 
@@ -14,7 +15,8 @@ const port = Number(process.env.PORT) || 3000;
 app.use(cors());
 app.use(express.json()); // parse JSON bodies
 app.use(requestLogger);
-app.use(routes);
+// Use the main router and apply the version prefix
+app.use("/api/v1", routes);
 
 // 404 handler
 app.use((req, res) =>
