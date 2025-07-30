@@ -1,52 +1,71 @@
 import oracledb from "oracledb";
 import { ChequeStatusResponse } from "../types";
 import { getDbPool } from "../config/database";
+import { HttpError } from "../middleware/validation";
+
+// Define the database row type for better type safety
+interface ChequeRow {
+  CHEQUE_STATUS_OUTPUT: string;
+  CHEQUE_NUMBER: number;
+  PAYMENT_ISSUE_DT: Date;
+  PAYEE_NAME: string;
+  PAYEE_TYPE: string;
+  APPLIED_AMOUNT: number;
+}
 
 export async function getChequeFromDatabase(
-  chequeNumber: string
+    chequeNumber: number
 ): Promise<ChequeStatusResponse> {
-  let connection;
+  let connection: oracledb.Connection | undefined;
+  let result: oracledb.Result<ChequeRow> | undefined;
+
+  const schema = process.env.DB_SCHEMA;
+  const table = process.env.DB_TABLE;
+
+  if (!schema || !table) {
+    throw new Error("Database schema and table not configured in environment variables");
+  }
+
   try {
     const dbPool = getDbPool();
     connection = await dbPool.getConnection();
 
-    // Query only returns the status - no need to select cheque number
-    const result = await connection.execute(
-      `SELECT 
-        CHEQUE_STATUS
-      FROM ods.irsd_cheque_verification
-      WHERE CHEQUE_NUMBER = :chequeNumber`,
-      { chequeNumber },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    result = await connection.execute<ChequeRow>(
+        `SELECT CHEQUE_STATUS_OUTPUT, CHEQUE_NUMBER, PAYMENT_ISSUE_DT, PAYEE_NAME, PAYEE_TYPE, APPLIED_AMOUNT
+       FROM ${schema}.${table}
+       WHERE CHEQUE_NUMBER = :chequeNumber`,
+        { chequeNumber },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
-
-    if (!result.rows || result.rows.length === 0) {
-      throw new HttpError("Cheque not found", 404);
-    }
-
-    // Oracle returns column names in uppercase by default
-    const row = result.rows[0] as Record<string, any>;
-
-    // Sanitized response - only return status
-    return {
-      chequeStatus: row.CHEQUE_STATUS,
-    };
   } catch (error) {
-    // Re-throw errors that already have status codes
-    if ((error as any).statusCode) {
-      throw error;
-    }
-    // Wrap database errors
-    const dbError = new Error("Failed to retrieve cheque information");
-    (dbError as any).statusCode = 500;
-    throw dbError;
+    console.error("Database error in getChequeFromDatabase:", error);
+    throw new Error("Failed to retrieve cheque information");
   } finally {
-    if (connection) {
-      try {
-        await connection.close();
-      } catch (err) {
-        console.warn("Failed to close database connection:", err);
-      }
+    await closeConnection(connection);
+  }
+
+  if (!result || !result.rows || result.rows.length === 0) {
+    throw new HttpError("Cheque not found", 404);
+  }
+
+  const row = result.rows[0];
+  return {
+    chequeStatus: row.CHEQUE_STATUS_OUTPUT,
+    chequeNumber: row.CHEQUE_NUMBER,
+    paymentIssueDate: row.PAYMENT_ISSUE_DT,
+    payeeName: row.PAYEE_NAME,
+    payeeType: row.PAYEE_TYPE,
+    appliedAmount: row.APPLIED_AMOUNT,
+  };
+}
+
+// Extract connection cleanup into a separate function
+async function closeConnection(connection: oracledb.Connection | undefined): Promise<void> {
+  if (connection) {
+    try {
+      await connection.close();
+    } catch (err) {
+      console.warn("Failed to close database connection:", err);
     }
   }
 }

@@ -11,8 +11,8 @@ router.get(
   async (req: Request, res: Response) => {
     const { chequeNumber } = req.params;
 
-    // Query database - errors are automatically handled by express-async-errors
-    const chequeStatus = await getChequeFromDatabase(chequeNumber);
+    // Express-async-errors automatically handle query database - errors
+      const chequeStatus = await getChequeFromDatabase(Number(chequeNumber));
 
     // Return successful response
     res.status(200).json({
