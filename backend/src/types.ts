@@ -1,7 +1,11 @@
-// Types for the API responses
-export interface CheckStatus {
-  chequeNumber: string;
+// Types for the API responses - matches API types
+export interface ChequeStatusResponse {
   chequeStatus: string;
+  chequeNumber: number;
+  paymentIssueDate: Date;
+  payeeName: string;
+  payeeType: string;
+  appliedAmount: number;
 }
 
 export interface ApiResponse<T> {
