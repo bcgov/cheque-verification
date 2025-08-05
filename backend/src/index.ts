@@ -8,7 +8,6 @@ import {
   apiLimiter,
   healthLimiter,
 } from "./middleware/rateLimiter";
-import { securityHeaders } from "./middleware/security";
 import { requestLogger } from "./middleware/logger";
 
 // Load environment variables
@@ -36,9 +35,6 @@ app.use(
     credentials: false, // Don't allow credentials
   })
 );
-
-// Add basic security headers
-app.use(securityHeaders);
 
 // Simple request logger middleware
 app.use(requestLogger);
