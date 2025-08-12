@@ -84,14 +84,13 @@ export class ChequeController {
       }
 
       // All fields match - return success
-      console.log(`Cheque verification successful for ${chequeNumber}`);
       res.status(200).json({
         success: true,
         data: apiResponse.data,
         message: "Cheque verification successful",
       });
     } catch (error: unknown) {
-      console.error("Error fetching cheque data:", error);
+      console.error("Error during cheque verification:", error);
 
       // Check for timeout errors specifically
       if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
