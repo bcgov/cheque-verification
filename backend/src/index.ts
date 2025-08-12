@@ -1,22 +1,21 @@
-import express, { Request, Response } from "express";
-import axios from "axios";
-import dotenv from "dotenv";
+import express from "express";
 import cors from "cors";
-import { ChequeStatusResponse, ApiResponse } from "./types";
-import {
-  globalRequestLimiter,
-  apiLimiter,
-  healthLimiter,
-} from "./middleware/rateLimiter";
+import { getConfig } from "./config/appConfig";
+import { ChequeVerificationService } from "./services/chequeVerificationService";
+import { ChequeController } from "./controllers/chequeController";
+import { createChequeRoutes, createHealthRoutes } from "./routes/chequeRoutes";
+import { globalRequestLimiter } from "./middleware/rateLimiter";
 import { requestLogger } from "./middleware/logger";
 
-// Load environment variables
-dotenv.config();
+// Get application configuration
+const config = getConfig();
 
 // Initialize Express app
 const app = express();
-const port = process.env.PORT || 4000;
-const apiUrl = process.env.API_URL || "http://localhost:3000";
+
+// Initialize services and controllers
+const chequeService = new ChequeVerificationService(config.apiUrl);
+const chequeController = new ChequeController(chequeService);
 
 // Apply global rate limiting to all requests
 app.use(globalRequestLimiter);
@@ -30,8 +29,8 @@ app.set("trust proxy", 1);
 // Enable CORS for frontend requests with more specific configuration
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Default to Vite dev server
-    methods: ["GET"], // Only allow GET
+    origin: config.frontendUrl, // Use configured frontend URL
+    methods: ["GET", "POST"], // Allow GET and POST
     credentials: false, // Don't allow credentials
   })
 );
@@ -39,83 +38,30 @@ app.use(
 // Simple request logger middleware
 app.use(requestLogger);
 
-// Proxy endpoint for cheque verification
-app.get(
-  "/api/cheque/:chequeNumber",
-  apiLimiter,
-  async (req: Request, res: Response) => {
-    try {
-      const { chequeNumber } = req.params;
+// Configure routes
+app.use("/api/cheque", createChequeRoutes(chequeController));
+app.use("/health", createHealthRoutes(chequeController));
 
-      // Enhanced validation
-      if (!chequeNumber) {
-        return res
-          .status(400)
-          .json({ success: false, error: "Cheque number is required" });
-      }
-
-      // Basic input sanitization/validation - more realistic cheque number range
-      const chequeNumberPattern = /^\d{6,12}$/; // Allowing 6-12 numeric characters (more realistic)
-      if (!chequeNumberPattern.test(chequeNumber)) {
-        return res.status(400).json({
-          success: false,
-          error: "Invalid cheque number format.",
-        });
-      }
-
-      // Call the API service with timeout
-      console.log(`Fetching cheque data for ${chequeNumber} from API`);
-      const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
-        `${apiUrl}/cheque/${chequeNumber}`,
-        {
-          timeout: 5000, // 5 second timeout to prevent hanging connections
-          validateStatus: (status) => status < 500, // Accept all non-500 status codes
-        }
-      );
-
-      // Return the API response to the frontend
-      return res.status(response.status).json(response.data);
-    } catch (error: unknown) {
-      console.error("Error fetching cheque data:", error);
-
-      // Check for timeout errors specifically
-      if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
-        return res.status(504).json({
-          success: false,
-          error: "API request timed out",
-        });
-      }
-
-      // If it's an error from the API, forward the response
-      if (axios.isAxiosError(error) && error.response) {
-        return res.status(error.response.status).json(error.response.data);
-      }
-
-      // Otherwise, return a generic error
-      return res.status(500).json({
-        success: false,
-        error: "Error communicating with API service",
-      });
-    }
-  }
-);
-
-// Health check endpoint
-app.get("/health", healthLimiter, (_req: Request, res: Response) => {
-  res.status(200).json({
-    status: "OK",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Backend server running on port ${port}`);
-  console.log(`Connected to API at ${apiUrl}`);
+// Start server and store reference
+const server = app.listen(config.port, () => {
+  console.log(`Backend server running on port ${config.port}`);
+  console.log(`Connected to API at ${config.apiUrl}`);
+  console.log(`Environment: ${config.environment}`);
 });
 
 // Handle graceful shutdown
 process.on("SIGTERM", () => {
-  console.log("Server shutting down...");
-  process.exit(0);
+  console.log("SIGTERM received. Shutting down gracefully...");
+  server.close(() => {
+    console.log("Server closed successfully");
+    process.exit(0);
+  });
+});
+
+process.on("SIGINT", () => {
+  console.log("SIGINT received. Shutting down gracefully...");
+  server.close(() => {
+    console.log("Server closed successfully");
+    process.exit(0);
+  });
 });
