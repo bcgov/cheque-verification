@@ -24,21 +24,19 @@ export class ChequeVerificationService {
 
   /**
    * Validates required verification fields
-   * @param payeeName - Payee name
    * @param appliedAmount - Applied amount
    * @param paymentIssueDate - Payment issue date
    * @returns object with isValid boolean and error message if invalid
    */
   validateVerificationFields(
-    payeeName: string,
     appliedAmount: string,
     paymentIssueDate: string
   ): { isValid: boolean; error?: string } {
-    if (!payeeName || !appliedAmount || !paymentIssueDate) {
+    if (!appliedAmount || !paymentIssueDate) {
       return {
         isValid: false,
         error:
-          "All verification fields are required (payeeName, appliedAmount, paymentIssueDate)",
+          "All verification fields are required (appliedAmount, paymentIssueDate)",
       };
     }
 
@@ -88,63 +86,12 @@ export class ChequeVerificationService {
    */
   verifyFields(
     userInput: {
-      payeeName: string;
       appliedAmount: string;
       paymentIssueDate: string;
     },
     actualData: ChequeStatusResponse
   ): string[] {
     const verificationErrors: string[] = [];
-
-    // Verify payee name (case-insensitive with multiple format handling)
-    let payeeNameMatches = false;
-    const dbName = actualData.payeeName.toLowerCase().trim();
-    const userName = userInput.payeeName.toLowerCase().trim();
-
-    // Method 1: Exact match
-    if (dbName === userName) {
-      payeeNameMatches = true;
-    } else {
-      // Method 2: Check if database format is "Last, First" and user entered "First Last"
-      if (dbName.includes(",")) {
-        const [lastName, firstName] = dbName
-          .split(",")
-          .map((part) => part.trim());
-        const reconstructed = `${firstName} ${lastName}`;
-
-        if (reconstructed === userName) {
-          payeeNameMatches = true;
-        }
-      }
-
-      // Method 3: Check if user entered "Last, First" and database has "First Last"
-      if (!payeeNameMatches && userName.includes(",")) {
-        const [lastName, firstName] = userName
-          .split(",")
-          .map((part) => part.trim());
-        const reconstructed = `${firstName} ${lastName}`;
-
-        if (reconstructed === dbName) {
-          payeeNameMatches = true;
-        }
-      }
-
-      // Method 4: Try reversing the database name if it doesn't have comma
-      if (!payeeNameMatches && !dbName.includes(",") && dbName.includes(" ")) {
-        const nameParts = dbName.split(" ");
-        if (nameParts.length === 2) {
-          const reversed = `${nameParts[1]} ${nameParts[0]}`;
-
-          if (reversed === userName) {
-            payeeNameMatches = true;
-          }
-        }
-      }
-    }
-
-    if (!payeeNameMatches) {
-      verificationErrors.push("Payee name does not match");
-    }
 
     // Verify applied amount (with tolerance for floating point precision)
     const providedAmount = parseFloat(userInput.appliedAmount);

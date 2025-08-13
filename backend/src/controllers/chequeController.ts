@@ -20,8 +20,7 @@ export class ChequeController {
    */
   async verifyCheque(req: Request, res: Response): Promise<void> {
     try {
-      const { chequeNumber, payeeName, appliedAmount, paymentIssueDate } =
-        req.body;
+      const { chequeNumber, appliedAmount, paymentIssueDate } = req.body;
 
       // Validate cheque number
       if (!chequeNumber) {
@@ -41,7 +40,6 @@ export class ChequeController {
 
       // Validate verification fields
       const validation = this.chequeService.validateVerificationFields(
-        payeeName,
         appliedAmount,
         paymentIssueDate
       );
@@ -69,7 +67,7 @@ export class ChequeController {
 
       // Verify user input against actual data
       const verificationErrors = this.chequeService.verifyFields(
-        { payeeName, appliedAmount, paymentIssueDate },
+        { appliedAmount, paymentIssueDate },
         apiResponse.data
       );
 
