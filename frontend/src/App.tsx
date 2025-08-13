@@ -5,7 +5,6 @@ import type { ApiResponse, CheckStatus } from "./types";
 
 function App() {
   const [chequeNumber, setChequeNumber] = useState("");
-  const [payeeName, setPayeeName] = useState("");
   const [paymentIssueDate, setPaymentIssueDate] = useState("");
   const [appliedAmount, setAppliedAmount] = useState("");
   const [status, setStatus] = useState<ApiResponse<CheckStatus> | null>(null);
@@ -18,12 +17,6 @@ function App() {
     // Validate all required fields
     if (!chequeNumber.trim()) {
       setError("Please enter a cheque number");
-      setStatus(null);
-      return;
-    }
-
-    if (!payeeName.trim()) {
-      setError("Please enter a payee name");
       setStatus(null);
       return;
     }
@@ -50,7 +43,6 @@ function App() {
         `${apiUrl}/api/cheque/verify`,
         {
           chequeNumber,
-          payeeName,
           paymentIssueDate,
           appliedAmount,
         }
@@ -209,44 +201,6 @@ function App() {
                 value={chequeNumber}
                 onChange={(e) => setChequeNumber(e.target.value)}
                 placeholder="Enter your cheque number"
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: `1px solid var(--bcgov-border-light)`,
-                  borderRadius: "6px",
-                  outline: "none",
-                  fontSize: "16px",
-                  fontFamily: "BCSans, sans-serif",
-                }}
-                onFocus={(e) =>
-                  (e.target.style.borderColor = "var(--bcgov-border-active)")
-                }
-                onBlur={(e) =>
-                  (e.target.style.borderColor = "var(--bcgov-border-light)")
-                }
-                required
-              />
-            </div>
-
-            <div style={{ marginBottom: "24px" }}>
-              <label
-                htmlFor="payeeName"
-                style={{
-                  display: "block",
-                  color: "var(--bcgov-text-primary)",
-                  fontFamily: "BCSans, sans-serif",
-                  fontWeight: "500",
-                  marginBottom: "8px",
-                }}
-              >
-                Payee Name:
-              </label>
-              <input
-                type="text"
-                id="payeeName"
-                value={payeeName}
-                onChange={(e) => setPayeeName(e.target.value)}
-                placeholder="Enter the payee name"
                 style={{
                   width: "100%",
                   padding: "12px 16px",

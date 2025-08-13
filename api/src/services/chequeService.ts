@@ -8,13 +8,11 @@ interface ChequeRow {
   CHEQUE_STATUS_OUTPUT: string;
   CHEQUE_NUMBER: number;
   PAYMENT_ISSUE_DT: Date;
-  PAYEE_NAME: string;
-  PAYEE_TYPE: string;
   APPLIED_AMOUNT: number;
 }
 
 export async function getChequeFromDatabase(
-    chequeNumber: number
+  chequeNumber: number
 ): Promise<ChequeStatusResponse> {
   let connection: oracledb.Connection | undefined;
   let result: oracledb.Result<ChequeRow> | undefined;
@@ -23,7 +21,9 @@ export async function getChequeFromDatabase(
   const table = process.env.DB_TABLE;
 
   if (!schema || !table) {
-    throw new Error("Database schema and table not configured in environment variables");
+    throw new Error(
+      "Database schema and table not configured in environment variables"
+    );
   }
 
   try {
@@ -31,11 +31,11 @@ export async function getChequeFromDatabase(
     connection = await dbPool.getConnection();
 
     result = await connection.execute<ChequeRow>(
-        `SELECT CHEQUE_STATUS_OUTPUT, CHEQUE_NUMBER, PAYMENT_ISSUE_DT, PAYEE_NAME, PAYEE_TYPE, APPLIED_AMOUNT
+      `SELECT CHEQUE_STATUS_OUTPUT, CHEQUE_NUMBER, PAYMENT_ISSUE_DT, APPLIED_AMOUNT
        FROM ${schema}.${table}
        WHERE CHEQUE_NUMBER = :chequeNumber`,
-        { chequeNumber },
-        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      { chequeNumber },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
   } catch (error) {
     console.error("Database error in getChequeFromDatabase:", error);
@@ -53,14 +53,14 @@ export async function getChequeFromDatabase(
     chequeStatus: row.CHEQUE_STATUS_OUTPUT,
     chequeNumber: row.CHEQUE_NUMBER,
     paymentIssueDate: row.PAYMENT_ISSUE_DT,
-    payeeName: row.PAYEE_NAME,
-    payeeType: row.PAYEE_TYPE,
     appliedAmount: row.APPLIED_AMOUNT,
   };
 }
 
 // Extract connection cleanup into a separate function
-async function closeConnection(connection: oracledb.Connection | undefined): Promise<void> {
+async function closeConnection(
+  connection: oracledb.Connection | undefined
+): Promise<void> {
   if (connection) {
     try {
       await connection.close();

@@ -3,8 +3,6 @@ export interface ChequeStatusResponse {
   chequeStatus: string;
   chequeNumber: number;
   paymentIssueDate: Date;
-  payeeName: string;
-  payeeType: string;
   appliedAmount: number;
 }
 
