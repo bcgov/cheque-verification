@@ -44,7 +44,7 @@ export class ChequeVerificationService {
     if (isNaN(amount) || amount < 0) {
       return {
         isValid: false,
-        error: "Applied amount must be a valid positive number",
+        error: "Cheque amount must be a valid positive number",
       };
     }
 
@@ -96,7 +96,7 @@ export class ChequeVerificationService {
     // Verify applied amount (with tolerance for floating point precision)
     const providedAmount = parseFloat(userInput.appliedAmount);
     if (Math.abs(actualData.appliedAmount - providedAmount) > 0.01) {
-      verificationErrors.push("Applied amount does not match");
+      verificationErrors.push("Cheque amount does not match");
     }
 
     // Verify payment issue date
