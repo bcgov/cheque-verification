@@ -1,45 +1,44 @@
 import oracledb from "oracledb";
 
-let dbPool: oracledb.Pool;
+let pool: oracledb.Pool | null = null;
 
-// Initialize Oracle DB connection pool
-export async function initializeDbPool(): Promise<void> {
-  try {
-    // Create database configuration inside the function
-    // This ensures environment variables are loaded
-    const dbConfig = {
-      user: process.env.ORACLE_USER,
-      password: process.env.ORACLE_PASSWORD,
-      connectString: process.env.ORACLE_CONNECTION_STRING,
-      poolIncrement: 1,
-      poolMax: 5,
-      poolMin: 1,
-    };
-
-    dbPool = await oracledb.createPool(dbConfig);
-    console.log("Oracle Database connection pool initialized");
-
-    // Make dbPool globally accessible for routes
-    (global as any).dbPool = dbPool;
-  } catch (error) {
-    console.error("Failed to initialize Oracle connection pool:", error);
-    throw error; // Fail if database connection fails
-  }
+export function getRequired(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env: ${name}`);
+  return v;
 }
 
-// Get the database pool
+export async function initializeDbPool(): Promise<oracledb.Pool> {
+  if (pool) return pool;
+
+  const user = getRequired("ORACLE_USER");
+  const password = getRequired("ORACLE_PASSWORD");
+  const connectString = getRequired("ORACLE_CONNECTION_STRING");
+
+  pool = await oracledb.createPool({
+    user,
+    password,
+    connectString,
+    poolMin: 0,
+    poolMax: 4,
+    poolIncrement: 1,
+    stmtCacheSize: 40,
+  });
+
+  // Set Oracle output format to object for easier handling
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+
+  return pool;
+}
+
 export function getDbPool(): oracledb.Pool {
-  return dbPool;
+  if (!pool) throw new Error("DB pool not initialized");
+  return pool;
 }
 
-// Close the database pool
 export async function closeDbPool(): Promise<void> {
-  if (dbPool) {
-    try {
-      await dbPool.close(10);
-      console.log("Database connections closed");
-    } catch (err) {
-      console.error("Error closing database connections:", err);
-    }
+  if (pool) {
+    await pool.close(0);
+    pool = null;
   }
 }

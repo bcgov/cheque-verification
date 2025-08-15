@@ -6,13 +6,13 @@ import { HttpError } from "../middleware/validation";
 // Define the database row type for better type safety
 interface ChequeRow {
   CHEQUE_STATUS_OUTPUT: string;
-  CHEQUE_NUMBER: number;
+  CHEQUE_NUMBER: string; // Changed from number to string to avoid precision loss
   PAYMENT_ISSUE_DT: Date;
   APPLIED_AMOUNT: number;
 }
 
 export async function getChequeFromDatabase(
-  chequeNumber: number
+  chequeNumber: string
 ): Promise<ChequeStatusResponse> {
   let connection: oracledb.Connection | undefined;
   let result: oracledb.Result<ChequeRow> | undefined;
