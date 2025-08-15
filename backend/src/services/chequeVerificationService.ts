@@ -18,8 +18,16 @@ export class ChequeVerificationService {
    * @returns boolean indicating if format is valid
    */
   isValidChequeNumber(chequeNumber: string): boolean {
-    const chequeNumberPattern = /^\d{4,12}$/;
-    return chequeNumberPattern.test(chequeNumber);
+    // Updated to match API validation: 1-16 digits, no leading zeros except for "0"
+    const chequeNumberPattern = /^\d{1,16}$/;
+    const isValidFormat = chequeNumberPattern.test(chequeNumber);
+
+    // Reject zero as invalid cheque number
+    if (chequeNumber === "0" || parseInt(chequeNumber, 10) === 0) {
+      return false;
+    }
+
+    return isValidFormat;
   }
 
   /**
