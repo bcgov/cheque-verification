@@ -7,7 +7,7 @@ import { createMockAxiosResponse } from "../helpers/backendTestHelpers";
 import { AxiosResponse } from "axios";
 
 // Use global jest - available in test environment
-declare const jest: any;
+import { jest } from '@jest/globals';
 
 // Constants for consistent validation and comparison
 const CHEQUE_NUMBER_PATTERN = /^\d{1,16}$/; // Match actual service validation
