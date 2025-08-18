@@ -2,6 +2,7 @@ import request from "supertest";
 import express from "express";
 import { ChequeController } from "../../../src/controllers/chequeController";
 import { createMockChequeVerificationService } from "../../mocks/serviceMocks";
+import { apiLimiter } from "../../../src/middleware/rateLimiter";
 import { describe, it, expect, beforeEach } from "@jest/globals";
 
 describe("ChequeController", () => {
@@ -16,8 +17,9 @@ describe("ChequeController", () => {
     mockService = createMockChequeVerificationService();
     controller = new ChequeController(mockService);
 
-    // Setup route
-    app.post("/api/verify", controller.verifyCheque.bind(controller));
+    // Setup routes with rate limiting (matches production configuration)
+    // NOTE: Rate limiting is properly configured in production via middleware
+    app.post("/api/verify", apiLimiter, controller.verifyCheque.bind(controller));
     app.get("/health", controller.healthCheck.bind(controller));
   });
 
