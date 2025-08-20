@@ -122,9 +122,8 @@ export class MockChequeVerificationService {
  * Returns jest.Mocked<ChequeVerificationService> for type safety at call sites
  */
 export const createMockChequeVerificationService = () => {
-  // Create fetchChequeData mock separately to avoid TypeScript issue
-  const fetchChequeDataMock = jest.fn();
-  (fetchChequeDataMock as any).mockResolvedValue({
+  // Create fetchChequeData mock with proper typing
+  const mockData = {
     success: true,
     data: {
       chequeNumber: "123456",
@@ -133,7 +132,12 @@ export const createMockChequeVerificationService = () => {
       paymentIssueDate: "2024-01-01",
       status: "active",
     },
-  });
+  };
+
+  const fetchChequeDataMock = jest.fn() as jest.MockedFunction<
+    (chequeNumber: string) => Promise<ApiResponse<any>>
+  >;
+  fetchChequeDataMock.mockResolvedValue(mockData);
 
   return {
     isValidChequeNumber: jest
