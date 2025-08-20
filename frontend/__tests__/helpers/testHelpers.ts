@@ -98,21 +98,30 @@ export const waitForAsync = () =>
  * Mock environment variables for testing
  */
 export const mockEnvironment = (overrides: Record<string, string> = {}) => {
+  // Type-safe approach to access globalThis.import
+  const globalWithImport = globalThis as typeof globalThis & {
+    import?: {
+      meta?: {
+        env?: Record<string, unknown>;
+      };
+    };
+  };
+
   // Save original env for restore
-  const originalEnv = globalThis.import?.meta?.env
-    ? { ...globalThis.import.meta.env }
+  const originalEnv = globalWithImport.import?.meta?.env
+    ? { ...globalWithImport.import.meta.env }
     : {};
 
-  // Ensure globalThis.import and globalThis.import.meta exist
-  if (!globalThis.import) {
-    globalThis.import = {};
+  // Ensure import.meta exists
+  if (!globalWithImport.import) {
+    globalWithImport.import = {};
   }
-  if (!globalThis.import.meta) {
-    globalThis.import.meta = {};
+  if (!globalWithImport.import.meta) {
+    globalWithImport.import.meta = {};
   }
 
   // Set env directly
-  globalThis.import.meta.env = {
+  globalWithImport.import.meta.env = {
     ...originalEnv,
     VITE_API_URL: "http://localhost:4000",
     MODE: "test",
@@ -121,7 +130,7 @@ export const mockEnvironment = (overrides: Record<string, string> = {}) => {
 
   return () => {
     // Restore original environment
-    globalThis.import.meta.env = originalEnv;
+    globalWithImport.import!.meta!.env = originalEnv;
   };
 };
 
