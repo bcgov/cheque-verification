@@ -98,39 +98,30 @@ export const waitForAsync = () =>
  * Mock environment variables for testing
  */
 export const mockEnvironment = (overrides: Record<string, string> = {}) => {
-  // Note: In test environment, import.meta.env might not be available
-  // Using process.env as fallback for test environment
-  const originalEnv =
-    (
-      globalThis as unknown as {
-        import?: { meta?: { env?: Record<string, unknown> } };
-      }
-    ).import?.meta?.env || {};
+  // Save original env for restore
+  const originalEnv = globalThis.import?.meta?.env
+    ? { ...globalThis.import.meta.env }
+    : {};
 
-  // Mock Vite environment variables for testing
-  (
-    globalThis as unknown as {
-      import: { meta: { env: Record<string, string> } };
-    }
-  ).import = {
-    meta: {
-      env: {
-        ...originalEnv,
-        VITE_API_URL: "http://localhost:4000",
-        MODE: "test",
-        ...overrides,
-      },
-    },
+  // Ensure globalThis.import and globalThis.import.meta exist
+  if (!globalThis.import) {
+    globalThis.import = {};
+  }
+  if (!globalThis.import.meta) {
+    globalThis.import.meta = {};
+  }
+
+  // Set env directly
+  globalThis.import.meta.env = {
+    ...originalEnv,
+    VITE_API_URL: "http://localhost:4000",
+    MODE: "test",
+    ...overrides,
   };
 
   return () => {
     // Restore original environment
-    const typedGlobal = globalThis as unknown as {
-      import?: { meta?: { env?: Record<string, unknown> } };
-    };
-    if (typedGlobal.import?.meta) {
-      typedGlobal.import.meta.env = originalEnv;
-    }
+    globalThis.import.meta.env = originalEnv;
   };
 };
 
