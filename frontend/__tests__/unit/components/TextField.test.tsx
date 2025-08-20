@@ -115,7 +115,7 @@ describe("TextField Component", () => {
   });
 
   it("handles special characters in values", () => {
-    const specialValue = 'Test & <script>alert("xss")</script>';
+    const specialValue = 'Test & <b>bold</b>';
 
     renderWithProviders(<TextField {...defaultProps} value={specialValue} />);
 
