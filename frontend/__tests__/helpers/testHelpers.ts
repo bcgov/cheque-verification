@@ -120,8 +120,11 @@ export const mockEnvironment = (overrides: Record<string, string> = {}) => {
     globalWithImport.import.meta = {};
   }
 
+  // Store reference for safe cleanup
+  const metaRef = globalWithImport.import.meta;
+
   // Set env directly
-  globalWithImport.import.meta.env = {
+  metaRef.env = {
     ...originalEnv,
     VITE_API_URL: "http://localhost:4000",
     MODE: "test",
