@@ -130,7 +130,7 @@ export const mockEnvironment = (overrides: Record<string, string> = {}) => {
 
   return () => {
     // Restore original environment
-    globalWithImport.import!.meta!.env = originalEnv;
+    metaRef.env = originalEnv;
   };
 };
 
