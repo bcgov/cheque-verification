@@ -44,8 +44,28 @@ const ChequeForm = ({
     await onSubmit({ chequeNumber, paymentIssueDate, appliedAmount });
   };
 
+  // Determine if individual fields have errors for aria-invalid
+  const hasError = !!localError;
+  const chequeNumberError =
+    hasError && !chequeNumber.trim()
+      ? "Please enter a cheque number"
+      : undefined;
+  const dateError =
+    hasError && !paymentIssueDate.trim()
+      ? "Please enter a payment issue date"
+      : undefined;
+  const amountError =
+    hasError && !appliedAmount.trim()
+      ? "Please enter the cheque amount"
+      : undefined;
+
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "24px" }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ padding: "24px" }}
+      aria-label="Cheque verification form"
+      noValidate
+    >
       <div style={{ marginBottom: "24px" }}>
         <TextField
           label="Cheque Number"
@@ -53,6 +73,7 @@ const ChequeForm = ({
           onChange={setChequeNumber}
           type="text"
           required={true}
+          errorMessage={chequeNumberError}
         />
       </div>
       <div style={{ marginBottom: "24px" }}>
@@ -62,6 +83,7 @@ const ChequeForm = ({
           onChange={setPaymentIssueDate}
           type="date"
           required={true}
+          errorMessage={dateError}
         />
       </div>
       <div style={{ marginBottom: "24px" }}>
@@ -71,6 +93,7 @@ const ChequeForm = ({
           onChange={setAppliedAmount}
           type="number"
           required={true}
+          errorMessage={amountError}
         />
       </div>
       {localError && (
