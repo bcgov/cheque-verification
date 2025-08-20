@@ -5,9 +5,10 @@
 import { ChequeVerificationService } from "../../src/services/chequeVerificationService";
 import { createMockAxiosResponse } from "../helpers/backendTestHelpers";
 import { AxiosResponse } from "axios";
+import { ApiResponse, ChequeStatusResponse } from "../../src/types";
 
 // Use global jest - available in test environment
-import { jest } from '@jest/globals';
+import { jest } from "@jest/globals";
 
 // Constants for consistent validation and comparison
 const CHEQUE_NUMBER_PATTERN = /^\d{1,16}$/; // Match actual service validation
@@ -121,61 +122,73 @@ export class MockChequeVerificationService {
  * Returns jest.Mocked<ChequeVerificationService> for type safety at call sites
  */
 export const createMockChequeVerificationService = () => {
+  // Create fetchChequeData mock separately to avoid TypeScript issue
+  const fetchChequeDataMock = jest.fn();
+  (fetchChequeDataMock as any).mockResolvedValue({
+    success: true,
+    data: {
+      chequeNumber: "123456",
+      payeeCode: "TEST001",
+      appliedAmount: 1000.0, // Consistent field name
+      paymentIssueDate: "2024-01-01",
+      status: "active",
+    },
+  });
+
   return {
     isValidChequeNumber: jest
       .fn()
-      .mockImplementation((chequeNumber: string): boolean => {
+      .mockImplementation((chequeNumber: unknown): boolean => {
+        // Jest requires 'unknown' but we know it should be a string
+        const chequeNumberStr = String(chequeNumber);
         // Match actual service validation: 1-16 digits, but reject zero values
-        const isValidFormat = CHEQUE_NUMBER_PATTERN.test(chequeNumber);
+        const isValidFormat = CHEQUE_NUMBER_PATTERN.test(chequeNumberStr);
 
         // Reject "0" or numerical zero values (avoiding parseInt for consistency)
-        if (chequeNumber === "0" || /^0+$/.test(chequeNumber)) {
+        if (chequeNumberStr === "0" || /^0+$/.test(chequeNumberStr)) {
           return false;
         }
 
         return isValidFormat;
-      }) as any,
+      }),
 
     validateVerificationFields: jest
       .fn()
-      .mockImplementation((appliedAmount: string, paymentIssueDate: string) => {
-        if (!appliedAmount || !paymentIssueDate) {
-          return {
-            isValid: false,
-            error:
-              "All verification fields are required (appliedAmount, paymentIssueDate)",
-          };
+      .mockImplementation(
+        (appliedAmount: unknown, paymentIssueDate: unknown) => {
+          // Jest requires 'unknown' but we expect strings
+          const appliedAmountStr = String(appliedAmount || "");
+          const paymentIssueDateStr = String(paymentIssueDate || "");
+
+          if (!appliedAmountStr || !paymentIssueDateStr) {
+            return {
+              isValid: false,
+              error:
+                "All verification fields are required (appliedAmount, paymentIssueDate)",
+            };
+          }
+
+          const amount = parseFloat(appliedAmountStr);
+          if (isNaN(amount) || amount < 0) {
+            return {
+              isValid: false,
+              error: "Cheque amount must be a valid positive number",
+            };
+          }
+
+          const date = new Date(paymentIssueDateStr);
+          if (isNaN(date.getTime())) {
+            return {
+              isValid: false,
+              error: "Payment issue date must be a valid date",
+            };
+          }
+
+          return { isValid: true };
         }
+      ),
 
-        const amount = parseFloat(appliedAmount);
-        if (isNaN(amount) || amount < 0) {
-          return {
-            isValid: false,
-            error: "Cheque amount must be a valid positive number",
-          };
-        }
-
-        const date = new Date(paymentIssueDate);
-        if (isNaN(date.getTime())) {
-          return {
-            isValid: false,
-            error: "Payment issue date must be a valid date",
-          };
-        }
-
-        return { isValid: true };
-      }) as any,
-
-    fetchChequeData: jest.fn().mockResolvedValue({
-      success: true,
-      data: {
-        chequeNumber: "123456",
-        payeeCode: "TEST001",
-        appliedAmount: 1000.0, // Consistent field name
-        paymentIssueDate: "2024-01-01",
-        status: "active",
-      },
-    }) as any,
+    fetchChequeData: fetchChequeDataMock,
 
     verifyFields: jest
       .fn()
