@@ -9,7 +9,7 @@ A web application for BC Government to verify cheque numbers, amounts, and issue
 | **Frontend** | React, TypeScript, Tailwind CSS, Vite      |
 | **Backend**  | Express.js, TypeScript, Jest               |
 | **API**      | Node.js, Oracle Database, TypeScript       |
-| **Testing**  | Vitest, Jest, Testing Library (125+ tests) |
+| **Testing**  | Vitest, Jest, Testing Library              |
 
 ## Features
 
