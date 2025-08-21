@@ -17,7 +17,7 @@ A web application for BC Government to verify cheque numbers, amounts, and issue
 - Oracle database integration for validation
 - Modern React frontend with TypeScript
 - RESTful API backend
-- Comprehensive test coverage (125+ tests)
+- Comprehensive test coverage
 
 ## Usage
 
