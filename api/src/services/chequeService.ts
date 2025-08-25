@@ -44,7 +44,7 @@ export async function getChequeFromDatabase(
     await closeConnection(connection);
   }
 
-  if (!result || !result.rows || result.rows.length === 0) {
+  if (!result?.rows?.length) {
     throw new HttpError("Cheque not found", 404);
   }
 

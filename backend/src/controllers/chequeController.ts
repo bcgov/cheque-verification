@@ -7,7 +7,7 @@ import { ChequeVerificationService } from "../services/chequeVerificationService
  * Handles HTTP request/response logic and delegates business logic to services
  */
 export class ChequeController {
-  private chequeService: ChequeVerificationService;
+  private readonly chequeService: ChequeVerificationService;
 
   constructor(chequeService: ChequeVerificationService) {
     this.chequeService = chequeService;
