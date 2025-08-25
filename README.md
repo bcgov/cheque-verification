@@ -1,6 +1,15 @@
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=bugs)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bcgov_cheque-verification&metric=coverage)](https://sonarcloud.io/summary/new_code?id=bcgov_cheque-verification)
+
 # Cheque Verification System
 
 A web application for BC Government to verify cheque numbers, amounts, and issue dates.
+
 
 ## Tech Stack
 
