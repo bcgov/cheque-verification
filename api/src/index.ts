@@ -12,6 +12,9 @@ dotenv.config();
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
+// Security: Disable X-Powered-By header to hide Express.js version info
+app.disable("x-powered-by");
+
 // Configure CORS for internal API - only allow backend service
 const allowedOrigins = [
   process.env.BACKEND_URL || "http://localhost:4000", // Backend service
