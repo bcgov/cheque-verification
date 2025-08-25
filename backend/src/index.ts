@@ -13,6 +13,9 @@ const config = getConfig();
 // Initialize Express app
 const app = express();
 
+// Security: Disable X-Powered-By header to hide Express.js version info
+app.disable("x-powered-by");
+
 // Initialize services and controllers
 const chequeService = new ChequeVerificationService(config.apiUrl);
 const chequeController = new ChequeController(chequeService);

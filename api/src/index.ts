@@ -5,14 +5,35 @@ import dotenv from "dotenv";
 import { requestLogger } from "./middleware/logger";
 import routes from "./routes";
 import { initializeDbPool, closeDbPool } from "./config/database";
-import { HttpError} from "./middleware/validation";
+import { HttpError } from "./middleware/validation";
 
 dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
-app.use(cors());
+// Security: Disable X-Powered-By header to hide Express.js version info
+app.disable("x-powered-by");
+
+// Configure CORS for internal API - only allow backend service
+const allowedOrigins = [
+  process.env.BACKEND_URL || "http://localhost:4000", // Backend service
+];
+
+// Add production backend URL if specified (OpenShift internal network)
+if (process.env.BACKEND_PROD_URL) {
+  allowedOrigins.push(process.env.BACKEND_PROD_URL);
+}
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: false, // No need for credentials between internal services
+    methods: ["GET", "POST"], // Only methods the backend uses
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json()); // parse JSON bodies
 app.use(requestLogger);
 // Use the main router and apply the version prefix
