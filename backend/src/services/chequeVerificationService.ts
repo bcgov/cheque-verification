@@ -6,7 +6,7 @@ import { ChequeStatusResponse, ApiResponse } from "../types";
  * Handles all business logic related to cheque verification
  */
 export class ChequeVerificationService {
-  private apiUrl: string;
+  private readonly apiUrl: string;
 
   constructor(apiUrl: string) {
     this.apiUrl = apiUrl;
