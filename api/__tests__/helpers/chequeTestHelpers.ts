@@ -54,3 +54,46 @@ export const setupTestEnvironment = () => {
 
 // Export common types
 export { getChequeFromDatabase, HttpError, oracledb };
+
+// Create app for testing without starting server
+export async function createAppForTesting() {
+  const express = require("express");
+  const cors = require("cors");
+  const { requestLogger } = require("../../src/middleware/logger");
+  const routes = require("../../src/routes").default;
+  const { HttpError } = require("../../src/middleware/validation");
+
+  const app = express();
+
+  // Security: Disable X-Powered-By header
+  app.disable("x-powered-by");
+
+  // Configure CORS
+  const allowedOrigins = ["http://localhost:4000"];
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      credentials: false,
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
+
+  app.use(express.json());
+  app.use(requestLogger);
+  app.use("/api/v1", routes);
+
+  // 404 handler
+  app.use((req: any, res: any) =>
+    res.status(404).json({ success: false, error: "Not found" })
+  );
+
+  // Error handler
+  app.use((err: any, req: any, res: any, _next: any) => {
+    const status = err.statusCode || 500;
+    const message = err.message || "Internal server error";
+    res.status(status).json({ success: false, error: message });
+  });
+
+  return app;
+}
