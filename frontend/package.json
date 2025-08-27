@@ -11,7 +11,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage --coverage.reporter=lcov"
   },
   "dependencies": {
     "@bcgov/design-system-react-components": "^0.5.1",
