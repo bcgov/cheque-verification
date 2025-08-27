@@ -6,11 +6,7 @@ module.exports = {
   transform: {
     "^.+\\.ts$": "ts-jest",
   },
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/**/*.d.ts",
-    "!src/index.ts", // Exclude main server file from coverage
-  ],
+  collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts"],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
