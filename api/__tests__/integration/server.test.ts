@@ -1,12 +1,19 @@
 import request from "supertest";
 import express from "express";
-import { createAppForTesting } from "../helpers/chequeTestHelpers";
+
+// Mock the database functions to avoid actual DB connections in tests
+jest.mock("../../src/config/database", () => ({
+  initializeDbPool: jest.fn().mockResolvedValue(undefined),
+  closeDbPool: jest.fn().mockResolvedValue(undefined),
+}));
 
 describe("API Server Integration", () => {
   let app: express.Application;
 
   beforeAll(async () => {
-    app = await createAppForTesting();
+    // Import the app from index.ts
+    const { app: mainApp } = require("../../src/index");
+    app = mainApp;
   });
 
   describe("Server Configuration", () => {
