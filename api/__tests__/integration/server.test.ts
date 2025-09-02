@@ -7,13 +7,19 @@ jest.mock("../../src/config/database", () => ({
   closeDbPool: jest.fn().mockResolvedValue(undefined),
 }));
 
+// Mock the authentication middleware to disable JWT for tests
+jest.mock("../../src/middleware/auth", () => ({
+  authenticateJWT: (req: any, res: any, next: any) => next(),
+  validateJWTClaims: () => (req: any, res: any, next: any) => next(),
+}));
+
 describe("API Server Integration", () => {
   let app: express.Application;
 
   beforeAll(async () => {
-    // Import the app from index.ts
-    const { app: mainApp } = require("../../src/index");
-    app = mainApp;
+    // Import the app without starting the server
+    const { app: exportedApp } = require("../../src/index");
+    app = exportedApp;
   });
 
   describe("Server Configuration", () => {

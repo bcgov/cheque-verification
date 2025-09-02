@@ -69,10 +69,13 @@ async function startServer() {
   process.on("SIGINT", shutdown);
 }
 
-startServer().catch((err) => {
-  console.error("Startup error:", err);
-  process.exit(1);
-});
+// Only start server if this file is run directly
+if (require.main === module) {
+  startServer().catch((err) => {
+    console.error("Startup error:", err);
+    process.exit(1);
+  });
+}
 
 // Export app for testing
 export { app };

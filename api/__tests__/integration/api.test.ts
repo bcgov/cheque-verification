@@ -3,6 +3,17 @@ import express from "express";
 import routes from "../../src/routes";
 import { HttpError } from "../../src/middleware/validation";
 
+// Mock express-rate-limit to disable rate limiting in tests
+jest.mock("express-rate-limit", () => {
+  return jest.fn(() => (req: any, res: any, next: any) => next());
+});
+
+// Mock the authentication middleware to disable JWT for tests
+jest.mock("../../src/middleware/auth", () => ({
+  authenticateJWT: (req: any, res: any, next: any) => next(),
+  validateJWTClaims: () => (req: any, res: any, next: any) => next(),
+}));
+
 // Mock the entire cheque service module
 jest.mock("../../src/services/chequeService", () => ({
   getChequeFromDatabase: jest.fn(),
