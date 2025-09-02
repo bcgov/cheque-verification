@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt, { SignOptions, JwtPayload, Secret } from "jsonwebtoken";
 import { ChequeStatusResponse, ApiResponse } from "../types";
 
 /**
@@ -11,7 +12,6 @@ export class ChequeVerificationService {
   constructor(apiUrl: string) {
     this.apiUrl = apiUrl;
   }
-
   /**
    * Validates cheque number format
    * @param chequeNumber - The cheque number to validate
@@ -75,11 +75,38 @@ export class ChequeVerificationService {
   async fetchChequeData(
     chequeNumber: string
   ): Promise<ApiResponse<ChequeStatusResponse>> {
+    // Prepare optional Authorization header with JWT for internal API
+    const headers: Record<string, string> = {};
+    const secret: Secret | undefined = process.env.JWT_SECRET;
+    if (secret) {
+      const issuer = process.env.JWT_ISSUER || "cheque-backend";
+      const audience = process.env.JWT_AUDIENCE || "cheque-api";
+      const expiresIn = process.env.JWT_TTL
+        ? parseInt(process.env.JWT_TTL, 10)
+        : 120;
+
+      const payload: JwtPayload = {
+        sub: "cheque-backend-service",
+        purpose: "cheque-api-access",
+      };
+
+      const options: SignOptions = {
+        algorithm: "HS256",
+        issuer,
+        audience,
+        expiresIn,
+      };
+
+      const token = jwt.sign(payload, secret as Secret, options);
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
       `${this.apiUrl}/api/v1/cheque/${chequeNumber}`,
       {
         timeout: 5000,
-        validateStatus: (status) => status < 500,
+        validateStatus: (status: number) => status < 500,
+        headers,
       }
     );
 

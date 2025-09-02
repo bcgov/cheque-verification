@@ -1,8 +1,20 @@
 import { Router, Request, Response } from "express";
 import { getChequeFromDatabase } from "../services/chequeService";
 import { validateChequeNumber } from "../middleware/validation";
+import { authenticateJWT, validateJWTClaims } from "../middleware/auth";
 
 const router = Router();
+
+// Apply JWT authentication to all cheque routes
+router.use(authenticateJWT);
+
+// Optional: Validate specific JWT claims for extra security
+router.use(
+  validateJWTClaims({
+    purpose: "cheque-api-access",
+    sub: "cheque-backend-service",
+  })
+);
 
 // Main endpoint for cheque verification
 router.get(
