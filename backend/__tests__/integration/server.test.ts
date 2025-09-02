@@ -1,13 +1,14 @@
 import request from "supertest";
 import express from "express";
+import { describe, it, expect, beforeAll } from "@jest/globals";
+import { createApp } from "../../src/index";
 
 describe("Backend Server Integration", () => {
   let app: express.Application;
 
   beforeAll(async () => {
-    // Import the app from index.ts
-    const { app: mainApp } = require("../../src/index");
-    app = mainApp;
+    // Create the app instance for testing (without starting server)
+    app = createApp();
   });
 
   describe("Server Configuration", () => {
