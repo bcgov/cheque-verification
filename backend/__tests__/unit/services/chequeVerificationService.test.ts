@@ -1,18 +1,45 @@
 import { ChequeVerificationService } from "../../../src/services/chequeVerificationService";
 import axios from "axios";
-import { describe, it, expect, beforeEach, jest } from "@jest/globals";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  jest,
+} from "@jest/globals";
 
 // Mock axios
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+// Mock jsonwebtoken to avoid needing real JWT secrets
+jest.mock("jsonwebtoken", () => ({
+  sign: jest.fn().mockReturnValue("mocked-jwt-token-for-testing"),
+}));
+
 describe("ChequeVerificationService", () => {
   let service: ChequeVerificationService;
   const mockApiUrl = "http://localhost:3001";
+  const originalEnv = process.env;
 
   beforeEach(() => {
+    // Create a clean environment with JWT settings
+    process.env = {
+      ...originalEnv,
+      JWT_SECRET: "test-secret-key-at-least-32-characters-long",
+      JWT_ISSUER: "cheque-backend",
+      JWT_AUDIENCE: "cheque-api",
+      JWT_TTL: "120",
+    };
+
     service = new ChequeVerificationService(mockApiUrl);
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // Restore original environment
+    process.env = originalEnv;
   });
 
   describe("isValidChequeNumber", () => {
@@ -118,6 +145,9 @@ describe("ChequeVerificationService", () => {
         {
           timeout: 5000,
           validateStatus: expect.any(Function),
+          headers: {
+            Authorization: "Bearer mocked-jwt-token-for-testing",
+          },
         }
       );
       expect(result).toEqual(mockResponse.data);
