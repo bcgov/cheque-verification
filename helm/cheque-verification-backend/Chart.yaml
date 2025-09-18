@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cheque-verification-backend
+description: A Helm chart for BC Government Cheque Verification Backend
+type: application
+appVersion: "1.0.0"
