@@ -62,26 +62,9 @@ jobs:
           tags: ${{ steps.meta-backend.outputs.tags }}
           labels: ${{ steps.meta-backend.outputs.labels }}
 
-      # Build api image
-      - name: Extract metadata for api
-        id: meta-api
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api
-
-      - name: Build and push api image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./api
-          file: ./api/Dockerfile
-          push: true
-          tags: ${{ steps.meta-api.outputs.tags }}
-          labels: ${{ steps.meta-api.outputs.labels }}
-
     outputs:
       frontend_image: ${{ steps.meta-frontend.outputs.tags }}
       backend_image: ${{ steps.meta-backend.outputs.tags }}
-      api_image: ${{ steps.meta-api.outputs.tags }}
 
   deploy:
     needs: build_and_push
@@ -120,22 +103,3 @@ jobs:
         run: |
           oc rollout restart deployment/cheque-verification-frontend
           oc rollout restart deployment/cheque-verification-backend
-
-      # Deploy to Emerald (api)
-      - name: Authenticate with OpenShift Emerald
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_EMERALD }}
-          namespace: ${{ secrets.OPENSHIFT_TEST_NAMESPACE_EMERALD }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_EMERALD }}
-
-      - name: Deploy api with Helm
-        run: |
-          helm upgrade --install cheque-verification-api ./helm/cheque-verification-api \
-            --namespace ${{ secrets.OPENSHIFT_TEST_NAMESPACE_CLUSTER_B }} \
-            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api \
-            --set image.tag=${{ needs.build_and_push.outputs.api_image }}
-
-      - name: Trigger OpenShift Rollout for Cluster B
-        run: |
-          oc rollout restart deployment/cheque-verification-api
