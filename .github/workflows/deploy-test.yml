@@ -68,6 +68,8 @@ jobs:
 
   deploy:
     needs: build_and_push
+    environment:
+      name: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -85,19 +87,19 @@ jobs:
       - name: Authenticate with OpenShift Silver
         uses: redhat-actions/oc-login@v1
         with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_SILVER }}
-          namespace: ${{ secrets.OPENSHIFT_TEST_NAMESPACE_SILVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_SILVER }}
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
 
       - name: Deploy frontend and backend with Helm
         run: |
           helm upgrade --install cheque-verification-frontend ./helm/cheque-verification-frontend \
-            --namespace ${{ secrets.OPENSHIFT_TEST_NAMESPACE_SILVER }} \
+            --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
             --set image.tag=${{ github.sha }}
 
           helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
-            --namespace ${{ secrets.OPENSHIFT_TEST_NAMESPACE_SILVER }} \
+            --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend \
             --set image.tag=${{ github.sha }}
 
