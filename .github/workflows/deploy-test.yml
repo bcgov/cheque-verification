@@ -69,6 +69,8 @@ jobs:
   deploy:
     needs: build_and_push
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout the repository
