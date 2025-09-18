@@ -1,0 +1,16 @@
+apiVersio  ports:
+  - protocol: TCP
+    port: { { .Values.service.port } }
+    targetPort: 30001
+kind: Service
+metadata:
+  name: cheque-verification-frontend
+  labels:
+    app.kubernetes.io/name: cheque-verification-frontend
+spec:
+  selector:
+    app.kubernetes.io/name: cheque-verification-frontend
+  ports:
+    - protocol: TCP
+      port: { { .Values.service.port } }
+      targetPort: 80

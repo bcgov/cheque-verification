@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cheque-verification-backend
+  labels:
+    app.kubernetes.io/name: cheque-verification-backend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cheque-verification-backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cheque-verification-backend
+    spec:
+      containers:
+        - name: cheque-verification-backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          env:
+            {{- if .Values.secrets.DATABASE_URL }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.DATABASE_URL.secretName }}
+                  key: {{ .Values.secrets.DATABASE_URL.key }}
+            {{- end }}
+            {{- if .Values.secrets.JWT_SECRET }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.JWT_SECRET.secretName }}
+                  key: {{ .Values.secrets.JWT_SECRET.key }}
+            {{- end }}
+      restartPolicy: Always
