@@ -23,5 +23,4 @@ __tests__
 *.spec.ts
 .eslintrc*
 .prettierrc*
-tsconfig.json
 vitest.config.ts
