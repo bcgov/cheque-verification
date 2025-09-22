@@ -9,5 +9,5 @@ spec:
     app.kubernetes.io/name: cheque-verification-backend
   ports:
     - protocol: TCP
-      port: { { .Values.service.port } }
+      port: {{ .Values.service.port }}
       targetPort: 3000
