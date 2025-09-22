@@ -1,0 +1,52 @@
+name: Deploy to Prod
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
+
+      # Deploy to Silver (frontend and backend)
+      - name: Authenticate with OpenShift Silver
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_SILVER }}
+          namespace: ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_SILVER }}
+
+      - name: Deploy frontend and backend with Helm
+        run: |
+          helm upgrade --install cheque-verification-frontend ./helm/cheque-verification-frontend \
+            --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \
+            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
+            --set image.tag=${{ github.ref_name }}
+
+          helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
+            --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \
+            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend \
+            --set image.tag=${{ github.ref_name }}
+
+      - name: Trigger OpenShift Rollout for Silver
+        run: |
+          oc rollout restart deployment/cheque-verification-frontend
+          oc rollout restart deployment/cheque-verification-backend
