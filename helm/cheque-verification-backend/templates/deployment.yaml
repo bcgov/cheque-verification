@@ -23,13 +23,6 @@ spec:
           ports:
             - containerPort: 3000
           env:
-            {{- if .Values.secrets.DATABASE_URL }}
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.DATABASE_URL.secretName }}
-                  key: {{ .Values.secrets.DATABASE_URL.key }}
-            {{- end }}
             {{- if .Values.secrets.JWT_SECRET }}
             - name: JWT_SECRET
               valueFrom:

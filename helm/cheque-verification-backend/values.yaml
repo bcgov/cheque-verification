@@ -40,9 +40,6 @@ readinessProbe:
 
 # Secrets (will be created separately)
 secrets:
-  DATABASE_URL:
-    secretName: cheque-verification-backend-secrets
-    key: DATABASE_URL
   JWT_SECRET:
     secretName: cheque-verification-backend-secrets
     key: JWT_SECRET
