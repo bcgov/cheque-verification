@@ -63,8 +63,7 @@ jobs:
           labels: ${{ steps.meta-backend.outputs.labels }}
 
     outputs:
-      frontend_image: ${{ steps.meta-frontend.outputs.tags }}
-      backend_image: ${{ steps.meta-backend.outputs.tags }}
+      image_tag: ${{ steps.meta-frontend.outputs.version }} #for simplicity, using the same tag for both images
 
   deploy:
     needs: build_and_push
@@ -96,12 +95,12 @@ jobs:
           helm upgrade --install cheque-verification-frontend ./helm/cheque-verification-frontend \
             --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
-            --set image.tag=${{ github.sha }}
+            --set image.tag=${{ needs.build_and_push.outputs.image_tag }}
 
           helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
             --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend \
-            --set image.tag=${{ github.sha }}
+            --set image.tag=${{ needs.build_and_push.outputs.image_tag }}
 
       - name: Trigger OpenShift Rollout for Silver
         run: |
