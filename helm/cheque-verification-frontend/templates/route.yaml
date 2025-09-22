@@ -9,6 +9,6 @@ spec:
     kind: Service
     name: cheque-verification-frontend
   port:
-    targetPort: 8080
+    targetPort: 3000
   tls:
     termination: edge
