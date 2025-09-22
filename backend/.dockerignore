@@ -16,4 +16,3 @@ coverage
 .idea
 __tests__
 jest.config.js
-tsconfig.json
