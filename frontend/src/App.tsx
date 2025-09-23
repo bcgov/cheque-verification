@@ -127,6 +127,32 @@ function App() {
               Verify Your Cheque Details
             </h2>
           </div>
+          <div
+            role="note"
+            aria-label="Cheque verification data notice"
+            style={{
+              padding: "16px",
+              backgroundColor: "#FCF4F4",
+              borderBottom: "1px solid var(--bcgov-border-light)",
+            }}
+          >
+            <p
+              style={{
+                margin: "0",
+                color: "#D8292F",
+                fontFamily: "BCSans, sans-serif",
+                fontSize: "16px",
+                lineHeight: 1.5,
+              }}
+            >
+              <strong style={{ display: "block", marginBottom: "4px" }}>
+                Important data notice
+              </strong>
+              Cheque Verification results update nightly at 3 a.m. PT. Cheques
+              issued within the last 24 hours may not appear until the next
+              business day.
+            </p>
+          </div>
           <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
           <InlineAlert description={error} />
           <VerificationResult status={status} />
