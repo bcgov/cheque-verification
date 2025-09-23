@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import chequeRoutes from "./cheque";
+import chequeRoutes from "./cheque.js";
 const router = Router();
 
 router.use("/cheque", chequeRoutes);

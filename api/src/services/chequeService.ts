@@ -1,7 +1,7 @@
 import oracledb from "oracledb";
-import { ChequeStatusResponse } from "../types";
-import { getDbPool } from "../config/database";
-import { HttpError } from "../middleware/validation";
+import { ChequeStatusResponse } from "../types.js";
+import { getDbPool } from "../config/database.js";
+import { HttpError } from "../middleware/validation.js";
 
 // Define the database row type for better type safety
 interface ChequeRow {

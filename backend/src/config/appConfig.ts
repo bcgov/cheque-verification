@@ -21,7 +21,7 @@ export interface AppConfig {
  */
 export const getConfig = (): AppConfig => {
   const config: AppConfig = {
-    port: parseInt(process.env.PORT || "4000", 10),
+    port: Number.parseInt(process.env.PORT || "4000", 10),
     apiUrl: process.env.API_URL || "http://localhost:3000",
     frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
     environment: process.env.NODE_ENV || "development",
@@ -33,7 +33,7 @@ export const getConfig = (): AppConfig => {
   }
 
   // Validate port is a valid number
-  if (isNaN(config.port) || config.port < 1 || config.port > 65535) {
+  if (Number.isNaN(config.port) || config.port < 1 || config.port > 65535) {
     throw new Error("PORT must be a valid port number between 1 and 65535");
   }
 

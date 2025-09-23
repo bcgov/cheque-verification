@@ -1,16 +1,16 @@
 import { Router, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { getChequeFromDatabase } from "../services/chequeService";
-import { validateChequeNumber } from "../middleware/validation";
-import { authenticateJWT, validateJWTClaims } from "../middleware/auth";
+import { getChequeFromDatabase } from "../services/chequeService.js";
+import { validateChequeNumber } from "../middleware/validation.js";
+import { authenticateJWT, validateJWTClaims } from "../middleware/auth.js";
 
 const router = Router();
 
 // Rate limiting for cheque API endpoints
 // Allow configurable requests per configurable window (default: 10 requests per 15 minutes)
 // This accommodates the ~600 requests/day total with reasonable per-IP limits
-const windowMinutes = parseInt(process.env.RATE_LIMIT_WINDOW_MINUTES || "15");
-const maxRequests = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "10");
+const windowMinutes = Number.parseInt(process.env.RATE_LIMIT_WINDOW_MINUTES || "15");
+const maxRequests = Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "10");
 
 const chequeRateLimit = rateLimit({
   windowMs: windowMinutes * 60 * 1000, // Convert minutes to milliseconds

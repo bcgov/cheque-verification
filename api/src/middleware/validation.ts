@@ -79,7 +79,7 @@ export const validateChequeNumber = [
     .bail()
     .custom((value) => {
       // Reject zero as invalid cheque number
-      if (value === "0" || parseInt(value, 10) === 0) {
+      if (value === "0" || Number.parseInt(value, 10) === 0) {
         throw new Error("Cheque number must be greater than zero");
       }
       return true;
