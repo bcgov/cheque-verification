@@ -23,7 +23,7 @@ export class ChequeVerificationService {
     const isValidFormat = chequeNumberPattern.test(chequeNumber);
 
     // Reject zero as invalid cheque number
-    if (chequeNumber === "0" || parseInt(chequeNumber, 10) === 0) {
+    if (chequeNumber === "0" || Number.parseInt(chequeNumber, 10) === 0) {
       return false;
     }
 
@@ -48,8 +48,8 @@ export class ChequeVerificationService {
       };
     }
 
-    const amount = parseFloat(appliedAmount);
-    if (isNaN(amount) || amount < 0) {
+    const amount = Number.parseFloat(appliedAmount);
+    if (Number.isNaN(amount) || amount < 0) {
       return {
         isValid: false,
         error: "Cheque amount must be a valid positive number",
@@ -57,7 +57,7 @@ export class ChequeVerificationService {
     }
 
     const date = new Date(paymentIssueDate);
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       return {
         isValid: false,
         error: "Payment issue date must be a valid date",
@@ -82,7 +82,7 @@ export class ChequeVerificationService {
       const issuer = process.env.JWT_ISSUER || "cheque-backend";
       const audience = process.env.JWT_AUDIENCE || "cheque-api";
       const expiresIn = process.env.JWT_TTL
-        ? parseInt(process.env.JWT_TTL, 10)
+        ? Number.parseInt(process.env.JWT_TTL, 10)
         : 120;
 
       const payload: JwtPayload = {
@@ -129,7 +129,7 @@ export class ChequeVerificationService {
     const verificationErrors: string[] = [];
 
     // Verify applied amount (with tolerance for floating point precision)
-    const providedAmount = parseFloat(userInput.appliedAmount);
+    const providedAmount = Number.parseFloat(userInput.appliedAmount);
     if (Math.abs(actualData.appliedAmount - providedAmount) > 0.01) {
       verificationErrors.push("Cheque amount does not match");
     }

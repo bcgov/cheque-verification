@@ -54,7 +54,7 @@ export const authenticateJWT = (
     const issuer = process.env.JWT_ISSUER || undefined;
     const audience = process.env.JWT_AUDIENCE || undefined;
     const clockTolerance = process.env.JWT_CLOCK_TOLERANCE
-      ? parseInt(process.env.JWT_CLOCK_TOLERANCE, 10)
+      ? Number.parseInt(process.env.JWT_CLOCK_TOLERANCE, 10)
       : 10; // Default 10 seconds tolerance
 
     const payload = jwt.verify(token, secret, {
