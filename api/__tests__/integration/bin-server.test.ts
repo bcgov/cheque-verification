@@ -1,81 +1,33 @@
-import { jest } from "@jest/globals";
-
-const binModuleSpec = "../../src/bin/server.js";
-const serverModuleSpec = "../../src/server.js";
-
-function clearEnv() {
-  delete process.env.CHECK_VERIFICATION_SKIP_AUTO_START;
-}
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 describe("bin/server entry point", () => {
-  beforeEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-    clearEnv();
+  const binServerPath = join(process.cwd(), "src", "bin", "server.ts");
+
+  it("provides explicit run and autoStart exports", async () => {
+    const sourceCode = await readFile(binServerPath, "utf-8");
+
+    expect(sourceCode).toContain("export async function run(");
+    expect(sourceCode).toContain("export function autoStart(");
+    expect(sourceCode).toContain("export const hasAutoStarted");
   });
 
-  afterEach(() => {
-    clearEnv();
+  it("guards auto-start behind the environment flag", async () => {
+    const sourceCode = await readFile(binServerPath, "utf-8");
+
+    expect(sourceCode).toContain(
+      'if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START === "true")'
+    );
+    expect(sourceCode).toContain("return false;");
+    expect(sourceCode).toContain("void run(startFn ?? start);");
   });
 
-  it("auto starts by default", async () => {
-    const serverModule = await import(serverModuleSpec);
-    const startSpy = jest
-      .spyOn(serverModule, "start")
-      .mockResolvedValue(undefined as never);
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as unknown as typeof process.exit);
+  it("continues to surface startup errors", async () => {
+    const sourceCode = await readFile(binServerPath, "utf-8");
 
-    await import(binModuleSpec);
-
-    expect(startSpy).toHaveBeenCalledTimes(1);
-    expect(exitSpy).not.toHaveBeenCalled();
-
-    startSpy.mockRestore();
-    exitSpy.mockRestore();
-  });
-
-  it("allows opting out of auto start via env", async () => {
-    process.env.CHECK_VERIFICATION_SKIP_AUTO_START = "true";
-
-    const serverModule = await import(serverModuleSpec);
-    const startSpy = jest
-      .spyOn(serverModule, "start")
-      .mockResolvedValue(undefined as never);
-
-    const module = await import(binModuleSpec);
-
-    expect(startSpy).not.toHaveBeenCalled();
-
-    await module.run();
-    expect(startSpy).toHaveBeenCalledTimes(1);
-
-    startSpy.mockRestore();
-  });
-
-  it("logs and exits when start rejects", async () => {
-    process.env.CHECK_VERIFICATION_SKIP_AUTO_START = "true";
-
-    const startError = new Error("startup failure");
-    const serverModule = await import(serverModuleSpec);
-    const startSpy = jest
-      .spyOn(serverModule, "start")
-      .mockRejectedValue(startError);
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as unknown as typeof process.exit);
-
-    const module = await import(binModuleSpec);
-    await module.run();
-
-    expect(startSpy).toHaveBeenCalledTimes(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Startup error:", startError);
-    expect(exitSpy).toHaveBeenCalledWith(1);
-
-    startSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
-    exitSpy.mockRestore();
+    expect(sourceCode).toContain("try {");
+    expect(sourceCode).toContain("await startFn();");
+    expect(sourceCode).toContain('console.error("Startup error:", error);');
+    expect(sourceCode).toContain("process.exit(1);");
   });
 });

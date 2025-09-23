@@ -1,14 +1,23 @@
 import { start } from "../server.js";
 
-export async function run(): Promise<void> {
+export type StartFunction = () => Promise<unknown>;
+
+export async function run(startFn: StartFunction = start): Promise<void> {
   try {
-    await start();
+    await startFn();
   } catch (error) {
     console.error("Startup error:", error);
     process.exit(1);
   }
 }
 
-if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START !== "true") {
-  void run();
+export function autoStart(startFn?: StartFunction): boolean {
+  if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START === "true") {
+    return false;
+  }
+
+  void run(startFn ?? start);
+  return true;
 }
+
+export const hasAutoStarted = autoStart();

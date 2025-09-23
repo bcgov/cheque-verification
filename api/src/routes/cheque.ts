@@ -9,8 +9,12 @@ const router = Router();
 // Rate limiting for cheque API endpoints
 // Allow configurable requests per configurable window (default: 10 requests per 15 minutes)
 // This accommodates the ~600 requests/day total with reasonable per-IP limits
-const windowMinutes = Number.parseInt(process.env.RATE_LIMIT_WINDOW_MINUTES || "15");
-const maxRequests = Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "10");
+const windowMinutes = Number.parseInt(
+  process.env.RATE_LIMIT_WINDOW_MINUTES || "15"
+);
+const maxRequests = Number.parseInt(
+  process.env.RATE_LIMIT_MAX_REQUESTS || "10"
+);
 
 const chequeRateLimit = rateLimit({
   windowMs: windowMinutes * 60 * 1000, // Convert minutes to milliseconds

@@ -135,5 +135,34 @@ describe("ChequeService - Error Handling", () => {
         "Cheque not found"
       );
     });
+
+    it("handles_connection_close_failure_gracefully", async () => {
+      // Arrange
+      const mockConnection = createMockConnection();
+      const mockConsoleWarn = jest.spyOn(console, "warn").mockImplementation();
+      const closeError = new Error("Connection close failed");
+
+      const validChequeRow = createValidChequeRow();
+
+      mockPool.getConnection.mockResolvedValueOnce(mockConnection);
+      mockConnection.execute.mockResolvedValueOnce({
+        rows: [validChequeRow],
+        metaData: [],
+        resultSet: undefined,
+      });
+      mockConnection.close.mockRejectedValueOnce(closeError);
+
+      // Act
+      const result = await getChequeFromDatabase("12345");
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(mockConsoleWarn).toHaveBeenCalledWith(
+        "Failed to close database connection:",
+        closeError
+      );
+
+      mockConsoleWarn.mockRestore();
+    });
   });
 });

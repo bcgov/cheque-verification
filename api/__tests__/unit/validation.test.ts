@@ -59,12 +59,18 @@ describe("ChequeValidationSecurity", () => {
   describe("ChequeNumber Validation Security", () => {
     it("allows_valid_numeric_cheque_numbers_and_preserves_as_string", async () => {
       // Act & Assert - Test string preservation behavior
-      await testValidInput("12345", "12345");
+      const response = await testValidInput("12345", "12345");
+
+      // Direct assertion to satisfy SonarQube requirement
+      expect(response.status).toBe(200);
     });
 
     it("handles_leading_zeros_correctly_and_preserves_format", async () => {
       // Act & Assert - Leading zeros should be preserved as string
-      await testValidInput("00012345", "00012345");
+      const response = await testValidInput("00012345", "00012345");
+
+      // Direct assertion to satisfy SonarQube requirement
+      expect(response.status).toBe(200);
     });
 
     it("accepts_exactly_sixteen_digit_numbers_at_boundary", async () => {
@@ -72,7 +78,10 @@ describe("ChequeValidationSecurity", () => {
       const sixteenDigits = "1234567890123456";
 
       // Act & Assert - Preserve full precision as string
-      await testValidInput(sixteenDigits, sixteenDigits);
+      const response = await testValidInput(sixteenDigits, sixteenDigits);
+
+      // Direct assertion to satisfy SonarQube requirement
+      expect(response.status).toBe(200);
     });
 
     it("handles_maximum_safe_integer_boundary", async () => {
@@ -80,10 +89,13 @@ describe("ChequeValidationSecurity", () => {
       const maxSafeInteger = Number.MAX_SAFE_INTEGER; // 9007199254740991 (16 digits)
 
       // Act & Assert - Preserve as string to avoid precision issues
-      await testValidInput(
+      const response = await testValidInput(
         maxSafeInteger.toString(),
         maxSafeInteger.toString()
       );
+
+      // Direct assertion to satisfy SonarQube requirement
+      expect(response.status).toBe(200);
     });
 
     // Parameterized security injection tests
@@ -138,6 +150,7 @@ describe("ChequeValidationSecurity", () => {
         // Assert - Should trim and preserve as string
         expect(response.body.success).toBe(true);
         expect(response.body.convertedValue).toBe("12345");
+        expect(response.status).toBe(200);
       });
 
       it("handles_trimming_behavior_correctly", async () => {
@@ -148,6 +161,7 @@ describe("ChequeValidationSecurity", () => {
 
         expect(response.body.success).toBe(true);
         expect(response.body.convertedValue).toBe("12345");
+        expect(response.status).toBe(200);
       });
     });
 

@@ -147,6 +147,23 @@ describe("Database Configuration", () => {
         "ORA-12541: TNS:no listener"
       );
     });
+
+    it("returns_existing_pool_when_already_initialized", async () => {
+      // Arrange - First call to create the pool
+      const mockPool = { close: mockClose };
+      mockCreatePool.mockResolvedValueOnce(mockPool);
+      await database.initializeDbPool();
+
+      // Clear the mock to verify it's not called again
+      mockCreatePool.mockClear();
+
+      // Act - Second call should return existing pool
+      const result = await database.initializeDbPool();
+
+      // Assert
+      expect(mockCreatePool).not.toHaveBeenCalled(); // Should not create a new pool
+      expect(result).toBe(mockPool); // Should return the same pool
+    });
   });
 
   describe("getDbPool", () => {
