@@ -111,7 +111,8 @@ describe("ChequeValidationSecurity", () => {
 
       maliciousInputs.forEach(({ input, type }) => {
         it(`prevents_${type.replace(/\s+/g, "_").toLowerCase()}`, async () => {
-          await testInvalidInput(input, type);
+          const response = await testInvalidInput(input, type);
+          expect(response.status).toBe(400);
         });
       });
     });
@@ -131,7 +132,8 @@ describe("ChequeValidationSecurity", () => {
 
       invalidFormats.forEach(({ input, type }) => {
         it(`rejects_${type.replace(/\s+/g, "_").toLowerCase()}`, async () => {
-          await testInvalidInput(input, type);
+          const response = await testInvalidInput(input, type);
+          expect(response.status).toBe(400);
         });
       });
     });
