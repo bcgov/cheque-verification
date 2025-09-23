@@ -29,7 +29,7 @@ function resolvePort(port?: number) {
   if (typeof port === "number") {
     return port;
   }
-  const envPort = process.env.PORT ? Number(process.env.PORT) : NaN;
+  const envPort = process.env.PORT ? Number(process.env.PORT) : Number.NaN;
   return Number.isNaN(envPort) ? 3000 : envPort;
 }
 
@@ -66,9 +66,9 @@ export async function start(options: StartOptions = {}): Promise<Server> {
   }
 
   const signals = options.signals ?? DEFAULT_SIGNALS;
-  signals.forEach((signal) => {
+  for (const signal of signals) {
     if (signalListeners.has(signal)) {
-      return;
+      continue;
     }
 
     const listener = () => {
@@ -83,7 +83,7 @@ export async function start(options: StartOptions = {}): Promise<Server> {
 
     signalListeners.set(signal, listener);
     process.once(signal, listener);
-  });
+  }
 
   return server;
 }
@@ -93,9 +93,9 @@ export async function stop(): Promise<void> {
     return;
   }
 
-  signalListeners.forEach((listener, signal) => {
+  for (const [signal, listener] of signalListeners) {
     process.removeListener(signal, listener);
-  });
+  }
   signalListeners.clear();
 
   const httpServer = server;
@@ -105,7 +105,7 @@ export async function stop(): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       httpServer.close((error) => {
         if (error) {
-          reject(error);
+          reject(error instanceof Error ? error : new Error(String(error)));
         } else {
           resolve();
         }
