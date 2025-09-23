@@ -18,7 +18,7 @@ describe("API Server Integration", () => {
 
   beforeAll(async () => {
     // Import the app without starting the server
-    const { app: exportedApp } = require("../../src/index");
+    const { app: exportedApp } = await import("../../src/index");
     app = exportedApp;
   });
 

@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { getChequeFromDatabase } from "../services/chequeService";
-import { validateChequeNumber } from "../middleware/validation";
-import { authenticateJWT, validateJWTClaims } from "../middleware/auth";
+import { getChequeFromDatabase } from "../services/chequeService.js";
+import { validateChequeNumber } from "../middleware/validation.js";
+import { authenticateJWT, validateJWTClaims } from "../middleware/auth.js";
 
 const router = Router();
 

@@ -57,11 +57,11 @@ export { getChequeFromDatabase, HttpError, oracledb };
 
 // Create app for testing without starting server
 export async function createAppForTesting() {
-  const express = require("express");
-  const cors = require("cors");
-  const { requestLogger } = require("../../src/middleware/logger");
-  const routes = require("../../src/routes").default;
-  const { HttpError } = require("../../src/middleware/validation");
+  const express = (await import("express")).default;
+  const cors = (await import("cors")).default;
+  const { requestLogger } = await import("../../src/middleware/logger");
+  const routes = (await import("../../src/routes/index")).default;
+  const { HttpError } = await import("../../src/middleware/validation");
 
   const app = express();
 
