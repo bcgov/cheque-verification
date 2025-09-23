@@ -1,5 +1,6 @@
 import { start } from "../server.js";
 
+// Export a run function for testing purposes
 export async function run(): Promise<void> {
   try {
     await start();
@@ -9,6 +10,7 @@ export async function run(): Promise<void> {
   }
 }
 
+// Use top-level await for cleaner async handling
 if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START !== "true") {
-  void run();
+  await run();
 }

@@ -1,6 +1,6 @@
-import type { Server } from "http";
-import { AddressInfo } from "net";
-import { EventEmitter } from "events";
+import type { Server } from "node:http";
+import { AddressInfo } from "node:net";
+import { EventEmitter } from "node:events";
 
 jest.mock("../../src/config/database.js", () => ({
   initializeDbPool: jest.fn().mockResolvedValue(undefined),
