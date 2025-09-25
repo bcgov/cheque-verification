@@ -1,4 +1,4 @@
-const FAQ = () => {
+const Faq = () => {
   return (
     <main
       style={{
@@ -289,4 +289,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default Faq;

@@ -1,18 +1,18 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithProviders } from "../../helpers/testHelpers";
-import FAQ from "../../../src/pages/FAQ";
+import Faq from "../../../src/pages/FAQ";
 
 describe("FAQ Page", () => {
   it("renders the main FAQ heading", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toHaveTextContent("Frequently Asked Questions");
   });
 
   it("applies correct BC Government styling to the header", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toHaveStyle("font-size: 28px");
@@ -20,7 +20,7 @@ describe("FAQ Page", () => {
   });
 
   it("renders all FAQ sections with proper headings", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Check for all main FAQ sections using actual content
     expect(screen.getByText("Question 1?")).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe("FAQ Page", () => {
   });
 
   it("contains correct information about data updates", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(
       screen.getByText(
@@ -51,7 +51,7 @@ describe("FAQ Page", () => {
   });
 
   it("lists all required information for cheque verification", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(
       screen.getByText(/Cheque Number \(found on your cheque\)/)
@@ -67,7 +67,7 @@ describe("FAQ Page", () => {
   });
 
   it("explains different cheque statuses", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(screen.getByText("Valid Cheque Statuses:")).toBeInTheDocument();
 
@@ -82,7 +82,7 @@ describe("FAQ Page", () => {
   });
 
   it("provides troubleshooting information", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(
       screen.getByText(
@@ -92,7 +92,7 @@ describe("FAQ Page", () => {
   });
 
   it("includes contact information for help", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(
       screen.getByText(
@@ -102,7 +102,7 @@ describe("FAQ Page", () => {
   });
 
   it("has proper semantic HTML structure", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Should have main landmark
     const main = screen.getByRole("main");
@@ -120,7 +120,7 @@ describe("FAQ Page", () => {
   });
 
   it("uses proper list structures for information", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Should contain unordered lists
     const lists = screen.getAllByRole("list");
@@ -132,7 +132,7 @@ describe("FAQ Page", () => {
   });
 
   it("applies correct container styling", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     const main = screen.getByRole("main");
     // Check for key styling properties that matter for the layout
@@ -141,7 +141,7 @@ describe("FAQ Page", () => {
   });
 
   it("has proper card-like styling for the content container", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Check that elements have appropriate styling attributes
     expect(screen.getByRole("main")).toBeInTheDocument();
@@ -154,7 +154,7 @@ describe("FAQ Page", () => {
   });
 
   it("has BC Government header styling with blue background and gold border", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Find the header element by its content and verify it has the right styling attributes
     const heading = screen.getByText("Frequently Asked Questions");
@@ -179,7 +179,7 @@ describe("FAQ Page", () => {
   });
 
   it("uses consistent text styling throughout", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Check that the main structure has proper headings and text
     const headings = screen.getAllByRole("heading", { level: 2 });
@@ -187,7 +187,7 @@ describe("FAQ Page", () => {
   });
 
   it("displays main heading correctly", () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     // Check for heading structure and text
     const heading = screen.getByText("Frequently Asked Questions");
@@ -195,7 +195,7 @@ describe("FAQ Page", () => {
   });
 
   it('has highlighted "Need More Help" section', () => {
-    renderWithProviders(<FAQ />);
+    renderWithProviders(<Faq />);
 
     expect(screen.getByText(/Need More Help\?/)).toBeInTheDocument();
 
@@ -206,7 +206,7 @@ describe("FAQ Page", () => {
     ).toBeInTheDocument();
   });
   it("matches snapshot for visual consistency", () => {
-    const { container } = renderWithProviders(<FAQ />);
+    const { container } = renderWithProviders(<Faq />);
     expect(container.firstChild).toMatchSnapshot();
   });
 });

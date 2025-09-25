@@ -6,7 +6,7 @@ import { render, cleanup } from "@testing-library/react";
 import Header from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import Home from "../../src/pages/Home";
-import FAQ from "../../src/pages/FAQ";
+import Faq from "../../src/pages/FAQ";
 
 // Mock API calls to avoid actual network requests
 vi.mock("axios", () => ({
@@ -41,7 +41,7 @@ const TestApp = () => {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/faq" element={<FAQ />} />
+          <Route path="/faq" element={<Faq />} />
         </Routes>
       </main>
       <Footer />
