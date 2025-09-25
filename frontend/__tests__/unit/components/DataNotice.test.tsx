@@ -70,13 +70,13 @@ describe("DataNotice Component", () => {
 
     const heading = screen.getByText("Important data notice");
 
-    expect(heading).toHaveStyle({
-      display: "block",
-      marginBottom: "4px",
-    });
-
     // Should be wrapped in a <strong> tag
     expect(heading.tagName).toBe("STRONG");
+
+    // Should have the proper color styling
+    expect(heading).toHaveStyle({
+      color: "#CE3E39 !important",
+    });
   });
 
   it("uses proper BC Government danger colors", () => {

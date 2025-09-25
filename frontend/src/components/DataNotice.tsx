@@ -20,7 +20,7 @@ const DataNotice = () => {
     >
       <p
         style={{
-          margin: "0",
+          margin: "0 0 8px 0",
           color: "#CE3E39 !important",
           fontFamily: "BCSans, sans-serif",
           fontSize: "16px",
@@ -29,13 +29,21 @@ const DataNotice = () => {
       >
         <strong
           style={{
-            display: "block",
-            marginBottom: "4px",
             color: "#CE3E39 !important",
           }}
         >
           Important data notice
         </strong>
+      </p>
+      <p
+        style={{
+          margin: "0",
+          color: "#CE3E39 !important",
+          fontFamily: "BCSans, sans-serif",
+          fontSize: "16px",
+          lineHeight: 1.5,
+        }}
+      >
         Cheque Verification results update nightly at 3 a.m. PT. Cheques issued
         within the last 24 hours may not appear until the next business day.
       </p>

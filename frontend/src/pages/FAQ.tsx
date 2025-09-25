@@ -1,4 +1,4 @@
-function FAQ() {
+const FAQ = () => {
   return (
     <main
       style={{
@@ -287,6 +287,6 @@ function FAQ() {
       </div>
     </main>
   );
-}
+};
 
 export default FAQ;
