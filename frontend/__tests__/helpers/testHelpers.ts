@@ -98,42 +98,47 @@ export const waitForAsync = () =>
  * Mock environment variables for testing
  */
 export const mockEnvironment = (overrides: Record<string, string> = {}) => {
-  // Type-safe approach to access globalThis.import
-  const globalWithImport = globalThis as typeof globalThis & {
-    import?: {
-      meta?: {
-        env?: Record<string, unknown>;
-      };
-    };
+  const meta = import.meta as unknown as {
+    env: Record<string, unknown>;
   };
 
-  // Save original env for restore
-  const originalEnv = globalWithImport.import?.meta?.env
-    ? { ...globalWithImport.import.meta.env }
-    : {};
-
-  // Ensure import.meta exists
-  if (!globalWithImport.import) {
-    globalWithImport.import = {};
-  }
-  if (!globalWithImport.import.meta) {
-    globalWithImport.import.meta = {};
-  }
-
-  // Store reference for safe cleanup
-  const metaRef = globalWithImport.import.meta;
-
-  // Set env directly
-  metaRef.env = {
+  const originalEnv = { ...meta.env };
+  const originalProcessEnv = {
+    VITE_API_URL: process.env.VITE_API_URL,
+    MODE: process.env.MODE,
+  };
+  const nextEnv = {
     ...originalEnv,
     VITE_API_URL: "http://localhost:4000",
     MODE: "test",
     ...overrides,
   };
 
+  Object.defineProperty(meta, "env", {
+    value: nextEnv,
+    writable: true,
+  });
+
+  process.env.VITE_API_URL = nextEnv.VITE_API_URL as string;
+  process.env.MODE = nextEnv.MODE as string;
+
   return () => {
-    // Restore original environment
-    metaRef.env = originalEnv;
+    Object.defineProperty(meta, "env", {
+      value: originalEnv,
+      writable: true,
+    });
+
+    if (originalProcessEnv.VITE_API_URL === undefined) {
+      delete process.env.VITE_API_URL;
+    } else {
+      process.env.VITE_API_URL = originalProcessEnv.VITE_API_URL;
+    }
+
+    if (originalProcessEnv.MODE === undefined) {
+      delete process.env.MODE;
+    } else {
+      process.env.MODE = originalProcessEnv.MODE;
+    }
   };
 };
 
