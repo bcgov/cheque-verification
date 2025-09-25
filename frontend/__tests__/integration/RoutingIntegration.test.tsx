@@ -84,7 +84,7 @@ describe("Routing Integration Tests", () => {
     // Should now be on FAQ page
     await waitFor(() => {
       expect(
-        screen.getByText("Frequently Asked Questions")
+        screen.getByText("Frequently Asked Questions (FAQ)")
       ).toBeInTheDocument();
     });
 
@@ -113,7 +113,9 @@ describe("Routing Integration Tests", () => {
   it("renders FAQ content for faq path", () => {
     renderWithRouter(["/faq"]);
 
-    expect(screen.getByText("Frequently Asked Questions")).toBeInTheDocument();
+    expect(
+      screen.getByText("Frequently Asked Questions (FAQ)")
+    ).toBeInTheDocument();
     expect(
       screen.queryByText("Verify Your Cheque Details")
     ).not.toBeInTheDocument();
@@ -151,7 +153,7 @@ describe("Routing Integration Tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Frequently Asked Questions")
+        screen.getByText("Frequently Asked Questions (FAQ)")
       ).toBeInTheDocument();
     });
 
