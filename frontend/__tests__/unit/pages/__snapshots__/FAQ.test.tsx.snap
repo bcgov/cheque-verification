@@ -1,0 +1,190 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FAQ Page > matches snapshot for visual consistency 1`] = `
+<main
+  style="width: 100%; max-width: 800px; margin: 0px auto; padding: 24px 16px 200px;"
+>
+  <div
+    style="background-color: var(--bcgov-background-white); border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; border: 1px solid; border-width: var(--bcgov-border-light); border-style: var(--bcgov-border-light); border-color: var(--bcgov-border-light);"
+  >
+    <div
+      style="background-color: var(--bcgov-blue); padding: 24px; display: flex; align-items: center; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+    >
+      <h1
+        style="color: var(--bcgov-text-white); font-size: 28px; font-family: BCSans, sans-serif; font-weight: 600; margin: 0px;"
+      >
+        Frequently Asked Questions
+      </h1>
+    </div>
+    <div
+      style="padding: 32px; font-family: BCSans, sans-serif; line-height: 1.6;"
+    >
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          Question 1?
+        </h2>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 16px;"
+        >
+          Answer 1.
+        </p>
+      </div>
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          How often is the data updated?
+        </h2>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 16px;"
+        >
+          Cheque verification results are updated nightly at 3:00 AM PT. If your cheque was issued within the last 24 hours, it may not appear in the system until the next business day.
+        </p>
+      </div>
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          What information do I need to verify a cheque?
+        </h2>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 8px;"
+        >
+          To verify a cheque, you need to provide:
+        </p>
+        <ul
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-left: 24px; margin-bottom: 16px;"
+        >
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Cheque Number (found on your cheque)
+          </li>
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Payment Issue Date (the date the cheque was issued)
+          </li>
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Cheque Amount (the dollar amount on the cheque)
+          </li>
+        </ul>
+      </div>
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          What do the different cheque statuses mean?
+        </h2>
+        <div
+          style="margin-bottom: 16px;"
+        >
+          <h3
+            style="color: var(--bcgov-text-primary); font-size: 18px; font-weight: 600; margin-bottom: 8px;"
+          >
+            Valid Cheque Statuses:
+          </h3>
+          <ul
+            style="color: var(--bcgov-text-primary); font-size: 16px; margin-left: 24px; margin-bottom: 16px;"
+          >
+            <li
+              style="margin-bottom: 8px;"
+            >
+              <strong>
+                Example1:
+              </strong>
+               The cheque has been created and is ready to be cashed
+            </li>
+            <li
+              style="margin-bottom: 8px;"
+            >
+              <strong>
+                Example2:
+              </strong>
+               The cheque has been successfully processed and cashed
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          What should I do if my cheque doesn't appear in the system?
+        </h2>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 16px;"
+        >
+          If your cheque doesn't appear in the system, it could be because:
+        </p>
+        <ul
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-left: 24px; margin-bottom: 16px;"
+        >
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Example 1
+          </li>
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Example 2
+          </li>
+          <li
+            style="margin-bottom: 8px;"
+          >
+            Example 3
+          </li>
+        </ul>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 16px;"
+        >
+          Please double-check all the information and try again.
+        </p>
+      </div>
+      <div
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="color: var(--bcgov-text-primary); font-size: 20px; font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
+        >
+          Example Question
+        </h2>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin-bottom: 16px;"
+        >
+          Example Answer
+        </p>
+      </div>
+      <div
+        style="background-color: #F8F9FA; border: 1px solid; border-radius: 6px; padding: 20px; margin-top: 32px; border-width: var(--bcgov-border-light); border-style: var(--bcgov-border-light); border-color: var(--bcgov-border-light);"
+      >
+        <h3
+          style="color: var(--bcgov-text-primary); font-size: 18px; font-weight: 600; margin: 0px 0px 12px;"
+        >
+          Need More Help?
+        </h3>
+        <p
+          style="color: var(--bcgov-text-primary); font-size: 16px; margin: 0px;"
+        >
+          If you have additional questions or need assistance, please contact Example contact
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+`;
