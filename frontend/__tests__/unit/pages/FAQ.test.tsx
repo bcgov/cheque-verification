@@ -8,7 +8,7 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent("Frequently Asked Questions");
+    expect(heading).toHaveTextContent("Frequently Asked Questions (FAQ)");
   });
 
   it("applies correct BC Government styling to the header", () => {
@@ -23,14 +23,24 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     // Check for all main FAQ sections using actual content
-    expect(screen.getByText("Question 1?")).toBeInTheDocument();
-
     expect(
-      screen.getByText("How often is the data updated?")
+      screen.getByText("How often is the information Refreshed?")
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("What information do I need to verify a cheque?")
+      screen.getByText("Cheque #: Enter in top right Cheque # Information.")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        "Can you tell me why a cheque was issued or details about a client's payment history?"
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        "What are the common verification phone numbers for agencies?"
+      )
     ).toBeInTheDocument();
   });
 
@@ -38,67 +48,69 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     expect(
-      screen.getByText(
-        /Cheque verification results are updated nightly at 3:00 AM PT/
-      )
+      screen.getByText(/Cheque information is refreshed daily at 6AM/)
     ).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        /may not appear in the system until the next business day/
+        /information captures data from previous day, information cut off at 5pm/
       )
     ).toBeInTheDocument();
   });
 
-  it("lists all required information for cheque verification", () => {
-    renderWithProviders(<Faq />);
-
-    expect(
-      screen.getByText(/Cheque Number \(found on your cheque\)/)
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(/Payment Issue Date \(the date the cheque was issued\)/)
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(/Cheque Amount \(the dollar amount on the cheque\)/)
-    ).toBeInTheDocument();
-  });
-
-  it("explains different cheque statuses", () => {
-    renderWithProviders(<Faq />);
-
-    expect(screen.getByText("Valid Cheque Statuses:")).toBeInTheDocument();
-
-    // Check for status explanations (these would be in the updated content)
-    expect(
-      screen.getByText(/The cheque has been created and is ready to be cashed/)
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(/The cheque has been successfully processed and cashed/)
-    ).toBeInTheDocument();
-  });
-
-  it("provides troubleshooting information", () => {
+  it("displays privacy information correctly", () => {
     renderWithProviders(<Faq />);
 
     expect(
       screen.getByText(
-        /your cheque was issued within the last 24 hours, it may not appear in the system/
+        /Due to privacy regulations, we cannot provide details such as/
       )
+    ).toBeInTheDocument();
+
+    expect(screen.getByText(/Why a cheque was issued/)).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/How many cheques a client is supposed to receive/)
+    ).toBeInTheDocument();
+
+    expect(screen.getByText(/Why a cheque was stopped/)).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Whether a client has a history of stopped cheques/)
     ).toBeInTheDocument();
   });
 
-  it("includes contact information for help", () => {
+  it("displays phone numbers for different agencies", () => {
     renderWithProviders(<Faq />);
 
     expect(
-      screen.getByText(
-        /If you have additional questions or need assistance, please contact Example contact/
-      )
+      screen.getByText("Here is a quick reference list:")
     ).toBeInTheDocument();
+
+    // Check for specific agency phone numbers - text is split across elements
+    expect(screen.getByText("MCFD Cheques:")).toBeInTheDocument();
+    expect(screen.getByText("250-356-8139")).toBeInTheDocument();
+
+    expect(screen.getByText("Day Care Subsidy Cheques:")).toBeInTheDocument();
+    expect(screen.getByText("1-888-338-6622")).toBeInTheDocument();
+
+    expect(screen.getByText("Family Maintenance Cheques:")).toBeInTheDocument();
+    expect(
+      screen.getByText("1-800-663-9666 or 604-678-5670")
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("Federal Cheques:")).toBeInTheDocument();
+    expect(screen.getByText("1-866-552-8034")).toBeInTheDocument();
+  });
+
+  it("includes cheque image for reference", () => {
+    renderWithProviders(<Faq />);
+
+    const img = screen.getByAltText(
+      "Sample cheque showing where to find the cheque number in the top right corner"
+    );
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute("src", "/chequenumber.png");
   });
 
   it("has proper semantic HTML structure", () => {
@@ -113,10 +125,11 @@ describe("FAQ Page", () => {
     expect(h1).toBeInTheDocument();
 
     const h2Elements = screen.getAllByRole("heading", { level: 2 });
-    expect(h2Elements.length).toBeGreaterThan(0);
+    expect(h2Elements).toHaveLength(4); // Updated to match actual number of h2 elements
 
-    const h3Elements = screen.getAllByRole("heading", { level: 3 });
-    expect(h3Elements.length).toBeGreaterThan(0);
+    // Should have image
+    const img = screen.getByRole("img");
+    expect(img).toBeInTheDocument();
   });
 
   it("uses proper list structures for information", () => {
@@ -148,7 +161,7 @@ describe("FAQ Page", () => {
 
     // Since inline styles are complex objects, just verify the container structure exists
     const container = screen
-      .getByText("Frequently Asked Questions")
+      .getByText("Frequently Asked Questions (FAQ)")
       .closest("div");
     expect(container).toBeInTheDocument();
   });
@@ -157,7 +170,7 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     // Find the header element by its content and verify it has the right styling attributes
-    const heading = screen.getByText("Frequently Asked Questions");
+    const heading = screen.getByText("Frequently Asked Questions (FAQ)");
     expect(heading).toBeInTheDocument();
 
     // Get the parent div that should have the blue background and gold border
@@ -190,21 +203,10 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     // Check for heading structure and text
-    const heading = screen.getByText("Frequently Asked Questions");
+    const heading = screen.getByText("Frequently Asked Questions (FAQ)");
     expect(heading).toBeInTheDocument();
   });
 
-  it('has highlighted "Need More Help" section', () => {
-    renderWithProviders(<Faq />);
-
-    expect(screen.getByText(/Need More Help\?/)).toBeInTheDocument();
-
-    expect(
-      screen.getByText(
-        /If you have additional questions or need assistance, please contact Example contact/
-      )
-    ).toBeInTheDocument();
-  });
   it("matches snapshot for visual consistency", () => {
     const { container } = renderWithProviders(<Faq />);
     expect(container.firstChild).toMatchSnapshot();

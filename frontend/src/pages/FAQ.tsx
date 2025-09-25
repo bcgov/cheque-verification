@@ -36,7 +36,7 @@ const Faq = () => {
               margin: "0",
             }}
           >
-            Frequently Asked Questions
+            Frequently Asked Questions (FAQ)
           </h1>
         </div>
 
@@ -58,67 +58,8 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
-              Question 1?
+              How often is the information Refreshed?
             </h2>
-            <p
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              Answer 1.
-            </p>
-          </div>
-
-          <div style={{ marginBottom: "32px" }}>
-            <h2
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "20px",
-                fontWeight: 600,
-                marginBottom: "12px",
-                borderBottom: "2px solid var(--bcgov-gold)",
-                paddingBottom: "8px",
-              }}
-            >
-              How often is the data updated?
-            </h2>
-            <p
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              Cheque verification results are updated nightly at 3:00 AM PT. If
-              your cheque was issued within the last 24 hours, it may not appear
-              in the system until the next business day.
-            </p>
-          </div>
-
-          <div style={{ marginBottom: "32px" }}>
-            <h2
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "20px",
-                fontWeight: 600,
-                marginBottom: "12px",
-                borderBottom: "2px solid var(--bcgov-gold)",
-                paddingBottom: "8px",
-              }}
-            >
-              What information do I need to verify a cheque?
-            </h2>
-            <p
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              To verify a cheque, you need to provide:
-            </p>
             <ul
               style={{
                 color: "var(--bcgov-text-primary)",
@@ -128,13 +69,11 @@ const Faq = () => {
               }}
             >
               <li style={{ marginBottom: "8px" }}>
-                Cheque Number (found on your cheque)
+                Cheque information is refreshed daily at 6AM.
               </li>
               <li style={{ marginBottom: "8px" }}>
-                Payment Issue Date (the date the cheque was issued)
-              </li>
-              <li style={{ marginBottom: "8px" }}>
-                Cheque Amount (the dollar amount on the cheque)
+                This information captures data from previous day, information
+                cut off at 5pm.
               </li>
             </ul>
           </div>
@@ -150,36 +89,26 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
-              What do the different cheque statuses mean?
+              Cheque #: Enter in top right Cheque # Information.
             </h2>
-            <div style={{ marginBottom: "16px" }}>
-              <h3
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "16px",
+              }}
+            >
+              <img
+                src="/chequenumber.png"
+                alt="Sample cheque showing where to find the cheque number in the top right corner"
                 style={{
-                  color: "var(--bcgov-text-primary)",
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  marginBottom: "8px",
+                  width: "100%",
+                  maxWidth: "100px",
+                  height: "auto",
+                  border: "1px solid var(--bcgov-border-light)",
+                  borderRadius: "4px",
                 }}
-              >
-                Valid Cheque Statuses:
-              </h3>
-              <ul
-                style={{
-                  color: "var(--bcgov-text-primary)",
-                  fontSize: "16px",
-                  marginLeft: "24px",
-                  marginBottom: "16px",
-                }}
-              >
-                <li style={{ marginBottom: "8px" }}>
-                  <strong>Example1:</strong> The cheque has been created and is
-                  ready to be cashed
-                </li>
-                <li style={{ marginBottom: "8px" }}>
-                  <strong>Example2:</strong> The cheque has been successfully
-                  processed and cashed
-                </li>
-              </ul>
+              />
             </div>
           </div>
 
@@ -194,16 +123,17 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
-              What should I do if my cheque doesn't appear in the system?
+              Can you tell me why a cheque was issued or details about a
+              client's payment history?
             </h2>
             <p
               style={{
                 color: "var(--bcgov-text-primary)",
                 fontSize: "16px",
-                marginBottom: "16px",
+                marginBottom: "8px",
               }}
             >
-              If your cheque doesn't appear in the system, it could be because:
+              No. Due to privacy regulations, we cannot provide details such as:
             </p>
             <ul
               style={{
@@ -213,19 +143,15 @@ const Faq = () => {
                 marginBottom: "16px",
               }}
             >
-              <li style={{ marginBottom: "8px" }}>Example 1</li>
-              <li style={{ marginBottom: "8px" }}>Example 2</li>
-              <li style={{ marginBottom: "8px" }}>Example 3</li>
+              <li style={{ marginBottom: "8px" }}>Why a cheque was issued</li>
+              <li style={{ marginBottom: "8px" }}>
+                How many cheques a client is supposed to receive
+              </li>
+              <li style={{ marginBottom: "8px" }}>Why a cheque was stopped</li>
+              <li style={{ marginBottom: "8px" }}>
+                Whether a client has a history of stopped cheques
+              </li>
             </ul>
-            <p
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              Please double-check all the information and try again.
-            </p>
           </div>
 
           <div style={{ marginBottom: "32px" }}>
@@ -239,49 +165,55 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
-              Example Question
+              What are the common verification phone numbers for agencies?
             </h2>
             <p
               style={{
                 color: "var(--bcgov-text-primary)",
                 fontSize: "16px",
-                marginBottom: "16px",
+                marginBottom: "8px",
               }}
             >
-              Example Answer
+              Here is a quick reference list:
             </p>
-          </div>
-
-          <div
-            style={{
-              backgroundColor: "#F8F9FA",
-              border: "1px solid var(--bcgov-border-light)",
-              borderRadius: "6px",
-              padding: "20px",
-              marginTop: "32px",
-            }}
-          >
-            <h3
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "18px",
-                fontWeight: 600,
-                marginBottom: "12px",
-                margin: "0 0 12px 0",
-              }}
-            >
-              Need More Help?
-            </h3>
-            <p
+            <ul
               style={{
                 color: "var(--bcgov-text-primary)",
                 fontSize: "16px",
-                margin: "0",
+                marginLeft: "24px",
+                marginBottom: "16px",
               }}
             >
-              If you have additional questions or need assistance, please
-              contact Example contact
-            </p>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>MCFD Cheques:</strong> 250-356-8139
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Day Care Subsidy Cheques:</strong> 1-888-338-6622
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Family Maintenance Cheques:</strong> 1-800-663-9666 or
+                604-678-5670
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Community Living Cheques:</strong> 604-664-0784
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Province of BC General / MSP / Payroll:</strong>{" "}
+                1-888-587-7114
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Enquiry BC:</strong> 1-800-663-7867
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>
+                  Province of BC Payment Enquiry (SSBC CAS Business Services):
+                </strong>{" "}
+                1-800-663-7867
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>Federal Cheques:</strong> 1-866-552-8034
+              </li>
+            </ul>
           </div>
         </div>
       </div>
