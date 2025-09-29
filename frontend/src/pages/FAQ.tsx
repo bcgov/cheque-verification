@@ -103,7 +103,7 @@ const Faq = () => {
                 alt="Sample cheque showing where to find the cheque number in the top right corner"
                 style={{
                   width: "100%",
-                  maxWidth: "100px",
+                  maxWidth: "200px",
                   height: "auto",
                   border: "1px solid var(--bcgov-border-light)",
                   borderRadius: "4px",
@@ -152,6 +152,85 @@ const Faq = () => {
                 Whether a client has a history of stopped cheques
               </li>
             </ul>
+          </div>
+
+          <div style={{ marginBottom: "32px" }}>
+            <h2
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "20px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid var(--bcgov-gold)",
+                paddingBottom: "8px",
+              }}
+            >
+              Do I have recourse if a cheque is returned to me by the bank?
+            </h2>
+            <p
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              Yes. All claims for recourse in the wrongful cashing of
+              non-fraudulent BC Benefits cheques are reviewed and determined on
+              a case by case basis. Claims can be submitted for reimbursement to
+              the Ministry by email to SDPR.FASB.Claims@gov.bc.ca.
+            </p>
+          </div>
+
+          <div style={{ marginBottom: "32px" }}>
+            <h2
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "20px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid var(--bcgov-gold)",
+                paddingBottom: "8px",
+              }}
+            >
+              When do BC Employment and Assistance cheques stale date?
+            </h2>
+            <p
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              All BC Employment and Assistance Benefits cheques stale-date
+              exactly 6 months after the item’s issue date. Items cashed in a
+              stale-dated state will not be considered as an item for
+              reimbursement.
+            </p>
+          </div>
+
+          <div style={{ marginBottom: "32px" }}>
+            <h2
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "20px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid var(--bcgov-gold)",
+                paddingBottom: "8px",
+              }}
+            >
+              Who do I call if I have further questions or concerns?
+            </h2>
+            <p
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              Please call the Ministry contact center at{" "}
+              <strong>1-877-815-2363</strong>
+            </p>
           </div>
 
           <div style={{ marginBottom: "32px" }}>
