@@ -75,10 +75,17 @@ export class ChequeVerificationService {
   async fetchChequeData(
     chequeNumber: string
   ): Promise<ApiResponse<ChequeStatusResponse>> {
+    console.log("Preparing API request", {
+      chequeNumberLength: chequeNumber.length,
+      hasApiUrl: !!this.apiUrl,
+      apiUrl: this.apiUrl, // Safe to log URL for debugging
+    });
+
     // Prepare optional Authorization header with JWT for internal API
     const headers: Record<string, string> = {};
     const secret: Secret | undefined = process.env.JWT_SECRET;
     if (secret) {
+      console.log("JWT authentication configured");
       const issuer = process.env.JWT_ISSUER || "cheque-backend";
       const audience = process.env.JWT_AUDIENCE || "cheque-api";
       const expiresIn = process.env.JWT_TTL
@@ -99,16 +106,33 @@ export class ChequeVerificationService {
 
       const token = jwt.sign(payload, secret as Secret, options);
       headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      console.warn("No JWT secret configured - making unauthenticated request");
     }
 
+    const fullUrl = `${this.apiUrl}/api/v1/cheque/${chequeNumber}`;
+    console.log("Making API request", {
+      baseUrl: this.apiUrl,
+      chequeNumberLength: chequeNumber.length,
+      hasAuth: !!headers["Authorization"],
+      timeout: 5000,
+    });
+
     const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
-      `${this.apiUrl}/api/v1/cheque/${chequeNumber}`,
+      fullUrl,
       {
         timeout: 5000,
         validateStatus: (status: number) => status < 500,
         headers,
       }
     );
+
+    console.log("API response received", {
+      status: response.status,
+      hasData: !!response.data,
+      success: response.data?.success,
+      dataKeys: response.data?.data ? Object.keys(response.data.data) : [],
+    });
 
     return response.data;
   }
