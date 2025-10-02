@@ -15,9 +15,9 @@ export function createApp(options: CreateAppOptions = {}) {
 
   app.disable("x-powered-by");
 
-  // Trust proxy for X-Forwarded-For headers (required for OpenShift/rate limiting)
-  app.set("trust proxy", true);
-
+  // Trust proxy for X-Forwarded-For headers (OpenShift router)
+  // Trust first proxy only (more secure than 'true')
+  app.set("trust proxy", 1);
   const origins = allowedOrigins?.length
     ? allowedOrigins
     : ["http://localhost:4000"];
