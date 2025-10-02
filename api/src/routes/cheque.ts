@@ -3,6 +3,8 @@ import rateLimit from "express-rate-limit";
 import { getChequeFromDatabase } from "../services/chequeService.js";
 import { validateChequeNumber } from "../middleware/validation.js";
 import { authenticateJWT, validateJWTClaims } from "../middleware/auth.js";
+// Temporary: using console.log for debugging
+// import { logger } from "../config/logger.js";
 
 const router = Router();
 
@@ -48,14 +50,37 @@ router.get(
   async (req: Request, res: Response) => {
     const { chequeNumber } = req.params;
 
-    // Express-async-errors automatically handle query database - errors
-    const chequeStatus = await getChequeFromDatabase(chequeNumber); // Keep as string to avoid precision loss
-
-    // Return successful response
-    res.status(200).json({
-      success: true,
-      data: chequeStatus,
+    console.log("Received cheque verification request", {
+      chequeNumberLength: chequeNumber?.length || 0,
+      hasUserAgent: !!req.get("User-Agent"),
+      timestamp: new Date().toISOString(),
     });
+
+    try {
+      // Express-async-errors automatically handle query database - errors
+      const chequeStatus = await getChequeFromDatabase(chequeNumber); // Keep as string to avoid precision loss
+
+      console.log("Cheque verification successful", {
+        hasStatus: !!chequeStatus.chequeStatus,
+        hasAmount: !!chequeStatus.appliedAmount,
+        hasDate: !!chequeStatus.paymentIssueDate,
+      });
+
+      // Return successful response
+      res.status(200).json({
+        success: true,
+        data: chequeStatus,
+      });
+    } catch (error) {
+      // Log the error (express-async-errors will handle the response)
+      console.error("Cheque verification failed", {
+        errorType: error instanceof Error ? error.constructor.name : "Unknown",
+        hasMessage: !!(error instanceof Error ? error.message : String(error)),
+      });
+
+      // Re-throw to let express-async-errors handle it
+      throw error;
+    }
   }
 );
 
