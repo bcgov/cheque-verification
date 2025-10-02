@@ -8,38 +8,3 @@ image:
 service:
   type: ClusterIP
   port: 80
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-# Health checks
-livenessProbe:
-  httpGet:
-    path: /health
-    port: 3000
-  initialDelaySeconds: 30
-  periodSeconds: 10
-
-readinessProbe:
-  httpGet:
-    path: /ready
-    port: 3000
-  initialDelaySeconds: 5
-  periodSeconds: 5
-
-# Secrets (will be created separately)
-secrets:
-  JWT_SECRET:
-    secretName: cheque-verification-backend-secrets
-    key: JWT_SECRET

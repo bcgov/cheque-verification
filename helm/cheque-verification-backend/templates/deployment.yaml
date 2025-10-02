@@ -21,13 +21,21 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 3000
+            - containerPort: 4000
           env:
-            {{- if .Values.secrets.JWT_SECRET }}
-            - name: JWT_SECRET
+            - name: API_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.JWT_SECRET.secretName }}
-                  key: {{ .Values.secrets.JWT_SECRET.key }}
-            {{- end }}
+                  name: cheque-verification-backend-secrets
+                  key: API_URL
+            - name: FRONTEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: FRONTEND_URL
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: PORT
       restartPolicy: Always
