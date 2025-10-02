@@ -7,8 +7,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy source and build
+# Copy source code
 COPY . ./
+
+# Accept build argument for API URL and make it available to Vite
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build the application with injected API URL
 RUN npm run build
 
 # Production stage - serve with Node.js
