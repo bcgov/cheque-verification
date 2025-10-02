@@ -17,7 +17,9 @@ describe("ChequeController - Logging Coverage", () => {
 
   beforeEach(() => {
     // Create mocked service
-    mockService = new MockedService("http://test-api") as jest.Mocked<ChequeVerificationService>;
+    mockService = new MockedService(
+      "http://test-api"
+    ) as jest.Mocked<ChequeVerificationService>;
     controller = new ChequeController(mockService);
 
     // Setup request/response mocks
@@ -64,7 +66,10 @@ describe("ChequeController - Logging Coverage", () => {
       });
       mockService.verifyFields.mockReturnValue([]);
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         "Received cheque verification request",
@@ -90,7 +95,10 @@ describe("ChequeController - Logging Coverage", () => {
         error: "Missing fields",
       });
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         "Received cheque verification request",
@@ -109,7 +117,10 @@ describe("ChequeController - Logging Coverage", () => {
       const warnSpy = jest.spyOn(console, "warn");
       mockRequest.body = {};
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(warnSpy).toHaveBeenCalledWith("Request missing cheque number");
     });
@@ -138,7 +149,10 @@ describe("ChequeController - Logging Coverage", () => {
       });
       mockService.verifyFields.mockReturnValue([]);
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         "Calling API service for cheque data",
@@ -162,35 +176,40 @@ describe("ChequeController - Logging Coverage", () => {
       });
       mockService.verifyFields.mockReturnValue([]);
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "API service response received",
-        {
-          success: true,
-          hasData: true,
-          responseKeys: ["chequeStatus", "chequeNumber", "paymentIssueDate", "appliedAmount"],
-        }
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
       );
+
+      expect(consoleSpy).toHaveBeenCalledWith("API service response received", {
+        success: true,
+        hasData: true,
+        responseKeys: [
+          "chequeStatus",
+          "chequeNumber",
+          "paymentIssueDate",
+          "appliedAmount",
+        ],
+      });
     });
 
     it("should log when cheque not found in API response", async () => {
       const warnSpy = jest.spyOn(console, "warn");
-      
+
       mockService.fetchChequeData.mockResolvedValue({
         success: false,
         data: undefined,
       });
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
-
-      expect(warnSpy).toHaveBeenCalledWith(
-        "Cheque not found in API response",
-        {
-          success: false,
-          hasData: false,
-        }
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
       );
+
+      expect(warnSpy).toHaveBeenCalledWith("Cheque not found in API response", {
+        success: false,
+        hasData: false,
+      });
     });
   });
 
@@ -211,7 +230,10 @@ describe("ChequeController - Logging Coverage", () => {
 
       mockService.fetchChequeData.mockRejectedValue(testError);
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(errorSpy).toHaveBeenCalledWith(
         "Error during cheque verification",
@@ -227,7 +249,7 @@ describe("ChequeController - Logging Coverage", () => {
     it("should handle axios timeout errors", async () => {
       const errorSpy = jest.spyOn(console, "error");
       const warnSpy = jest.spyOn(console, "warn");
-      
+
       const axiosError = {
         isAxiosError: true,
         code: "ECONNABORTED",
@@ -240,7 +262,10 @@ describe("ChequeController - Logging Coverage", () => {
 
       mockService.fetchChequeData.mockRejectedValue(axiosError);
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(errorSpy).toHaveBeenCalledWith(
         "Error during cheque verification",
@@ -259,7 +284,10 @@ describe("ChequeController - Logging Coverage", () => {
       const errorSpy = jest.spyOn(console, "error");
       mockService.fetchChequeData.mockRejectedValue("String error");
 
-      await controller.verifyCheque(mockRequest as Request, mockResponse as Response);
+      await controller.verifyCheque(
+        mockRequest as Request,
+        mockResponse as Response
+      );
 
       expect(errorSpy).toHaveBeenCalledWith(
         "Error during cheque verification",

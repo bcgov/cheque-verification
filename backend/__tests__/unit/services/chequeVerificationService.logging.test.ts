@@ -11,7 +11,7 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
   beforeEach(() => {
     service = new ChequeVerificationService("http://test-api");
-    
+
     // Setup console spies
     consoleSpy = jest.spyOn(console, "log").mockImplementation();
     jest.spyOn(console, "warn").mockImplementation();
@@ -41,14 +41,11 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Preparing API request",
-        {
-          chequeNumberLength: 6,
-          hasApiUrl: true,
-          apiUrl: "http://test-api",
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Preparing API request", {
+        chequeNumberLength: 6,
+        hasApiUrl: true,
+        apiUrl: "http://test-api",
+      });
     });
 
     it("should log JWT authentication configuration", async () => {
@@ -108,15 +105,12 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Making API request",
-        {
-          baseUrl: "http://test-api",
-          chequeNumberLength: 6,
-          hasAuth: false,
-          timeout: 5000,
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Making API request", {
+        baseUrl: "http://test-api",
+        chequeNumberLength: 6,
+        hasAuth: false,
+        timeout: 5000,
+      });
     });
 
     it("should log API request with authentication", async () => {
@@ -132,15 +126,12 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Making API request",
-        {
-          baseUrl: "http://test-api",
-          chequeNumberLength: 6,
-          hasAuth: true,
-          timeout: 5000,
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Making API request", {
+        baseUrl: "http://test-api",
+        chequeNumberLength: 6,
+        hasAuth: true,
+        timeout: 5000,
+      });
 
       // Restore original environment
       if (originalSecret) {
@@ -170,15 +161,17 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "API response received",
-        {
-          status: 200,
-          hasData: true,
-          success: true,
-          dataKeys: ["chequeStatus", "chequeNumber", "paymentIssueDate", "appliedAmount"],
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("API response received", {
+        status: 200,
+        hasData: true,
+        success: true,
+        dataKeys: [
+          "chequeStatus",
+          "chequeNumber",
+          "paymentIssueDate",
+          "appliedAmount",
+        ],
+      });
     });
 
     it("should log unsuccessful API response", async () => {
@@ -194,15 +187,12 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "API response received",
-        {
-          status: 404,
-          hasData: true, // response.data exists even for errors
-          success: false,
-          dataKeys: [], // no response.data.data for errors
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("API response received", {
+        status: 404,
+        hasData: true, // response.data exists even for errors
+        success: false,
+        dataKeys: [], // no response.data.data for errors
+      });
     });
 
     it("should handle API response with no data", async () => {
@@ -218,15 +208,12 @@ describe("ChequeVerificationService - Logging Coverage", () => {
 
       await service.fetchChequeData("123456");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "API response received",
-        {
-          status: 200,
-          hasData: true, // response.data exists
-          success: true,
-          dataKeys: [], // no response.data.data when data is undefined
-        }
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("API response received", {
+        status: 200,
+        hasData: true, // response.data exists
+        success: true,
+        dataKeys: [], // no response.data.data when data is undefined
+      });
     });
   });
 
