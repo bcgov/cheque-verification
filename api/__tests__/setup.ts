@@ -21,6 +21,7 @@ beforeAll(async () => {
   if (!process.env.DEBUG_TESTS) {
     console.log = jest.fn();
     console.error = jest.fn();
+    console.warn = jest.fn();
   }
 });
 
