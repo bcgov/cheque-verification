@@ -38,4 +38,27 @@ spec:
                 secretKeyRef:
                   name: cheque-verification-backend-secrets
                   key: PORT
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: JWT_SECRET
+            - name: JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: JWT_ISSUER
+                  optional: true
+            - name: JWT_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: JWT_AUDIENCE
+                  optional: true
+            - name: JWT_TTL
+              valueFrom:
+                secretKeyRef:
+                  name: cheque-verification-backend-secrets
+                  key: JWT_TTL
+                  optional: true
       restartPolicy: Always
