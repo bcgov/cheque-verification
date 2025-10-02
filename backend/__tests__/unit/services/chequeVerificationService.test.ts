@@ -122,6 +122,22 @@ describe("ChequeVerificationService", () => {
   });
 
   describe("fetchChequeData", () => {
+    it("should reject invalid cheque numbers to prevent URL injection", async () => {
+      const invalidChequeNumbers = [
+        "../admin",
+        "123/../../etc/passwd",
+        "123%2F..%2F..%2Fadmin",
+        "123; DROP TABLE cheques;",
+        "123' OR '1'='1",
+      ];
+
+      for (const invalidNumber of invalidChequeNumbers) {
+        await expect(service.fetchChequeData(invalidNumber)).rejects.toThrow(
+          "Invalid cheque number format"
+        );
+      }
+    });
+
     it("should make API call and return data", async () => {
       const mockResponse = {
         data: {
