@@ -12,13 +12,14 @@ export class ChequeVerificationService {
   constructor(apiUrl: string) {
     this.apiUrl = apiUrl;
   }
+
   /**
-   * Validates cheque number format
+   * Validates cheque number format and prevents path injection
    * @param chequeNumber - The cheque number to validate
    * @returns boolean indicating if format is valid
    */
   isValidChequeNumber(chequeNumber: string): boolean {
-    // Updated to match API validation: 1-16 digits, no leading zeros except for "0"
+    // Must be 1-16 digits only (prevents path traversal and injection)
     const chequeNumberPattern = /^\d{1,16}$/;
     const isValidFormat = chequeNumberPattern.test(chequeNumber);
 
@@ -75,6 +76,11 @@ export class ChequeVerificationService {
   async fetchChequeData(
     chequeNumber: string
   ): Promise<ApiResponse<ChequeStatusResponse>> {
+    // Validate cheque number format to prevent URL injection attacks
+    if (!this.isValidChequeNumber(chequeNumber)) {
+      throw new Error("Invalid cheque number format");
+    }
+
     console.log("Preparing API request", {
       chequeNumberLength: chequeNumber.length,
       hasApiUrl: !!this.apiUrl,
@@ -110,6 +116,8 @@ export class ChequeVerificationService {
       console.warn("No JWT secret configured - making unauthenticated request");
     }
 
+    // Safe: chequeNumber has been validated to contain only digits (1-16 chars)
+    // This prevents path traversal and URL injection attacks
     const fullUrl = `${this.apiUrl}/api/v1/cheque/${chequeNumber}`;
     console.log("Making API request", {
       baseUrl: this.apiUrl,
@@ -118,6 +126,7 @@ export class ChequeVerificationService {
       timeout: 5000,
     });
 
+    // Safe: URL is constructed from validated environment variable + validated digits-only cheque number
     const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
       fullUrl,
       {
