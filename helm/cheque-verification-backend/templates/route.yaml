@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: cheque-verification-backend
+  labels:
+    app.kubernetes.io/name: cheque-verification-backend
+spec:
+  to:
+    kind: Service
+    name: cheque-verification-backend
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
