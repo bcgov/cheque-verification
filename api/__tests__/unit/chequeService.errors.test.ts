@@ -7,8 +7,25 @@ import {
   setupTestEnvironment,
 } from "../helpers/chequeTestHelpers";
 
+// Mock the logger before importing anything else
+jest.mock("../../src/config/logger.js", () => ({
+  logger: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+    fatal: jest.fn(),
+  },
+}));
+
+import { logger } from "../../src/config/logger.js";
+
 describe("ChequeService - Error Handling", () => {
   setupTestEnvironment();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe("getChequeFromDatabase - Error Scenarios", () => {
     it("throws_404_error_when_cheque_not_found_in_database", async () => {
@@ -139,7 +156,6 @@ describe("ChequeService - Error Handling", () => {
     it("handles_connection_close_failure_gracefully", async () => {
       // Arrange
       const mockConnection = createMockConnection();
-      const mockConsoleWarn = jest.spyOn(console, "warn").mockImplementation();
       const closeError = new Error("Connection close failed");
 
       const validChequeRow = createValidChequeRow();
@@ -157,12 +173,10 @@ describe("ChequeService - Error Handling", () => {
 
       // Assert
       expect(result).toBeDefined();
-      expect(mockConsoleWarn).toHaveBeenCalledWith(
-        "Failed to close database connection:",
-        closeError
+      expect(logger.warn).toHaveBeenCalledWith(
+        { error: closeError },
+        "Failed to close database connection"
       );
-
-      mockConsoleWarn.mockRestore();
     });
   });
 });
