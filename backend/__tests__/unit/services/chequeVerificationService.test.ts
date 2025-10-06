@@ -159,7 +159,7 @@ describe("ChequeVerificationService", () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${mockApiUrl}/api/v1/cheque/123456`,
         {
-          timeout: 5000,
+          timeout: 30000,
           validateStatus: expect.any(Function),
           headers: {
             Authorization: "Bearer mocked-jwt-token-for-testing",

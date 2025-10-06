@@ -109,7 +109,7 @@ describe("ChequeVerificationService - Logging Coverage", () => {
         baseUrl: "http://test-api",
         chequeNumberLength: 6,
         hasAuth: false,
-        timeout: 5000,
+        timeout: 30000,
       });
     });
 
@@ -130,7 +130,7 @@ describe("ChequeVerificationService - Logging Coverage", () => {
         baseUrl: "http://test-api",
         chequeNumberLength: 6,
         hasAuth: true,
-        timeout: 5000,
+        timeout: 30000,
       });
 
       // Restore original environment
