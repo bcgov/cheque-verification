@@ -123,14 +123,14 @@ export class ChequeVerificationService {
       baseUrl: this.apiUrl,
       chequeNumberLength: chequeNumber.length,
       hasAuth: !!headers["Authorization"],
-      timeout: 5000,
+      timeout: 30000,
     });
 
     // Safe: URL is constructed from validated environment variable + validated digits-only cheque number
     const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
       fullUrl,
       {
-        timeout: 5000,
+        timeout: 30000,
         validateStatus: (status: number) => status < 500,
         headers,
       }
