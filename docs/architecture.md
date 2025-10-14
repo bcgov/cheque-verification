@@ -7,9 +7,12 @@ This document describes how the cheque verification platform is structured and h
 ```mermaid
 flowchart TD
     User[End User Browser]
-    FE[React Frontend<br/>(Vite, TypeScript)]
-    BE[Backend Proxy<br/>(Express, TypeScript)]
-    API[Cheque API<br/>(Internal Service)]
+    FE["React Frontend
+    (Vite, TypeScript)"]
+    BE["Backend Proxy
+    (Express, TypeScript)"]
+    API["Cheque API
+    (Internal Service)"]
     DB[(Oracle Database)]
 
     User -->|HTTPS| FE
