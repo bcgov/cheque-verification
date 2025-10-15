@@ -68,17 +68,3 @@ Key characteristics:
    - `404` when the cheque number cannot be found.
    - `5xx` when upstream dependencies fail.
 7. Frontend surfaces the message to the user in a user-friendly format.
-
-## Deployment Considerations
-
-- **Environment segregation**: Deploy frontend and backend in separate environments (e.g., dev/test/prod) with matching `VITE_API_URL` and `FRONTEND_URL` origins.
-- **Secrets management**: Store `JWT_SECRET` and upstream API credentials in a managed secret store (e.g., Vault, Kubernetes secrets). Do not bake secrets into images or config maps committed to Git.
-- **Transport security**: Terminate TLS at the edge (reverse proxy, ingress controller). All internal traffic between services should also be encrypted where possible.
-- **Scaling**: The backend is stateless; run multiple replicas behind a load balancer. Rate limiter configuration should be replaced with a distributed implementation (e.g., Redis) if horizontal scaling is required.
-- **Observability**: Forward backend logs to a centralized platform. Consider enhancing with structured logging (e.g., Pino) and metrics endpoints for production.
-
-## Future Enhancements
-
-- Persist aggregate metrics (request counts, validation failures) for reporting and anomaly detection.
-- Introduce Application Decision Records (ADRs) under `docs/adr/` to capture significant architectural decisions.
-- Add automated contract tests to ensure the backend proxy remains aligned with the upstream API schema.
