@@ -44,7 +44,7 @@ const DataNotice = () => {
           lineHeight: 1.5,
         }}
       >
-        Cheque Verification results update nightly at 3 a.m. PT. Cheques issued
+        Cheque Verification results updates daily at 6 a.m. PT. Cheques issued
         within the last 24 hours may not appear until the next business day.
       </p>
     </div>
