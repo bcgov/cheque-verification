@@ -1,13 +1,21 @@
 import pino, { Logger } from "pino";
 
-/**
- * Simple Pino logger configuration for debugging
- */
+const redactedFields = [
+  "req.headers.authorization",
+  "req.headers.cookie",
+  "req.cookies",
+  "res.headers.set-cookie",
+  "password",
+  "token",
+  "secret",
+];
+
 export const logger: Logger = pino({
-  level: process.env.LOG_LEVEL || "info",
+  level: process.env.LOG_LEVEL ?? "info",
   base: {
     service: "cheque-verification-api",
   },
+  redact: redactedFields,
 });
 
 export default logger;

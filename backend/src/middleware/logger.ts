@@ -1,14 +1,24 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "../config/logger";
 
 /**
- * Simple request logger middleware
- * Logs incoming requests with timestamp, method, and path
+ * Compact request logger - single line per request
  */
 export const requestLogger = (
   req: Request,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ): void => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  res.once("finish", () => {
+    logger.info(
+      {
+        method: req.method,
+        path: req.path,
+        status: res.statusCode,
+      },
+      "request"
+    );
+  });
+
   next();
 };
