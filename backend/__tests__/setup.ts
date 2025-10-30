@@ -23,3 +23,10 @@ afterEach(() => {
 process.on("unhandledRejection", (reason) => {
   console.error("Unhandled Rejection at:", reason);
 });
+
+// Silence console output during tests by default (tests can spy/restore as needed)
+beforeEach(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});

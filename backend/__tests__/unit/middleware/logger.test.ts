@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { requestLogger } from "../../../src/middleware/logger";
+import { logger } from '../../../src/config/logger';
 import {
   describe,
   it,
@@ -13,7 +14,7 @@ describe("Logger Middleware", () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
   let mockNext: NextFunction;
-  let writeSpy: any;
+  let loggerSpy: any;
 
   beforeEach(() => {
     mockReq = {
@@ -29,26 +30,21 @@ describe("Logger Middleware", () => {
       statusCode: 200,
     };
     mockNext = jest.fn();
-    writeSpy = jest
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    // Spy on the pino logger rather than process.stdout to avoid test flakiness
+    loggerSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined as any);
   });
 
   afterEach(() => {
-    writeSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 
   describe("requestLogger", () => {
     it("should log method, path, and status as JSON", () => {
       requestLogger(mockReq as Request, mockRes as Response, mockNext);
-      expect(writeSpy).toHaveBeenCalled();
-      const payload = writeSpy.mock.calls.at(-1)?.[0];
+      expect(loggerSpy).toHaveBeenCalled();
+  const payload = loggerSpy.mock.calls.at(-1)?.[0];
       expect(payload).toBeDefined();
-      const logLine =
-        typeof payload === "string"
-          ? payload.trim()
-          : payload?.toString("utf8").trim();
-      const parsed = JSON.parse(logLine);
+      const parsed = payload;
       expect(parsed.method).toBe("GET");
       expect(parsed.path).toBe("/api/test");
       expect(parsed.status).toBe(200);
@@ -65,16 +61,12 @@ describe("Logger Middleware", () => {
       methods.forEach((method) => {
         mockReq.method = method;
         mockRes.statusCode = 200;
-        writeSpy.mockClear();
+  loggerSpy.mockClear();
         mockNext = jest.fn();
         requestLogger(mockReq as Request, mockRes as Response, mockNext);
-        expect(writeSpy).toHaveBeenCalled();
-        const payload = writeSpy.mock.calls.at(-1)?.[0];
-        const parsed = JSON.parse(
-          typeof payload === "string"
-            ? payload.trim()
-            : payload?.toString("utf8").trim()
-        );
+        expect(loggerSpy).toHaveBeenCalled();
+  const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const parsed = payload;
         expect(parsed.method).toBe(method);
         expect(parsed.path).toBe("/api/test");
         expect(parsed.status).toBe(200);
@@ -88,16 +80,12 @@ describe("Logger Middleware", () => {
       paths.forEach((path) => {
         (mockReq as any).path = path; // Allow assignment for test
         mockRes.statusCode = 200;
-        writeSpy.mockClear();
+  loggerSpy.mockClear();
         mockNext = jest.fn();
         requestLogger(mockReq as Request, mockRes as Response, mockNext);
-        expect(writeSpy).toHaveBeenCalled();
-        const payload = writeSpy.mock.calls.at(-1)?.[0];
-        const parsed = JSON.parse(
-          typeof payload === "string"
-            ? payload.trim()
-            : payload?.toString("utf8").trim()
-        );
+        expect(loggerSpy).toHaveBeenCalled();
+  const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const parsed = payload;
         expect(parsed.method).toBe("GET");
         expect(parsed.path).toBe(path);
         expect(parsed.status).toBe(200);
