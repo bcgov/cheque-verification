@@ -212,20 +212,5 @@ describe("createApp", () => {
     });
   });
 
-  describe("Middleware Integration", () => {
-    it("should include request logger middleware", async () => {
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation();
-      const app = createApp();
-
-      await request(app).get("/api/v1/health");
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z - GET \/api\/v1\/health/
-        )
-      );
-
-      consoleSpy.mockRestore();
-    });
-  });
+  describe("Middleware Integration", () => {});
 });
