@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { requestLogger } from "../../../src/middleware/logger";
-import { logger } from '../../../src/config/logger';
+import { logger } from "../../../src/config/logger";
 import {
   describe,
   it,
@@ -31,7 +31,9 @@ describe("Logger Middleware", () => {
     };
     mockNext = jest.fn();
     // Spy on the pino logger rather than process.stdout to avoid test flakiness
-    loggerSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined as any);
+    loggerSpy = jest
+      .spyOn(logger, "info")
+      .mockImplementation(() => undefined as any);
   });
 
   afterEach(() => {
@@ -42,7 +44,7 @@ describe("Logger Middleware", () => {
     it("should log method, path, and status as JSON", () => {
       requestLogger(mockReq as Request, mockRes as Response, mockNext);
       expect(loggerSpy).toHaveBeenCalled();
-  const payload = loggerSpy.mock.calls.at(-1)?.[0];
+      const payload = loggerSpy.mock.calls.at(-1)?.[0];
       expect(payload).toBeDefined();
       const parsed = payload;
       expect(parsed.method).toBe("GET");
@@ -61,11 +63,11 @@ describe("Logger Middleware", () => {
       methods.forEach((method) => {
         mockReq.method = method;
         mockRes.statusCode = 200;
-  loggerSpy.mockClear();
+        loggerSpy.mockClear();
         mockNext = jest.fn();
         requestLogger(mockReq as Request, mockRes as Response, mockNext);
         expect(loggerSpy).toHaveBeenCalled();
-  const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const payload = loggerSpy.mock.calls.at(-1)?.[0];
         const parsed = payload;
         expect(parsed.method).toBe(method);
         expect(parsed.path).toBe("/api/test");
@@ -80,11 +82,11 @@ describe("Logger Middleware", () => {
       paths.forEach((path) => {
         (mockReq as any).path = path; // Allow assignment for test
         mockRes.statusCode = 200;
-  loggerSpy.mockClear();
+        loggerSpy.mockClear();
         mockNext = jest.fn();
         requestLogger(mockReq as Request, mockRes as Response, mockNext);
         expect(loggerSpy).toHaveBeenCalled();
-  const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const payload = loggerSpy.mock.calls.at(-1)?.[0];
         const parsed = payload;
         expect(parsed.method).toBe("GET");
         expect(parsed.path).toBe(path);
