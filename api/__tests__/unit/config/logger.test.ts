@@ -1,86 +1,110 @@
 import { logger } from "../../../src/config/logger";
 
-describe("Logger Configuration", () => {
-  describe("logger instance", () => {
-    it("should be defined", () => {
-      expect(logger).toBeDefined();
-    });
-
-    it("should have required logging methods", () => {
-      expect(typeof logger.info).toBe("function");
-      expect(typeof logger.error).toBe("function");
-      expect(typeof logger.warn).toBe("function");
-      expect(typeof logger.debug).toBe("function");
-    });
-
-    it("should be a pino logger instance", () => {
-      // Check that it has pino-specific properties
-      expect(logger).toHaveProperty("level");
-      expect(logger).toHaveProperty("version");
-    });
-
-    it("should have correct service name configured", () => {
-      // Check that logger has the service name in its configuration
-      expect(logger.bindings()).toHaveProperty(
-        "service",
-        "cheque-verification-api"
-      );
-    });
+describe("Logger configuration", () => {
+  it("exports a pino logger instance with expected methods and bindings", () => {
+    expect(logger).toBeDefined();
+    expect(typeof logger.info).toBe("function");
+    expect(typeof logger.error).toBe("function");
+    expect(typeof logger.warn).toBe("function");
+    expect(typeof logger.debug).toBe("function");
+    expect(logger).toHaveProperty("level");
+    expect(logger).toHaveProperty("version");
+    expect(logger.bindings()).toHaveProperty(
+      "service",
+      "cheque-verification-api"
+    );
   });
 
-  describe("log level configuration", () => {
-    const originalLogLevel = process.env.LOG_LEVEL;
+  describe("LOG_LEVEL handling", () => {
+    const original = process.env.LOG_LEVEL;
 
     afterEach(() => {
-      // Restore original log level
-      if (originalLogLevel) {
-        process.env.LOG_LEVEL = originalLogLevel;
+      if (original) {
+        process.env.LOG_LEVEL = original;
       } else {
         delete process.env.LOG_LEVEL;
       }
+      jest.resetModules();
     });
 
-    it("should use default info level when LOG_LEVEL not set", () => {
+    it("defaults to info when LOG_LEVEL is not set", () => {
       delete process.env.LOG_LEVEL;
-
-      // Re-import to get fresh logger with new env
       jest.resetModules();
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { logger: freshLogger } = require("../../../src/config/logger");
-
       expect(freshLogger.level).toBe("info");
     });
 
-    it("should respect LOG_LEVEL environment variable", () => {
+    it("respects LOG_LEVEL environment variable", () => {
       process.env.LOG_LEVEL = "debug";
-
-      // Re-import to get fresh logger with new env
       jest.resetModules();
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { logger: freshLogger } = require("../../../src/config/logger");
-
       expect(freshLogger.level).toBe("debug");
     });
   });
 
-  describe("logging methods", () => {
-    it("should not throw when calling logging methods", () => {
-      // These tests just ensure the methods don't throw errors
-      // The actual output is tested in integration scenarios
-      expect(() => logger.info("Test info message")).not.toThrow();
-      expect(() => logger.error("Test error message")).not.toThrow();
-      expect(() => logger.warn("Test warn message")).not.toThrow();
-      expect(() => logger.debug("Test debug message")).not.toThrow();
-    });
+  it("logging methods do not throw", () => {
+    expect(() => {
+      logger.trace("trace");
+      logger.debug("debug");
+      logger.info("info");
+      logger.warn("warn");
+      logger.error("error");
+      logger.fatal("fatal");
+    }).not.toThrow();
+  });
 
-    it("should handle different log levels", () => {
-      // Test that we can call methods at different levels
-      expect(() => {
-        logger.trace("trace");
-        logger.debug("debug");
-        logger.info("info");
-        logger.warn("warn");
-        logger.error("error");
-        logger.fatal("fatal");
-      }).not.toThrow();
+  describe("sensitive data redaction", () => {
+    it("redacts configured sensitive fields", () => {
+      // Re-create logger after spying on stdout so pino binds to the spy
+      jest.resetModules();
+      const writeSpy = jest
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { logger: freshLogger } = require("../../../src/config/logger");
+
+      freshLogger.info(
+        {
+          password: "super-secret",
+          token: "token-value",
+          secret: "another-secret",
+          req: {
+            headers: {
+              authorization: "Bearer abc123",
+              cookie: "session=xyz",
+            },
+            cookies: {
+              session: "xyz",
+            },
+          },
+          res: {
+            headers: {
+              "set-cookie": ["session=xyz"],
+            },
+          },
+        },
+        "sensitive"
+      );
+
+      expect(writeSpy).toHaveBeenCalled();
+      const payload = writeSpy.mock.calls.at(-1)?.[0];
+      expect(payload).toBeDefined();
+
+      const logLine =
+        typeof payload === "string" ? payload.trim() : String(payload).trim();
+      const parsed = JSON.parse(logLine);
+
+      expect(parsed.password).toBe("[Redacted]");
+      expect(parsed.token).toBe("[Redacted]");
+      expect(parsed.secret).toBe("[Redacted]");
+      expect(parsed.req.headers.authorization).toBe("[Redacted]");
+      expect(parsed.req.headers.cookie).toBe("[Redacted]");
+      expect(parsed.req.cookies).toBe("[Redacted]");
+      expect(parsed.res.headers["set-cookie"]).toBe("[Redacted]");
+
+      writeSpy.mockRestore();
     });
   });
 });

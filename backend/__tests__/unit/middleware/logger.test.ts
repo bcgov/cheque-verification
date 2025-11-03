@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { requestLogger } from "../../../src/middleware/logger";
+import { logger } from "../../../src/config/logger";
 import {
   describe,
   it,
@@ -13,88 +14,88 @@ describe("Logger Middleware", () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
   let mockNext: NextFunction;
-  let consoleSpy: ReturnType<typeof jest.spyOn>;
+  let loggerSpy: any;
 
   beforeEach(() => {
     mockReq = {
       method: "GET",
       path: "/api/test",
     };
-    mockRes = {};
+    mockRes = {
+      once: jest.fn((event: string, cb: () => void) => {
+        if (event === "finish") {
+          cb();
+        }
+      }) as any, // Cast as any to bypass Response event type
+      statusCode: 200,
+    };
     mockNext = jest.fn();
-
-    // Spy on console.log to test logging
-    consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    // Spy on the pino logger rather than process.stdout to avoid test flakiness
+    loggerSpy = jest
+      .spyOn(logger, "info")
+      .mockImplementation(() => undefined as any);
   });
 
   afterEach(() => {
-    consoleSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 
   describe("requestLogger", () => {
-    it("should log request method and path with timestamp", () => {
+    it("should log method, path, and status as JSON", () => {
       requestLogger(mockReq as Request, mockRes as Response, mockNext);
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z - GET \/api\/test/
-        )
-      );
+      expect(loggerSpy).toHaveBeenCalled();
+      const payload = loggerSpy.mock.calls.at(-1)?.[0];
+      expect(payload).toBeDefined();
+      const parsed = payload;
+      expect(parsed.method).toBe("GET");
+      expect(parsed.path).toBe("/api/test");
+      expect(parsed.status).toBe(200);
+      expect(parsed).not.toHaveProperty("durationMs");
     });
 
     it("should call next() to continue middleware chain", () => {
       requestLogger(mockReq as Request, mockRes as Response, mockNext);
-
       expect(mockNext).toHaveBeenCalledTimes(1);
     });
 
     it("should log different HTTP methods correctly", () => {
       const methods = ["GET", "POST", "PUT", "DELETE"];
-
       methods.forEach((method) => {
         mockReq.method = method;
-        consoleSpy.mockClear();
+        mockRes.statusCode = 200;
+        loggerSpy.mockClear();
         mockNext = jest.fn();
-
         requestLogger(mockReq as Request, mockRes as Response, mockNext);
-
-        expect(consoleSpy).toHaveBeenCalledWith(
-          expect.stringContaining(`${method} /api/test`)
-        );
+        expect(loggerSpy).toHaveBeenCalled();
+        const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const parsed = payload;
+        expect(parsed.method).toBe(method);
+        expect(parsed.path).toBe("/api/test");
+        expect(parsed.status).toBe(200);
+        expect(parsed).not.toHaveProperty("durationMs");
         expect(mockNext).toHaveBeenCalledTimes(1);
       });
     });
 
     it("should log different paths correctly", () => {
       const paths = ["/api/verify", "/health", "/api/v1/cheques"];
-
       paths.forEach((path) => {
-        const pathMockReq = { ...mockReq, path };
-        consoleSpy.mockClear();
+        (mockReq as any).path = path; // Allow assignment for test
+        mockRes.statusCode = 200;
+        loggerSpy.mockClear();
         mockNext = jest.fn();
-
-        requestLogger(pathMockReq as Request, mockRes as Response, mockNext);
-
-        expect(consoleSpy).toHaveBeenCalledWith(
-          expect.stringContaining(`GET ${path}`)
-        );
+        requestLogger(mockReq as Request, mockRes as Response, mockNext);
+        expect(loggerSpy).toHaveBeenCalled();
+        const payload = loggerSpy.mock.calls.at(-1)?.[0];
+        const parsed = payload;
+        expect(parsed.method).toBe("GET");
+        expect(parsed.path).toBe(path);
+        expect(parsed.status).toBe(200);
+        expect(parsed).not.toHaveProperty("durationMs");
         expect(mockNext).toHaveBeenCalledTimes(1);
       });
     });
 
-    it("should include ISO timestamp format", () => {
-      requestLogger(mockReq as Request, mockRes as Response, mockNext);
-
-      const logCall = consoleSpy.mock.calls[0][0];
-      const timestamp = logCall.split(" - ")[0];
-
-      // Check that timestamp is a valid ISO string
-      expect(new Date(timestamp).toISOString()).toBe(timestamp);
-
-      // Check that timestamp is recent (within last second)
-      const now = Date.now();
-      const logTime = new Date(timestamp).getTime();
-      expect(Math.abs(now - logTime)).toBeLessThan(1000); // Within 1 second
-    });
+    // No timestamp assertion: logger now emits only method, path, status as JSON
   });
 });
