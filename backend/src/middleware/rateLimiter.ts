@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { rateLimit } from "express-rate-limit";
-import { logger } from "../config/logger.js";
+import { logger } from "../config/logger";
 
 // General rate limiter for all requests
 export const globalRequestLimiter = rateLimit({

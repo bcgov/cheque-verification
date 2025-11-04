@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwt, { SignOptions, JwtPayload, Secret } from "jsonwebtoken";
-import { ChequeStatusResponse, ApiResponse } from "../types.js";
-import { logger } from "../config/logger.js";
+import { ChequeStatusResponse, ApiResponse } from "../types";
+import { logger } from "../config/logger";
 
 /**
  * Service class for cheque verification operations
