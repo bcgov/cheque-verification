@@ -6,6 +6,7 @@ import { ChequeController } from "./controllers/chequeController";
 import { createChequeRoutes, createHealthRoutes } from "./routes/chequeRoutes";
 import { globalRequestLimiter } from "./middleware/rateLimiter";
 import { requestLogger } from "./middleware/logger";
+import { logger } from "./config/logger";
 
 // Function to create the Express app
 export function createApp() {
@@ -59,24 +60,25 @@ if (require.main === module) {
 
   // Start server and store reference
   const server = app.listen(config.port, () => {
-    console.log(`Backend server running on port ${config.port}`);
-    console.log(`Connected to API at ${config.apiUrl}`);
-    console.log(`Environment: ${config.environment}`);
+    logger.info(
+      { port: config.port, environment: config.environment },
+      "Backend server started"
+    );
   });
 
   // Handle graceful shutdown
   process.on("SIGTERM", () => {
-    console.log("SIGTERM received. Shutting down gracefully...");
+    logger.info("SIGTERM received. Shutting down gracefully...");
     server.close(() => {
-      console.log("Server closed successfully");
+      logger.info("Server closed successfully");
       process.exit(0);
     });
   });
 
   process.on("SIGINT", () => {
-    console.log("SIGINT received. Shutting down gracefully...");
+    logger.info("SIGINT received. Shutting down gracefully...");
     server.close(() => {
-      console.log("Server closed successfully");
+      logger.info("Server closed successfully");
       process.exit(0);
     });
   });

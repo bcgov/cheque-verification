@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { requestLogger } from "./middleware/logger.js";
 import routes from "./routes/index.js";
 import { HttpError } from "./middleware/validation.js";
+import logger from "./config/logger.js";
 
 export interface CreateAppOptions {
   allowedOrigins?: string[];
@@ -41,9 +42,12 @@ export function createApp(options: CreateAppOptions = {}) {
 
   app.use(
     (err: HttpError, req: Request, res: Response, _next: NextFunction) => {
-      console.error(err.stack || err);
+      logger.error({ err }, "Error processing request");
       const status = err.statusCode || 500;
-      const message = err.message || "Internal server error";
+      const message =
+        process.env.NODE_ENV === "production"
+          ? "Internal server error"
+          : err.message;
       res.status(status).json({ success: false, error: message });
     }
   );
