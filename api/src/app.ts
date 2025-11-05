@@ -42,7 +42,6 @@ export function createApp(options: CreateAppOptions = {}) {
 
   app.use(
     (err: HttpError, req: Request, res: Response, _next: NextFunction) => {
-      logger.error({ err }, "Error processing request");
       const status = err.statusCode || 500;
       const message =
         process.env.NODE_ENV === "production"

@@ -67,10 +67,7 @@ router.get(
         data: chequeStatus,
       });
     } catch (error) {
-      // Log the error (express-async-errors will handle the response)
-      logger.error({ err: error }, "Cheque verification failed");
-
-      // Re-throw to let express-async-errors handle it
+      // Re-throw to let express-async-errors and global error handler handle it
       throw error;
     }
   }

@@ -169,17 +169,7 @@ export class ChequeController {
    * Handles errors and sends appropriate responses
    */
   private handleError(error: unknown, res: Response): void {
-    logger.error(
-      {
-        err: error,
-        isAxiosError: axios.isAxiosError(error),
-        errorCode: axios.isAxiosError(error) ? error.code : undefined,
-      },
-      "Error during cheque verification"
-    );
-
     if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
-      logger.warn("API request timeout detected");
       res.status(504).json({
         success: false,
         error: "API request timed out",

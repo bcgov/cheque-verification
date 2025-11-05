@@ -7,7 +7,8 @@ export async function run(startFn: StartFunction = start): Promise<void> {
   try {
     await startFn();
   } catch (error) {
-    logger.error({ err: error }, "Startup error");
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error({ message });
     process.exit(1);
   }
 }

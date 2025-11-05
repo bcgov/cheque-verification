@@ -79,7 +79,7 @@ describe("ChequeService - Error Handling", () => {
 
       // Act & Assert
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Database schema and table not configured in environment variables"
+        "Database configuration missing"
       );
 
       // Should not attempt database connection
@@ -92,7 +92,7 @@ describe("ChequeService - Error Handling", () => {
 
       // Act & Assert
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Database schema and table not configured in environment variables"
+        "Database configuration missing"
       );
 
       expect(mockPool.getConnection).not.toHaveBeenCalled();
@@ -162,10 +162,9 @@ describe("ChequeService - Error Handling", () => {
 
       // Assert
       expect(result).toBeDefined();
-      expect(logger.warn).toHaveBeenCalledWith(
-        { error: closeError },
-        "Failed to close database connection"
-      );
+      expect(logger.warn).toHaveBeenCalledWith({
+        message: "Failed to close database connection",
+      });
     });
   });
 });

@@ -27,9 +27,7 @@ describe("bin/server entry point", () => {
 
     expect(sourceCode).toContain("try {");
     expect(sourceCode).toContain("await startFn();");
-    expect(sourceCode).toContain(
-      'logger.error({ err: error }, "Startup error");'
-    );
+    expect(sourceCode).toContain("logger.error({ message });");
     expect(sourceCode).toContain("process.exit(1);");
   });
 });

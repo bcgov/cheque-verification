@@ -58,7 +58,7 @@ describe("Database Configuration", () => {
 
       // Act & Assert
       expect(() => database.getRequired("MISSING_VAR")).toThrow(
-        "Missing env: MISSING_VAR"
+        "Missing required environment variable"
       );
     });
 
@@ -68,7 +68,7 @@ describe("Database Configuration", () => {
 
       // Act & Assert
       expect(() => database.getRequired("EMPTY_VAR")).toThrow(
-        "Missing env: EMPTY_VAR"
+        "Missing required environment variable"
       );
     });
   });
@@ -110,7 +110,7 @@ describe("Database Configuration", () => {
 
       // Act & Assert
       await expect(database.initializeDbPool()).rejects.toThrow(
-        "Missing env: ORACLE_USER"
+        "Missing required environment variable"
       );
       expect(mockCreatePool).not.toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe("Database Configuration", () => {
 
       // Act & Assert
       await expect(database.initializeDbPool()).rejects.toThrow(
-        "Missing env: ORACLE_PASSWORD"
+        "Missing required environment variable"
       );
       expect(mockCreatePool).not.toHaveBeenCalled();
     });
@@ -132,7 +132,7 @@ describe("Database Configuration", () => {
 
       // Act & Assert
       await expect(database.initializeDbPool()).rejects.toThrow(
-        "Missing env: ORACLE_CONNECTION_STRING"
+        "Missing required environment variable"
       );
       expect(mockCreatePool).not.toHaveBeenCalled();
     });
