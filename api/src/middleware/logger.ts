@@ -1,12 +1,16 @@
 import pinoHttp from "pino-http";
 import { v4 as uuidv4 } from "uuid";
-import { IncomingMessage } from "http";
-import { logger } from "../config/logger.js";
+import { logger } from "../config/logger";
 
-// Request logging middleware that only includes reqId, method, status and client IP
+/**
+ * Request logging middleware that only includes reqId, method, status and client IP
+ *
+ * Note: This file is intentionally duplicated in both api/ and backend/ services
+ * to maintain service independence and separate deployment capabilities.
+ */
 export const requestLogger = pinoHttp({
   logger,
-  genReqId: (req: IncomingMessage) => {
+  genReqId: (req) => {
     // prefer an incoming request id header, else generate one
     const existingId =
       req.headers["x-request-id"] || req.headers["X-Request-ID"];

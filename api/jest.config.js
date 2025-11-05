@@ -28,7 +28,5 @@ export default {
     "<rootDir>/__tests__/setup.ts",
     "<rootDir>/__tests__/mocks/",
   ],
-  transformIgnorePatterns: [
-    "node_modules/(?!(uuid)/)",
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(uuid)/)"],
 };
