@@ -79,10 +79,6 @@ async function closeConnection(
   connection: oracledb.Connection | undefined
 ): Promise<void> {
   if (connection) {
-    try {
-      await connection.close();
-    } catch (err) {
-      logger.warn({ message: "Failed to close database connection" });
-    }
+    await connection.close();
   }
 }
