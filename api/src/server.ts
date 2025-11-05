@@ -1,7 +1,8 @@
 import type { Server } from "node:http";
 import dotenv from "dotenv";
-import { createApp } from "./app.js";
-import { closeDbPool, initializeDbPool } from "./config/database.js";
+import { createApp } from "./app";
+import { closeDbPool, initializeDbPool } from "./config/database";
+import logger from "./config/logger";
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ async function bindServer(port: number) {
   return new Promise<Server>((resolve, reject) => {
     const httpServer = app.listen(port, () => {
       httpServer.off("error", onError);
-      console.log(`Listening on port ${port}`);
+      logger.info({ port }, "API server started");
       resolve(httpServer);
     });
 
@@ -72,11 +73,11 @@ export async function start(options: StartOptions = {}): Promise<Server> {
     }
 
     const listener = () => {
-      console.log("Shutting down…");
+      logger.info("Shutting down…");
       stop()
         .then(() => process.exit(0))
         .catch((shutdownError) => {
-          console.error("Error during shutdown:", shutdownError);
+          logger.error({ err: shutdownError }, "Error during shutdown");
           process.exit(1);
         });
     };

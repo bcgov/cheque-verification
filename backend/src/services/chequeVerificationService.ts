@@ -1,6 +1,7 @@
 import axios from "axios";
 import jwt, { SignOptions, JwtPayload, Secret } from "jsonwebtoken";
 import { ChequeStatusResponse, ApiResponse } from "../types";
+import { logger } from "../config/logger";
 
 /**
  * Service class for cheque verification operations
@@ -81,17 +82,10 @@ export class ChequeVerificationService {
       throw new Error("Invalid cheque number format");
     }
 
-    console.log("Preparing API request", {
-      chequeNumberLength: chequeNumber.length,
-      hasApiUrl: !!this.apiUrl,
-      apiUrl: this.apiUrl, // Safe to log URL for debugging
-    });
-
     // Prepare optional Authorization header with JWT for internal API
     const headers: Record<string, string> = {};
     const secret: Secret | undefined = process.env.JWT_SECRET;
     if (secret) {
-      console.log("JWT authentication configured");
       const issuer = process.env.JWT_ISSUER || "cheque-backend";
       const audience = process.env.JWT_AUDIENCE || "cheque-api";
       const expiresIn = process.env.JWT_TTL
@@ -113,18 +107,12 @@ export class ChequeVerificationService {
       const token = jwt.sign(payload, secret as Secret, options);
       headers["Authorization"] = `Bearer ${token}`;
     } else {
-      console.warn("No JWT secret configured - making unauthenticated request");
+      logger.warn("No JWT secret configured - making unauthenticated request");
     }
 
     // Safe: chequeNumber has been validated to contain only digits (1-16 chars)
     // This prevents path traversal and URL injection attacks
     const fullUrl = `${this.apiUrl}/api/v1/cheque/${chequeNumber}`;
-    console.log("Making API request", {
-      baseUrl: this.apiUrl,
-      chequeNumberLength: chequeNumber.length,
-      hasAuth: !!headers["Authorization"],
-      timeout: 30000,
-    });
 
     // Safe: URL is constructed from validated environment variable + validated digits-only cheque number
     const response = await axios.get<ApiResponse<ChequeStatusResponse>>(
@@ -135,13 +123,6 @@ export class ChequeVerificationService {
         headers,
       }
     );
-
-    console.log("API response received", {
-      status: response.status,
-      hasData: !!response.data,
-      success: response.data?.success,
-      dataKeys: response.data?.data ? Object.keys(response.data.data) : [],
-    });
 
     return response.data;
   }

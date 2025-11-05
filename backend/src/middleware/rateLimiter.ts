@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { rateLimit } from "express-rate-limit";
+import { logger } from "../config/logger";
 
 // General rate limiter for all requests
 export const globalRequestLimiter = rateLimit({
@@ -25,7 +26,7 @@ export const apiLimiter = rateLimit({
   legacyHeaders: false,
   // Custom handler for rate limit exceeded
   handler: (req: Request, res: Response): void => {
-    console.warn(`Rate limit exceeded for IP: ${req.ip} on ${req.path}`);
+    logger.warn({ ip: req.ip, path: req.path }, "Rate limit exceeded");
     res.status(429).json({
       success: false,
       error: "Too many API requests. Please wait before trying again.",

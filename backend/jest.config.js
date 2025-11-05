@@ -14,4 +14,5 @@ module.exports = {
   verbose: true,
   clearMocks: true,
   restoreMocks: true,
+  transformIgnorePatterns: ["node_modules/(?!(uuid)/)"],
 };

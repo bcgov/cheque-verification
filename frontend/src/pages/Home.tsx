@@ -52,7 +52,6 @@ function Home() {
       );
       setStatus(response.data);
     } catch (err) {
-      console.error("Error verifying cheque:", err);
       if (axios.isAxiosError(err) && err.response) {
         const errorData = err.response.data;
         if (errorData.details && Array.isArray(errorData.details)) {

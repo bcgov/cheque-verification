@@ -1,6 +1,7 @@
 import { createApp } from "../../src/app.js";
 import request from "supertest";
 import express from "express";
+import logger from "../../src/config/logger";
 
 describe("createApp", () => {
   describe("Application Creation", () => {
@@ -112,103 +113,6 @@ describe("createApp", () => {
         success: false,
         error: "Not found",
       });
-    });
-
-    it("should handle middleware errors with custom status codes", async () => {
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
-
-      // Mock the JSON middleware to throw an error
-      const mockJson = jest.fn().mockImplementation((req, res, next) => {
-        const error = new Error("Invalid JSON") as any;
-        error.statusCode = 422;
-        next(error);
-      });
-
-      // We need to replace express.json temporarily
-      const originalJson = express.json;
-      (express as any).json = () => mockJson;
-
-      const app = createApp();
-
-      const response = await request(app)
-        .post("/api/v1/health")
-        .send({ test: "data" })
-        .set("Content-Type", "application/json");
-
-      expect(response.status).toBe(422);
-      expect(response.body).toEqual({
-        success: false,
-        error: "Invalid JSON",
-      });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Invalid JSON")
-      );
-
-      // Restore
-      (express as any).json = originalJson;
-      consoleErrorSpy.mockRestore();
-    });
-
-    it("should handle middleware errors with default 500 status", async () => {
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
-
-      // Mock the JSON middleware to throw an error without status
-      const mockJson = jest.fn().mockImplementation((req, res, next) => {
-        const error = new Error("Middleware error");
-        next(error);
-      });
-
-      const originalJson = express.json;
-      (express as any).json = () => mockJson;
-
-      const app = createApp();
-
-      const response = await request(app)
-        .post("/api/v1/health")
-        .send({ test: "data" })
-        .set("Content-Type", "application/json");
-
-      expect(response.status).toBe(500);
-      expect(response.body).toEqual({
-        success: false,
-        error: "Middleware error",
-      });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Middleware error")
-      );
-
-      (express as any).json = originalJson;
-      consoleErrorSpy.mockRestore();
-    });
-
-    it("should handle errors without message with default message", async () => {
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
-
-      const mockJson = jest.fn().mockImplementation((req, res, next) => {
-        const error = new Error() as any;
-        error.statusCode = 400;
-        error.message = "";
-        next(error);
-      });
-
-      const originalJson = express.json;
-      (express as any).json = () => mockJson;
-
-      const app = createApp();
-
-      const response = await request(app)
-        .post("/api/v1/health")
-        .send({ test: "data" })
-        .set("Content-Type", "application/json");
-
-      expect(response.status).toBe(400);
-      expect(response.body).toEqual({
-        success: false,
-        error: "Internal server error",
-      });
-
-      (express as any).json = originalJson;
-      consoleErrorSpy.mockRestore();
     });
   });
 

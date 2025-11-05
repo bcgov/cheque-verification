@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
-import { ChequeVerificationService } from "../services/chequeVerificationService";
+import { ChequeVerificationService } from "../services/chequeVerificationService.js";
+import { logger } from "../config/logger";
 
 /**
  * Controller for cheque verification endpoints
@@ -59,14 +60,16 @@ export class ChequeController {
     req: Request,
     data: { chequeNumber: any; appliedAmount: any; paymentIssueDate: any }
   ): void {
-    console.log("Received cheque verification request", {
-      hasChequeNumber: !!data.chequeNumber,
-      chequeNumberLength: data.chequeNumber?.length || 0,
-      hasAmount: !!data.appliedAmount,
-      hasDate: !!data.paymentIssueDate,
-      userAgent: req.get("User-Agent") || "unknown",
-      timestamp: new Date().toISOString(),
-    });
+    logger.info(
+      {
+        hasChequeNumber: !!data.chequeNumber,
+        chequeNumberLength: data.chequeNumber?.length || 0,
+        hasAmount: !!data.appliedAmount,
+        hasDate: !!data.paymentIssueDate,
+        userAgent: req.get("User-Agent") || "unknown",
+      },
+      "Received cheque verification request"
+    );
   }
 
   /**
@@ -78,7 +81,7 @@ export class ChequeController {
     paymentIssueDate: any
   ): { success: boolean; error: string } | null {
     if (!chequeNumber) {
-      console.warn("Request missing cheque number");
+      logger.warn("Request missing cheque number");
       return { success: false, error: "Cheque number is required" };
     }
 
@@ -105,23 +108,16 @@ export class ChequeController {
     appliedAmount: any,
     paymentIssueDate: any
   ): Promise<{ status: number; body: any }> {
-    console.log("Calling API service for cheque data", {
-      chequeNumberLength: chequeNumber.length,
-    });
-
     const apiResponse = await this.chequeService.fetchChequeData(chequeNumber);
 
-    console.log("API service response received", {
-      success: !!apiResponse.success,
-      hasData: !!apiResponse.data,
-      responseKeys: apiResponse.data ? Object.keys(apiResponse.data) : [],
-    });
-
     if (!apiResponse.success || !apiResponse.data) {
-      console.warn("Cheque not found in API response", {
-        success: !!apiResponse.success,
-        hasData: !!apiResponse.data,
-      });
+      logger.warn(
+        {
+          success: !!apiResponse.success,
+          hasData: !!apiResponse.data,
+        },
+        "Cheque not found in API response"
+      );
       return {
         status: 404,
         body: { success: false, error: "Cheque not found" },
@@ -173,15 +169,17 @@ export class ChequeController {
    * Handles errors and sends appropriate responses
    */
   private handleError(error: unknown, res: Response): void {
-    console.error("Error during cheque verification", {
-      errorType: error instanceof Error ? error.constructor.name : "Unknown",
-      hasMessage: !!(error instanceof Error ? error.message : String(error)),
-      isAxiosError: axios.isAxiosError(error),
-      errorCode: axios.isAxiosError(error) ? error.code : undefined,
-    });
+    logger.error(
+      {
+        err: error,
+        isAxiosError: axios.isAxiosError(error),
+        errorCode: axios.isAxiosError(error) ? error.code : undefined,
+      },
+      "Error during cheque verification"
+    );
 
     if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
-      console.warn("API request timeout detected");
+      logger.warn("API request timeout detected");
       res.status(504).json({
         success: false,
         error: "API request timed out",

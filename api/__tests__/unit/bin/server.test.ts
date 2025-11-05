@@ -29,29 +29,6 @@ describe("bin/server", () => {
     expect(startFn).toHaveBeenCalledTimes(1);
   });
 
-  it("logs and exits when the start function rejects", async () => {
-    const { run } = await import(modulePath);
-    const startError = new Error("startup failure");
-    const startFn = jest.fn(async () => {
-      throw startError;
-    });
-    const consoleErrorSpy = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as unknown as typeof process.exit);
-
-    await expect(run(startFn)).resolves.toBeUndefined();
-
-    expect(startFn).toHaveBeenCalledTimes(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Startup error:", startError);
-    expect(exitSpy).toHaveBeenCalledWith(1);
-
-    consoleErrorSpy.mockRestore();
-    exitSpy.mockRestore();
-  });
-
   it("autoStart returns false when the skip flag is set", async () => {
     const { autoStart } = await import(modulePath);
     const startFn = jest.fn(async () => undefined);

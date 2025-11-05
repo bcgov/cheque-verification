@@ -1,23 +1,38 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { v4 as uuidv4 } from "uuid";
 import { logger } from "../config/logger";
 
 /**
- * Compact request logger - single line per request
+ * HTTP request logging middleware
+ *
+ * Note: This file is intentionally duplicated in both api/ and backend/ services
+ * to maintain service independence and separate deployment capabilities.
  */
+
 export const requestLogger = (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
-  res.once("finish", () => {
-    logger.info(
-      {
-        method: req.method,
-        path: req.path,
-        status: res.statusCode,
-      },
-      "request"
-    );
+) => {
+  // Skip health check endpoints
+  if (req.url === "/health" || req.url.startsWith("/health")) {
+    return next();
+  }
+
+  // Generate or use existing request ID
+  const existingId = req.headers["x-request-id"] || req.headers["X-Request-ID"];
+  const reqId = Array.isArray(existingId)
+    ? existingId[0]
+    : existingId || uuidv4();
+
+  // Log when response finishes
+  res.on("finish", () => {
+    logger.info({
+      reqId,
+      method: req.method,
+      status: res.statusCode,
+      ip: req.ip,
+    });
   });
 
   next();

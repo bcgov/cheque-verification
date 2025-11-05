@@ -1,4 +1,5 @@
 import { start } from "../server.js";
+import logger from "../config/logger";
 
 export type StartFunction = () => Promise<unknown>;
 
@@ -6,7 +7,7 @@ export async function run(startFn: StartFunction = start): Promise<void> {
   try {
     await startFn();
   } catch (error) {
-    console.error("Startup error:", error);
+    logger.error({ err: error }, "Startup error");
     process.exit(1);
   }
 }

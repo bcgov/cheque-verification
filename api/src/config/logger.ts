@@ -8,6 +8,9 @@ const redactedFields = [
   "password",
   "token",
   "secret",
+  "chequeNumber",
+  "appliedAmount",
+  "paymentIssueDate",
 ];
 
 export const logger: Logger = pino({
