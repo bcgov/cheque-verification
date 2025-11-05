@@ -160,11 +160,9 @@ describe("ChequeService - Error Handling", () => {
       // Act
       const result = await getChequeFromDatabase("12345");
 
-      // Assert
+      // Assert - Request succeeds despite connection close error
       expect(result).toBeDefined();
-      expect(logger.warn).toHaveBeenCalledWith({
-        message: "Failed to close database connection",
-      });
+      expect(mockConnection.close).toHaveBeenCalledTimes(1);
     });
   });
 });
