@@ -5,22 +5,24 @@ jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid-1234"),
 }));
 
-// Mock pino-http to avoid pino internal symbol issues
-jest.mock("pino-http", () => {
-  return jest.fn(() => {
-    return (req: any, res: any, next: any) => {
-      req.id = "test-request-id";
-      req.log = {
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn(),
-        child: jest.fn().mockReturnThis(),
-      };
-      next();
-    };
-  });
-});
+// Mock the logger configuration
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+  debug: jest.fn(),
+  child: jest.fn().mockReturnThis(),
+  trace: jest.fn(),
+  fatal: jest.fn(),
+  level: "info",
+  version: "8.0.0",
+  bindings: jest.fn(() => ({ service: "cheque-verification-api" })),
+};
+
+jest.mock("../src/config/logger", () => ({
+  logger: mockLogger,
+  default: mockLogger,
+}));
 
 // Load test environment variables
 dotenv.config({ path: ".env.test" });

@@ -7,17 +7,6 @@ import {
   setupTestEnvironment,
 } from "../helpers/chequeTestHelpers";
 
-// Mock the logger before importing anything else
-jest.mock("../../src/config/logger.js", () => ({
-  logger: {
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-    fatal: jest.fn(),
-  },
-}));
-
 import { logger } from "../../src/config/logger.js";
 
 describe("ChequeService - Error Handling", () => {

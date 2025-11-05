@@ -1,56 +1,39 @@
-import pinoHttp from "pino-http";
+import type { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../config/logger";
 
 /**
- * Request logging middleware that only includes reqId, method, status and client IP
+ * HTTP request logging middleware
  *
  * Note: This file is intentionally duplicated in both api/ and backend/ services
  * to maintain service independence and separate deployment capabilities.
  */
-export const requestLogger = pinoHttp({
-  logger,
-  genReqId: (req) => {
-    // prefer an incoming request id header, else generate one
-    const existingId =
-      req.headers["x-request-id"] || req.headers["X-Request-ID"];
-    return Array.isArray(existingId) ? existingId[0] : existingId || uuidv4();
-  },
-  // Add minimal structured props to every request log
-  customProps: (req, res) => ({
-    reqId: (req as any).id,
-    clientIp:
-      req.headers["x-forwarded-for"] ||
-      (req as any).ip || // Express specific
-      req.socket?.remoteAddress,
-  }),
-  // Only serialize minimal fields from req/res
-  serializers: {
-    req: (req) => {
-      // Prefer Express path (no query params)
-      const rawPath =
-        (req as any).path || (req.url?.split("?")[0] ?? req.url ?? "");
 
-      // Mask numeric and UUID-like segments
-      const sanitizedPath = rawPath
-        // Replace numbers like /12345 -> /:id
-        .replace(/\/\d+/g, "/:id")
-        // Replace UUID-like strings (optional)
-        .replace(/\/[0-9a-fA-F-]{8,36}(?=\/|$)/g, "/:id");
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Skip health check endpoints
+  if (req.url === "/health" || req.url.startsWith("/health")) {
+    return next();
+  }
 
-      return {
-        method: req.method,
-        path: sanitizedPath,
-      };
-    },
-    res: (res) => ({ status: res.statusCode }),
-  },
-  // Keep autoLogging (logs a single entry when response ends).
-  // Ignore health check endpoints to reduce log noise
-  autoLogging: {
-    ignore: (req) => {
-      const url = req.url || "";
-      return url === "/health" || url.startsWith("/health");
-    },
-  },
-});
+  // Generate or use existing request ID
+  const existingId = req.headers["x-request-id"] || req.headers["X-Request-ID"];
+  const reqId = Array.isArray(existingId)
+    ? existingId[0]
+    : existingId || uuidv4();
+
+  // Log when response finishes
+  res.on("finish", () => {
+    logger.info({
+      reqId,
+      method: req.method,
+      status: res.statusCode,
+      ip: req.ip,
+    });
+  });
+
+  next();
+};

@@ -12,6 +12,7 @@ describe("requestLogger middleware", () => {
     const { requestLogger } = require("../../../src/middleware/logger");
     const req = {
       method: "GET",
+      url: "/test-path",
       path: "/test-path",
       headers: {},
     } as unknown as Request;
