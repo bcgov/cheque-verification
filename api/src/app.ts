@@ -4,7 +4,6 @@ import express, { NextFunction, Request, Response } from "express";
 import { requestLogger } from "./middleware/logger";
 import routes from "./routes/index";
 import { HttpError } from "./middleware/validation";
-import logger from "./config/logger";
 
 export interface CreateAppOptions {
   allowedOrigins?: string[];
@@ -42,7 +41,6 @@ export function createApp(options: CreateAppOptions = {}) {
 
   app.use(
     (err: HttpError, req: Request, res: Response, _next: NextFunction) => {
-      logger.error({ err }, "Error processing request");
       const status = err.statusCode || 500;
       const message =
         process.env.NODE_ENV === "production"

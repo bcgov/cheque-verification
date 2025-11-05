@@ -77,7 +77,11 @@ export async function start(options: StartOptions = {}): Promise<Server> {
       stop()
         .then(() => process.exit(0))
         .catch((shutdownError) => {
-          logger.error({ err: shutdownError }, "Error during shutdown");
+          const message =
+            shutdownError instanceof Error
+              ? shutdownError.message
+              : String(shutdownError);
+          logger.error({ message });
           process.exit(1);
         });
     };

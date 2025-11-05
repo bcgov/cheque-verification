@@ -22,16 +22,8 @@ export async function getChequeFromDatabase(
   const table = process.env.DB_TABLE;
 
   if (!schema || !table) {
-    logger.error(
-      {
-        schema: !!schema,
-        table: !!table,
-      },
-      "Database configuration missing"
-    );
-    throw new Error(
-      "Database schema and table not configured in environment variables"
-    );
+    logger.error({ message: "Database configuration missing" });
+    throw new Error("Database configuration missing");
   }
 
   logger.info(
@@ -64,32 +56,6 @@ export async function getChequeFromDatabase(
       },
       "Database query completed"
     );
-
-    // Log result status (without sensitive data) for debugging
-    if (result?.rows?.length) {
-      logger.info(
-        {
-          hasStatusOutput: !!result.rows[0].CHEQUE_STATUS_OUTPUT,
-          hasPaymentDate: !!result.rows[0].PAYMENT_ISSUE_DT,
-          hasAmount: !!result.rows[0].APPLIED_AMOUNT,
-          resultNumberLength: result.rows[0].CHEQUE_NUMBER?.length || 0,
-        },
-        "Query result found"
-      );
-    } else {
-      logger.warn("No rows returned from database query");
-    }
-  } catch (error) {
-    logger.error(
-      {
-        errorType: error instanceof Error ? error.constructor.name : "Unknown",
-        errorMessage: error instanceof Error ? error.message : String(error),
-        errorCode: (error as any)?.code,
-        hasMessage: !!(error instanceof Error ? error.message : String(error)),
-      },
-      "Database error in getChequeFromDatabase"
-    );
-    throw new Error("Failed to retrieve cheque information");
   } finally {
     await closeConnection(connection);
   }
@@ -115,8 +81,8 @@ async function closeConnection(
   if (connection) {
     try {
       await connection.close();
-    } catch (err) {
-      logger.warn({ error: err }, "Failed to close database connection");
+    } catch {
+      // Suppress close errors - they shouldn't fail the request
     }
   }
 }

@@ -4,7 +4,7 @@ let pool: oracledb.Pool | null = null;
 
 export function getRequired(name: string): string {
   const v = process.env[name];
-  if (!v) throw new Error(`Missing env: ${name}`);
+  if (!v) throw new Error("Missing required environment variable");
   return v;
 }
 
