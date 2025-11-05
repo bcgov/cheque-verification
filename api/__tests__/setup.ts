@@ -1,5 +1,27 @@
 import dotenv from "dotenv";
 
+// Mock uuid module to avoid ESM issues
+jest.mock("uuid", () => ({
+  v4: jest.fn(() => "test-uuid-1234"),
+}));
+
+// Mock pino-http to avoid pino internal symbol issues
+jest.mock("pino-http", () => {
+  return jest.fn(() => {
+    return (req: any, res: any, next: any) => {
+      req.id = "test-request-id";
+      req.log = {
+        info: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn(),
+        child: jest.fn().mockReturnThis(),
+      };
+      next();
+    };
+  });
+});
+
 // Load test environment variables
 dotenv.config({ path: ".env.test" });
 

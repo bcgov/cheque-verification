@@ -1,7 +1,7 @@
 import pinoHttp from "pino-http";
 import { v4 as uuidv4 } from "uuid";
 import { IncomingMessage } from "http";
-import { logger } from "../config/logger.js";
+import { logger } from "../config/logger";
 
 // Request logging middleware that only includes reqId, method, status and client IP
 export const requestLogger = pinoHttp({

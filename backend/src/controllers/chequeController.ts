@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import { ChequeVerificationService } from "../services/chequeVerificationService.js";
-import { logger } from "../config/logger.js";
+import { logger } from "../config/logger";
 
 /**
  * Controller for cheque verification endpoints
