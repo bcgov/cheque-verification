@@ -49,7 +49,7 @@ describe("ChequeService - Error Handling", () => {
 
       // Act & Assert
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Failed to retrieve cheque information"
+        "Database unavailable"
       );
 
       // Connection should not be closed if never established
@@ -67,7 +67,7 @@ describe("ChequeService - Error Handling", () => {
 
       // Act & Assert
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Failed to retrieve cheque information"
+        "ORA-01013: user requested cancel of current operation"
       );
 
       expect(mockConnection.close).toHaveBeenCalledTimes(1);

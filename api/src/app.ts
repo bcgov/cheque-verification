@@ -4,7 +4,6 @@ import express, { NextFunction, Request, Response } from "express";
 import { requestLogger } from "./middleware/logger";
 import routes from "./routes/index";
 import { HttpError } from "./middleware/validation";
-import logger from "./config/logger";
 
 export interface CreateAppOptions {
   allowedOrigins?: string[];

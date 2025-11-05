@@ -79,7 +79,7 @@ describe("ChequeService - Security & Concurrency", () => {
 
       // Act - Call should fail but connection should still be closed
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Failed to retrieve cheque information"
+        "ORA-00942: table or view does not exist"
       );
 
       // Assert - Connection was properly closed despite error
@@ -93,7 +93,7 @@ describe("ChequeService - Security & Concurrency", () => {
 
       // Act & Assert
       await expect(getChequeFromDatabase("12345")).rejects.toThrow(
-        "Failed to retrieve cheque information"
+        "Connection timeout"
       );
 
       // No connection to close since getConnection failed

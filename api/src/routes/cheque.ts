@@ -57,19 +57,13 @@ router.get(
       "Received cheque verification request"
     );
 
-    try {
-      // Express-async-errors automatically handle query database - errors
-      const chequeStatus = await getChequeFromDatabase(chequeNumber); // Keep as string to avoid precision loss
+    // Express-async-errors automatically catches and handles any errors
+    const chequeStatus = await getChequeFromDatabase(chequeNumber);
 
-      // Return successful response
-      res.status(200).json({
-        success: true,
-        data: chequeStatus,
-      });
-    } catch (error) {
-      // Re-throw to let express-async-errors and global error handler handle it
-      throw error;
-    }
+    res.status(200).json({
+      success: true,
+      data: chequeStatus,
+    });
   }
 );
 

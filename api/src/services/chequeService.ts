@@ -56,23 +56,6 @@ export async function getChequeFromDatabase(
       },
       "Database query completed"
     );
-
-    // Log result status (without sensitive data) for debugging
-    if (result?.rows?.length) {
-      logger.info(
-        {
-          hasStatusOutput: !!result.rows[0].CHEQUE_STATUS_OUTPUT,
-          hasPaymentDate: !!result.rows[0].PAYMENT_ISSUE_DT,
-          hasAmount: !!result.rows[0].APPLIED_AMOUNT,
-          resultNumberLength: result.rows[0].CHEQUE_NUMBER?.length || 0,
-        },
-        "Query result found"
-      );
-    } else {
-      logger.warn("No rows returned from database query");
-    }
-  } catch (error) {
-    throw new Error("Failed to retrieve cheque information");
   } finally {
     await closeConnection(connection);
   }
