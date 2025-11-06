@@ -26,6 +26,3 @@ RUN caddy fmt --overwrite /etc/caddy/Caddyfile
 
 # Expose ports (3000 for app, 3001 for health)
 EXPOSE 3000 3001
-
-# Run as non-root user
-USER 1001
