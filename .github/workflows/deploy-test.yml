@@ -47,8 +47,6 @@ jobs:
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
-          build-args: |
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
 
       # Build backend image
       - name: Extract metadata for backend
@@ -99,7 +97,8 @@ jobs:
           helm upgrade --install cheque-verification-frontend ./helm/cheque-verification-frontend \
             --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
-            --set image.tag=${{ needs.build_and_push.outputs.image_tag }}
+            --set image.tag=${{ needs.build_and_push.outputs.image_tag }} \
+            --set route.host=${{ secrets.FRONTEND_HOSTNAME }}
 
           helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
             --namespace ${{ secrets.OPENSHIFT_NAMESPACE }} \

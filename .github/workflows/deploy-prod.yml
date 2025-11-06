@@ -39,7 +39,8 @@ jobs:
           helm upgrade --install cheque-verification-frontend ./helm/cheque-verification-frontend \
             --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
-            --set image.tag=${{ github.ref_name }}
+            --set image.tag=${{ github.ref_name }} \
+            --set route.host=${{ secrets.FRONTEND_HOSTNAME_PROD }}
 
           helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
             --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \

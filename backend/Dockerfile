@@ -27,7 +27,10 @@ COPY --from=build /app/dist ./dist
 ENV NODE_ENV=production
 
 # Expose port (OpenShift will override this)
-EXPOSE 3001
+EXPOSE 3000
+
+# Use non-root user
+USER 1001
 
 # Start the application using your package.json start script
 CMD ["npm", "start"]

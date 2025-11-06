@@ -21,7 +21,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 4000
+            - containerPort: 3000
           env:
             - name: API_URL
               valueFrom:
@@ -34,10 +34,7 @@ spec:
                   name: cheque-verification-backend-secrets
                   key: FRONTEND_URL
             - name: PORT
-              valueFrom:
-                secretKeyRef:
-                  name: cheque-verification-backend-secrets
-                  key: PORT
+              value: "3000"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

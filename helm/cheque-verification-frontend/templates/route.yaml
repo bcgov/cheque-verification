@@ -5,6 +5,9 @@ metadata:
   labels:
     app.kubernetes.io/name: cheque-verification-frontend
 spec:
+  {{- if .Values.route.host }}
+  host: {{ .Values.route.host }}
+  {{- end }}
   to:
     kind: Service
     name: cheque-verification-frontend
@@ -12,3 +15,4 @@ spec:
     targetPort: 3000
   tls:
     termination: edge
+    insecureEdgeTerminationPolicy: Redirect
