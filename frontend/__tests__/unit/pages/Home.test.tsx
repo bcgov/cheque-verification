@@ -157,14 +157,11 @@ describe("Home Page", () => {
       );
     });
 
-    expect(mockAxios.post).toHaveBeenCalledWith(
-      "http://localhost:4000/api/cheque/verify",
-      {
-        chequeNumber: "123456",
-        paymentIssueDate: "2024-01-15",
-        appliedAmount: "1000.50",
-      }
-    );
+    expect(mockAxios.post).toHaveBeenCalledWith("/api/cheque/verify", {
+      chequeNumber: "123456",
+      paymentIssueDate: "2024-01-15",
+      appliedAmount: "1000.50",
+    });
   });
 
   it("handles form submission with validation errors", async () => {
@@ -264,12 +261,7 @@ describe("Home Page", () => {
     });
   });
 
-  it("uses custom API URL when provided in environment", async () => {
-    restoreEnv?.();
-    restoreEnv = testHelpers.mockEnvironment({
-      VITE_API_URL: "https://custom-api.example.com",
-    });
-
+  it("uses relative URL with Caddy proxy", async () => {
     mockAxios.post.mockResolvedValueOnce({
       data: testHelpers.MOCK_API_RESPONSES.success,
     });
@@ -281,7 +273,7 @@ describe("Home Page", () => {
 
     await waitFor(() => {
       expect(mockAxios.post).toHaveBeenCalledWith(
-        "https://custom-api.example.com/api/cheque/verify",
+        "/api/cheque/verify",
         expect.any(Object)
       );
     });
