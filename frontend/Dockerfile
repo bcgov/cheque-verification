@@ -19,12 +19,10 @@ FROM caddy:2.10.2-alpine
 # Install ca-certificates for HTTPS
 RUN apk add --no-cache ca-certificates
 
-# Copy Caddyfile and verify formatting
-COPY Caddyfile /etc/caddy/Caddyfile
-RUN caddy fmt /etc/caddy/Caddyfile
-
-# Copy built application to Caddy's default directory
+# Copy static files, verify Caddyfile formatting
 COPY --from=build /app/dist /srv
+COPY Caddyfile /etc/caddy/Caddyfile
+RUN caddy fmt --overwrite /etc/caddy/Caddyfile
 
 # Expose ports (3000 for app, 3001 for health)
 EXPOSE 3000 3001
