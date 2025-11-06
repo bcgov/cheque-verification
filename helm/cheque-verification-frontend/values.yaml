@@ -6,8 +6,17 @@ image:
   pullPolicy: Always
 
 service:
+  enabled: true
   type: ClusterIP
-  port: 3000
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+
+# Route configuration
+route:
+  host: "" # Leave empty for auto-generated hostname, or specify custom hostname
 
 resources: {}
 
@@ -19,4 +28,5 @@ affinity: {}
 
 # Config for the frontend (API endpoints, etc.)
 config:
-  API_BASE_URL: "http://cheque-verification-backend:80"
+  BACKEND_URL: "http://cheque-verification-backend:80"
+  LOG_LEVEL: "INFO"

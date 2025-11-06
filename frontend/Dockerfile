@@ -10,32 +10,24 @@ RUN npm ci
 # Copy source code
 COPY . ./
 
-# Accept build argument for API URL and make it available to Vite
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
-
-# Build the application with injected API URL
+# Build the application (no API URL needed - Caddy handles routing)
 RUN npm run build
 
-# Production stage - serve with Node.js
-FROM node:22-slim
+# Production stage - serve with Caddy
+FROM caddy:2.10.2-alpine
 
-WORKDIR /app
+# Install ca-certificates for HTTPS
+RUN apk add --no-cache ca-certificates
 
-# Install serve package for static files
-RUN npm install -g serve@14
+# Copy Caddyfile and verify formatting
+COPY Caddyfile /etc/caddy/Caddyfile
+RUN caddy fmt /etc/caddy/Caddyfile
 
-# Copy built application
-COPY --from=build /app/dist ./dist
+# Copy built application to Caddy's default directory
+COPY --from=build /app/dist /srv
 
-# Set environment
-ENV NODE_ENV=production
+# Expose ports (3000 for app, 3001 for health)
+EXPOSE 3000 3001
 
-# Expose port
-EXPOSE 3000
-
-# Use non-root user
+# Run as non-root user
 USER 1001
-
-# Start the application
-CMD ["serve", "-s", "dist", "-l", "3000"]

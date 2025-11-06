@@ -1,3 +1,4 @@
+{{- if .Values.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,9 +6,14 @@ metadata:
   labels:
     app.kubernetes.io/name: cheque-verification-frontend
 spec:
+  type: {{ .Values.service.type }}
   selector:
     app.kubernetes.io/name: cheque-verification-frontend
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: 3000
+    {{- range .Values.service.ports }}
+    - name: {{ .name }}
+      protocol: {{ .protocol }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+    {{- end }}
+{{- end }}

@@ -41,9 +41,9 @@ function Home() {
       setLoading(true);
       setError("");
       setStatus(null);
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+      // Use relative URL - Caddy handles routing to backend
       const response = await axios.post<ApiResponse<CheckStatus>>(
-        `${apiUrl}/api/cheque/verify`,
+        "/api/cheque/verify",
         {
           chequeNumber,
           paymentIssueDate,
