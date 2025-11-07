@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { logger } from "../config/logger";
+import { logger } from "../config/logger.js";
 
 /**
  * HTTP request logging middleware

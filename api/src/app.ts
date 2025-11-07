@@ -1,9 +1,9 @@
 import "express-async-errors";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
-import { requestLogger } from "./middleware/logger";
-import routes from "./routes/index";
-import { HttpError } from "./middleware/validation";
+import { requestLogger } from "./middleware/logger.js";
+import routes from "./routes/index.js";
+import { HttpError } from "./middleware/validation.js";
 
 export interface CreateAppOptions {
   allowedOrigins?: string[];

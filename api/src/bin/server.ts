@@ -1,5 +1,5 @@
 import { start } from "../server.js";
-import logger from "../config/logger";
+import logger from "../config/logger.js";
 
 export type StartFunction = () => Promise<unknown>;
 
