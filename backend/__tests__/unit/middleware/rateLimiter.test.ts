@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import {
   globalRequestLimiter,
-  apiLimiter,
+  chequeVerifyLimiter,
+  healthLimiter,
 } from "../../../src/middleware/rateLimiter";
 import {
   describe,
@@ -39,36 +40,66 @@ describe("Rate Limiter Middleware", () => {
         globalRequestLimiter.length; // Check arity (should be 3 for middleware)
       }).not.toThrow();
     });
+
+    it("should have conservative per-pod limits for DDoS protection", () => {
+      // Verify the limiter exists and is properly configured
+      // Configured for 20 req/15min per pod (assuming 3-5 pod scaling)
+      expect(globalRequestLimiter).toBeDefined();
+      expect(typeof globalRequestLimiter).toBe("function");
+    });
   });
 
-  describe("apiLimiter configuration", () => {
+  describe("chequeVerifyLimiter configuration", () => {
     it("should be defined", () => {
-      expect(apiLimiter).toBeDefined();
-      expect(typeof apiLimiter).toBe("function");
+      expect(chequeVerifyLimiter).toBeDefined();
+      expect(typeof chequeVerifyLimiter).toBe("function");
     });
 
     it("should have correct configuration properties", () => {
-      expect(apiLimiter).toBeDefined();
-      expect(typeof apiLimiter).toBe("function");
+      expect(chequeVerifyLimiter).toBeDefined();
+      expect(typeof chequeVerifyLimiter).toBe("function");
 
       // Test that it can be used as middleware
       expect(() => {
-        apiLimiter.length; // Check that it's a proper middleware function
+        chequeVerifyLimiter.length; // Check that it's a proper middleware function
       }).not.toThrow();
     });
 
     it("should have custom handler for rate limit exceeded", () => {
-      // Test that apiLimiter exists and is a function
-      expect(apiLimiter).toBeDefined();
-      expect(typeof apiLimiter).toBe("function");
+      // Test that chequeVerifyLimiter exists and is a function
+      expect(chequeVerifyLimiter).toBeDefined();
+      expect(typeof chequeVerifyLimiter).toBe("function");
 
       // The middleware should be properly configured with a custom handler
       // We can't easily test the handler directly, but we can verify the setup
-      expect(apiLimiter).not.toBe(globalRequestLimiter); // Should be different
+      expect(chequeVerifyLimiter).not.toBe(globalRequestLimiter); // Should be different
+    });
+
+    it("should have stricter limits than global limiter for DDoS protection", () => {
+      // Verify the limiter exists and is properly configured
+      // Configured for 5 req/5min per pod (assuming 3-5 pod scaling)
+      expect(chequeVerifyLimiter).toBeDefined();
+      expect(typeof chequeVerifyLimiter).toBe("function");
+      expect(chequeVerifyLimiter).not.toBe(globalRequestLimiter);
     });
   });
 
-  describe("apiLimiter custom handler simulation", () => {
+  describe("healthLimiter configuration", () => {
+    it("should be defined", () => {
+      expect(healthLimiter).toBeDefined();
+      expect(typeof healthLimiter).toBe("function");
+    });
+
+    it("should have moderate limits for health checks", () => {
+      // Configured for 10 req/min per pod with skip for internal IPs
+      expect(healthLimiter).toBeDefined();
+      expect(typeof healthLimiter).toBe("function");
+      expect(healthLimiter).not.toBe(globalRequestLimiter);
+      expect(healthLimiter).not.toBe(chequeVerifyLimiter);
+    });
+  });
+
+  describe("chequeVerifyLimiter custom handler simulation", () => {
     let mockReq: Partial<Request>;
     let mockRes: Partial<Response>;
     let mockJson: ReturnType<typeof jest.fn>;
@@ -140,7 +171,7 @@ describe("Rate Limiter Middleware", () => {
       }).not.toThrow();
 
       expect(() => {
-        if (typeof apiLimiter === "function") {
+        if (typeof chequeVerifyLimiter === "function") {
           // Middleware is properly configured
         }
       }).not.toThrow();

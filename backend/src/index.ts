@@ -5,6 +5,7 @@ import { ChequeVerificationService } from "./services/chequeVerificationService"
 import { ChequeController } from "./controllers/chequeController";
 import { createChequeRoutes, createHealthRoutes } from "./routes/chequeRoutes";
 import { globalRequestLimiter } from "./middleware/rateLimiter";
+import { globalSlowDown } from "./middleware/slowDown";
 import { requestLogger } from "./middleware/logger";
 import { logger } from "./config/logger";
 
@@ -23,14 +24,15 @@ export function createApp() {
   const chequeService = new ChequeVerificationService(config.apiUrl);
   const chequeController = new ChequeController(chequeService);
 
-  // Apply global rate limiting to all requests
+  // Apply global rate limiting and slow-down to all requests
   app.use(globalRequestLimiter);
+  app.use(globalSlowDown);
 
   // Enable JSON parsing with size limits
   app.use(express.json({ limit: "100kb" })); // Limiting request body size
 
   // Trust proxy settings for accurate IP detection
-  app.set("trust proxy", 1);
+  app.set("trust proxy", true);
 
   // Enable CORS for frontend requests with more specific configuration
   app.use(
