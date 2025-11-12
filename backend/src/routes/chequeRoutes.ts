@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ChequeController } from "../controllers/chequeController";
-import { apiLimiter, healthLimiter } from "../middleware/rateLimiter";
+import { chequeVerifyLimiter, healthLimiter } from "../middleware/rateLimiter";
+import { chequeVerifySlowDown } from "../middleware/slowDown";
 
 /**
  * Creates and configures cheque verification routes
@@ -12,9 +13,12 @@ export const createChequeRoutes = (
 ): Router => {
   const router = Router();
 
-  // Enhanced cheque verification endpoint
-  router.post("/verify", apiLimiter, (req, res) =>
-    chequeController.verifyCheque(req, res)
+  // Enhanced cheque verification endpoint with slow-down and rate limiting
+  router.post(
+    "/verify",
+    chequeVerifySlowDown,
+    chequeVerifyLimiter,
+    (req, res) => chequeController.verifyCheque(req, res)
   );
 
   return router;

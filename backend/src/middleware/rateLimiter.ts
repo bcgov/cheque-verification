@@ -2,47 +2,94 @@ import { Request, Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import { logger } from "../config/logger";
 
-// General rate limiter for all requests
 export const globalRequestLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100, // 100 requests per 15 minutes
+  limit: 20, // 20 requests per 15 minutes per pod
   message: {
     success: false,
     error: "Too many requests from this IP, please try again later.",
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  handler: (req: Request, res: Response): void => {
+    logger.warn(
+      {
+        ip: req.ip,
+        path: req.path,
+        userAgent: req.get("User-Agent"),
+      },
+      "Global rate limit exceeded"
+    );
+    res.status(429).json({
+      success: false,
+      error: "Too many requests from this IP, please try again later.",
+      retryAfter: 900, // 15 minutes in seconds
+    });
+  },
 });
 
-// Stricter rate limiter for API endpoints
-export const apiLimiter = rateLimit({
+/**
+ * Stricter rate limiter for cheque verification endpoints
+ * Conservative per-pod limit assuming 3-5 pod scaling
+ * Cluster-wide effective limit: 15-25 req/5min (5 × 3-5 pods)
+ */
+export const chequeVerifyLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 20, // 20 requests per 5 minutes
+  limit: 5, // 5 requests per 5 minutes per pod (reduced from 20)
   message: {
     success: false,
-    error: "Too many API requests. Please wait before trying again.",
+    error: "Too many verification requests. Please wait before trying again.",
   },
   standardHeaders: true,
   legacyHeaders: false,
   // Custom handler for rate limit exceeded
   handler: (req: Request, res: Response): void => {
-    logger.warn({ ip: req.ip, path: req.path }, "Rate limit exceeded");
+    logger.warn(
+      {
+        ip: req.ip,
+        path: req.path,
+        userAgent: req.get("User-Agent"),
+        headers: {
+          "x-forwarded-for": req.get("X-Forwarded-For"),
+          "x-real-ip": req.get("X-Real-IP"),
+        },
+      },
+      "Cheque verification rate limit exceeded"
+    );
     res.status(429).json({
       success: false,
-      error: "Too many API requests. Please wait before trying again.",
+      error: "Too many verification requests. Please wait before trying again.",
       retryAfter: 300, // 5 minutes in seconds
     });
   },
 });
 
-// Lenient rate limiter for health checks
+/**
+ * Rate limiter for health checks
+ * Conservative per-pod limit assuming 3-5 pod scaling
+ * Cluster-wide effective limit: 30-50 req/min (10 × 3-5 pods)
+ */
 export const healthLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  limit: 60, // 60 requests per minute
+  limit: 10, // 10 requests per minute per pod (reduced from 60)
   message: {
     success: false,
     error: "Too many health check requests.",
   },
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req: Request, res: Response): void => {
+    logger.warn(
+      {
+        ip: req.ip,
+        path: req.path,
+      },
+      "Health check rate limit exceeded"
+    );
+    res.status(429).json({
+      success: false,
+      error: "Too many health check requests.",
+      retryAfter: 60, // 1 minute in seconds
+    });
+  },
 });

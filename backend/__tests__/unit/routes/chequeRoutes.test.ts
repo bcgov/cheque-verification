@@ -8,7 +8,7 @@ import { ChequeController } from "../../../src/controllers/chequeController";
 
 // Mock the middleware to avoid rate limiting in tests
 jest.mock("../../../src/middleware/rateLimiter", () => ({
-  apiLimiter: (req: any, res: any, next: any) => next(),
+  chequeVerifyLimiter: (req: any, res: any, next: any) => next(),
   healthLimiter: (req: any, res: any, next: any) => next(),
 }));
 
