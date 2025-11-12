@@ -1,35 +1,14 @@
 import { Router, Request, Response } from "express";
-import rateLimit from "express-rate-limit";
 import { getChequeFromDatabase } from "../services/chequeService.js";
 import { validateChequeNumber } from "../middleware/validation.js";
 import { authenticateJWT, validateJWTClaims } from "../middleware/auth.js";
+import { chequeRateLimiter } from "../middleware/rateLimiter.js";
 import logger from "../config/logger.js";
 
 const router = Router();
 
-// Rate limiting for cheque API endpoints
-// Allow configurable requests per configurable window (default: 10 requests per 15 minutes)
-// This accommodates the ~600 requests/day total with reasonable per-IP limits
-const windowMinutes = Number.parseInt(
-  process.env.RATE_LIMIT_WINDOW_MINUTES || "15"
-);
-const maxRequests = Number.parseInt(
-  process.env.RATE_LIMIT_MAX_REQUESTS || "10"
-);
-
-const chequeRateLimit = rateLimit({
-  windowMs: windowMinutes * 60 * 1000, // Convert minutes to milliseconds
-  max: maxRequests, // Limit each IP to max requests per windowMs
-  message: {
-    error: "Too many requests from this IP, please try again later.",
-    retryAfter: `${windowMinutes} minutes`,
-  },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-});
-
 // Apply rate limiting to all cheque routes
-router.use(chequeRateLimit);
+router.use(chequeRateLimiter);
 
 // Apply JWT authentication to all cheque routes
 router.use(authenticateJWT);

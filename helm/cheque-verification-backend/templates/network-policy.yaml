@@ -3,8 +3,17 @@ kind: NetworkPolicy
 metadata:
   name: cheque-verification-backend-network-policy
 spec:
-  podSelector: {}
-  ingress:
-    - {}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cheque-verification-backend
   policyTypes:
     - Ingress
+  ingress:
+    # Allow traffic only from frontend pods
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: cheque-verification-frontend
+      ports:
+        - protocol: TCP
+          port: 3000
