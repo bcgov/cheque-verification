@@ -17,6 +17,19 @@ service:
 # Route configuration
 route:
   host: "" # Leave empty for auto-generated hostname, or specify custom hostname
+  annotations:
+    # Load balancing strategy (distributes traffic evenly)
+    haproxy.router.openshift.io/balance: "roundrobin"
+    # Enable HAProxy rate limiting
+    haproxy.router.openshift.io/rate-limit-connections: "true"
+    # Max concurrent TCP connections per IP
+    haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp: "10"
+    # Max HTTP requests per second per IP
+    haproxy.router.openshift.io/rate-limit-connections.rate-http: "20"
+    # Max TCP connections per second per IP
+    haproxy.router.openshift.io/rate-limit-connections.rate-tcp: "50"
+    # Disable sticky sessions for better rate limiting
+    haproxy.router.openshift.io/disable_cookies: "true"
 
 resources: {}
 

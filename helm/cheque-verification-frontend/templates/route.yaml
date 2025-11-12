@@ -4,6 +4,10 @@ metadata:
   name: cheque-verification-frontend
   labels:
     app.kubernetes.io/name: cheque-verification-frontend
+  {{- if .Values.route.annotations }}
+  annotations:
+    {{- toYaml .Values.route.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.route.host }}
   host: {{ .Values.route.host }}
