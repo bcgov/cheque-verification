@@ -16,7 +16,7 @@ export function createApp(options: CreateAppOptions = {}) {
   app.disable("x-powered-by");
 
   // Trust proxy for X-Forwarded-For headers (OpenShift router)
-  app.set("trust proxy", true);
+  app.set("trust proxy", 1);
   const origins = allowedOrigins?.length
     ? allowedOrigins
     : ["http://localhost:4000"];
@@ -30,7 +30,8 @@ export function createApp(options: CreateAppOptions = {}) {
     })
   );
 
-  app.use(express.json());
+  // Enable JSON parsing with size limits (API should have small payloads)
+  app.use(express.json({ limit: "10kb" }));
   app.use(requestLogger);
   app.use("/api/v1", routes);
 

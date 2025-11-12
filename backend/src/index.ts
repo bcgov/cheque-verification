@@ -32,7 +32,7 @@ export function createApp() {
   app.use(express.json({ limit: "100kb" })); // Limiting request body size
 
   // Trust proxy settings for accurate IP detection
-  app.set("trust proxy", true);
+  app.set("trust proxy", 1);
 
   // Enable CORS for frontend requests with more specific configuration
   app.use(
