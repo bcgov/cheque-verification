@@ -84,14 +84,14 @@ describe("ChequeVerificationService", () => {
       const result = service.validateVerificationFields("", "2024-01-01");
 
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain("All verification fields are required");
+      expect(result.error).toContain("All fields are required");
     });
 
     it("should return error for missing paymentIssueDate", () => {
       const result = service.validateVerificationFields("1000.50", "");
 
       expect(result.isValid).toBe(false);
-      expect(result.error).toContain("All verification fields are required");
+      expect(result.error).toContain("All fields are required");
     });
 
     it("should return error for invalid amount", () => {
@@ -102,7 +102,7 @@ describe("ChequeVerificationService", () => {
 
         expect(result.isValid).toBe(false);
         expect(result.error).toContain(
-          "Cheque amount must be a valid positive number"
+          "Invalid input. Please check your details and try again."
         );
       });
     });
@@ -115,7 +115,7 @@ describe("ChequeVerificationService", () => {
 
         expect(result.isValid).toBe(false);
         expect(result.error).toContain(
-          "Payment issue date must be a valid date"
+          "Invalid input. Please check your details and try again."
         );
       });
     });

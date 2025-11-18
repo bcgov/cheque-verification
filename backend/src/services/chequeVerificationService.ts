@@ -45,8 +45,7 @@ export class ChequeVerificationService {
     if (!appliedAmount || !paymentIssueDate) {
       return {
         isValid: false,
-        error:
-          "All verification fields are required (appliedAmount, paymentIssueDate)",
+        error: "All fields are required.",
       };
     }
 
@@ -54,7 +53,7 @@ export class ChequeVerificationService {
     if (Number.isNaN(amount) || amount < 0) {
       return {
         isValid: false,
-        error: "Cheque amount must be a valid positive number",
+        error: "Invalid input. Please check your details and try again.",
       };
     }
 
@@ -62,7 +61,7 @@ export class ChequeVerificationService {
     if (Number.isNaN(date.getTime())) {
       return {
         isValid: false,
-        error: "Payment issue date must be a valid date",
+        error: "Invalid input. Please check your details and try again.",
       };
     }
 

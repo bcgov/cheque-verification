@@ -3,6 +3,11 @@
 	admin off
 }
 :3000 {
+	log {
+		output stdout
+		format console
+		level INFO
+	}
 	root * /srv
 	encode zstd gzip
 	file_server

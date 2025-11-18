@@ -14,7 +14,7 @@ export async function run(startFn: StartFunction = start): Promise<void> {
 }
 
 export function autoStart(startFn?: StartFunction): boolean {
-  if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START === "true") {
+  if (process.env.CHEQUE_VERIFICATION_SKIP_AUTO_START === "true") {
     return false;
   }
 

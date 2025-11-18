@@ -16,7 +16,7 @@ describe("bin/server entry point", () => {
     const sourceCode = await readFile(binServerPath, "utf-8");
 
     expect(sourceCode).toContain(
-      'if (process.env.CHECK_VERIFICATION_SKIP_AUTO_START === "true")'
+      'if (process.env.CHEQUE_VERIFICATION_SKIP_AUTO_START === "true")'
     );
     expect(sourceCode).toContain("return false;");
     expect(sourceCode).toContain("void run(startFn ?? start);");

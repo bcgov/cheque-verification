@@ -4,9 +4,9 @@ const modulePath = "../../../src/bin/server.js";
 
 function setSkipFlag(value: string | undefined) {
   if (typeof value === "string") {
-    process.env.CHECK_VERIFICATION_SKIP_AUTO_START = value;
+    process.env.CHEQUE_VERIFICATION_SKIP_AUTO_START = value;
   } else {
-    delete process.env.CHECK_VERIFICATION_SKIP_AUTO_START;
+    delete process.env.CHEQUE_VERIFICATION_SKIP_AUTO_START;
   }
 }
 
