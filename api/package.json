@@ -1,7 +1,7 @@
 {
-  "name": "check-verification-api",
+  "name": "cheque-verification-api",
   "version": "1.0.0",
-  "description": "Simple API to verify check status",
+  "description": "API to verify cheque status",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
