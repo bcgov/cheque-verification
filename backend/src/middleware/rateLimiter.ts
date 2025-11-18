@@ -20,10 +20,11 @@ export const globalRequestLimiter = rateLimit({
       },
       "Global rate limit exceeded"
     );
+    const retryAfter = res.getHeader("Retry-After") || 900;
     res.status(429).json({
       success: false,
       error: "Too many requests. Please try again later.",
-      retryAfter: 900, // 15 minutes in seconds
+      retryAfter: Number(retryAfter),
     });
   },
 });
@@ -54,10 +55,11 @@ export const chequeVerifyLimiter = rateLimit({
       },
       "Cheque verification rate limit exceeded"
     );
+    const retryAfter = res.getHeader("Retry-After") || 900;
     res.status(429).json({
       success: false,
       error: "Too many requests. Please try again later.",
-      retryAfter: 900, // 15 minutes in seconds
+      retryAfter: Number(retryAfter),
     });
   },
 });
@@ -82,10 +84,11 @@ export const healthLimiter = rateLimit({
       },
       "Health check rate limit exceeded"
     );
+    const retryAfter = res.getHeader("Retry-After") || 60;
     res.status(429).json({
       success: false,
       error: "Too many requests. Please try again later.",
-      retryAfter: 60, // 1 minute in seconds
+      retryAfter: Number(retryAfter),
     });
   },
 });
