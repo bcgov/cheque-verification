@@ -7,7 +7,7 @@ export const globalRequestLimiter = rateLimit({
   limit: 20, // 20 requests per 15 minutes per pod
   message: {
     success: false,
-    error: "Too many requests from this IP, please try again later.",
+    error: "Too many requests. Please try again later.",
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -22,23 +22,21 @@ export const globalRequestLimiter = rateLimit({
     );
     res.status(429).json({
       success: false,
-      error: "Too many requests from this IP, please try again later.",
+      error: "Too many requests. Please try again later.",
       retryAfter: 900, // 15 minutes in seconds
     });
   },
 });
 
 /**
- * Stricter rate limiter for cheque verification endpoints
- * Conservative per-pod limit assuming 3-5 pod scaling
- * Cluster-wide effective limit: 15-25 req/5min (5 × 3-5 pods)
+ * Rate limiter for cheque verification endpoints
  */
 export const chequeVerifyLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 5, // 5 requests per 5 minutes per pod (reduced from 20)
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 20, // 20 requests per 15 minutes per pod
   message: {
     success: false,
-    error: "Too many verification requests. Please wait before trying again.",
+    error: "Too many requests. Please try again later.",
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -58,8 +56,8 @@ export const chequeVerifyLimiter = rateLimit({
     );
     res.status(429).json({
       success: false,
-      error: "Too many verification requests. Please wait before trying again.",
-      retryAfter: 300, // 5 minutes in seconds
+      error: "Too many requests. Please try again later.",
+      retryAfter: 900, // 15 minutes in seconds
     });
   },
 });
@@ -74,7 +72,7 @@ export const healthLimiter = rateLimit({
   limit: 10, // 10 requests per minute per pod (reduced from 60)
   message: {
     success: false,
-    error: "Too many health check requests.",
+    error: "Too many requests. Please try again later.",
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -88,7 +86,7 @@ export const healthLimiter = rateLimit({
     );
     res.status(429).json({
       success: false,
-      error: "Too many health check requests.",
+      error: "Too many requests. Please try again later.",
       retryAfter: 60, // 1 minute in seconds
     });
   },
