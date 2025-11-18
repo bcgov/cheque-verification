@@ -54,7 +54,16 @@ function Home() {
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         const errorData = err.response.data;
-        if (errorData.details && Array.isArray(errorData.details)) {
+
+        // Handle rate limiting with user-friendly wait time
+        if (err.response.status === 429 && errorData.retryAfter) {
+          const waitMinutes = Math.ceil(errorData.retryAfter / 60);
+          setError(
+            `Too many requests. Please wait ${waitMinutes} ${
+              waitMinutes === 1 ? "minute" : "minutes"
+            } before trying again.`
+          );
+        } else if (errorData.details && Array.isArray(errorData.details)) {
           // Format multiple errors with bullet points for better readability
           const formattedErrors = errorData.details
             .map((detail: string) => `• ${detail}`)

@@ -64,8 +64,6 @@ export const chequeVerifyLimiter = rateLimit({
 
 /**
  * Rate limiter for health checks
- * Conservative per-pod limit assuming 3-5 pod scaling
- * Cluster-wide effective limit: 30-50 req/min (10 × 3-5 pods)
  */
 export const healthLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
