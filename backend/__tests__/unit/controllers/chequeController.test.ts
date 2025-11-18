@@ -59,7 +59,7 @@ describe("ChequeController", () => {
       mockService.isValidChequeNumber.mockReturnValue(true);
       mockService.validateVerificationFields.mockReturnValue({
         isValid: false,
-        error: "All verification fields are required",
+        error: "All fields are required.",
       });
 
       const invalidBody = { ...validRequestBody, appliedAmount: "" };
@@ -68,7 +68,7 @@ describe("ChequeController", () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toBe("All verification fields are required");
+      expect(response.body.error).toBe("All fields are required.");
       expect(mockService.validateVerificationFields).toHaveBeenCalledWith(
         "",
         "2024-01-01"
