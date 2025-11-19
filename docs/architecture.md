@@ -7,6 +7,8 @@ This document describes how the cheque verification platform is structured and h
 ```mermaid
 flowchart TD
     User[End User Browser]
+    Caddy["Caddy Web Server
+    (Reverse Proxy)"]
     FE["React Frontend
     (Vite, TypeScript)"]
     BE["Backend Proxy
@@ -15,29 +17,37 @@ flowchart TD
     (Internal Service)"]
     DB[(Oracle Database)]
 
-    User -->|HTTPS| FE
-    FE -->|POST /api/cheque/verify| BE
+    User -->|HTTPS| Caddy
+    Caddy -->|Static Assets| FE
+    Caddy -->|/api/*| BE
     BE -->|GET /api/v1/cheque/:number| API
     API -->|SQL Query| DB
     API -->|Cheque result| BE
-    BE -->|Validated response| FE
-    FE -->|Display status| User
+    BE -->|Validated response| Caddy
+    Caddy -->|Response| User
 ```
 
 Key characteristics:
 
+- **Caddy** serves as the entry point, handling static assets and reverse-proxying API requests to the backend.
 - The frontend never communicates with the upstream cheque API directly. All sensitive calls are made server-side by the backend.
-- The backend enforces validation, rate limiting, and (optionally) JWT-based authentication before touching internal services.
+- The backend enforces validation, rate limiting, and JWT-based authentication before touching internal services.
 - The upstream API is responsible for business rules and database access; the backend only proxies verified requests and compares user input against authoritative data.
 
 ## Component Responsibilities
+
+### Caddy Web Server
+
+- Serves the compiled React frontend static assets.
+- Reverse proxies `/api/*` requests to the backend service.
+- Adds security headers (HSTS, CSP, X-Frame-Options).
+- Provides access logging with client IP preservation.
 
 ### Frontend (`frontend/`)
 
 - Presents the cheque verification form and related content (FAQ, notices).
 - Calls `POST /api/cheque/verify` on the backend with the cheque number, payment issue date, and applied amount supplied by the user.
 - Shows success, error, and validation states returned from the backend.
-- Consumes a single environment variable: `VITE_API_URL`.
 
 ### Backend Proxy (`backend/`)
 
@@ -46,22 +56,21 @@ Key characteristics:
 - Applies rate limits and logs metadata for observability without storing personal information.
 - Fetches authoritative cheque data from the upstream API.
 - Compares user-supplied values with authoritative data and returns either a `success` response or human-readable validation messages.
-- Optionally signs a short-lived JWT when calling the upstream API to avoid sending static credentials.
+- Signs a short-lived JWT when calling the upstream API to avoid sending static credentials.
 
 ### Upstream Cheque API (`api/`)
 
-- Internal service owned by the payment team. Implementation details can vary by environment.
-- Hosts `/api/v1/cheque/:chequeNumber`, returning cheque metadata (status, issue date, amount).
-- Connects to Oracle and encapsulates all SQL access and error handling.
-- Exposes structured JSON responses matching `ApiResponse<ChequeStatusResponse>`.
+- Internal service that returns authoritative cheque data.
+- Connects to the database and encapsulates all data access and error handling.
+- Returns structured JSON responses with cheque metadata.
 
 ## Request Lifecycle
 
 1. End user submits the web form.
 2. Frontend posts to the backend (`/api/cheque/verify`) with the supplied details.
-3. Backend validates the payload. If validation fails, it returns a `400` with contextual errors.
+3. Backend validates the payload. If validation fails, it returns a `400` with generic error messages to prevent information leakage.
 4. Backend fetches the cheque record from the upstream API using a GET request.
-5. Backend compares the amount and date provided by the user with the canonical data.
+5. Backend compares the amount and date provided by the user with the data.
 6. Backend returns:
    - `200` + cheque payload when everything matches.
    - `400` + error list when the cheque exists but values do not match.

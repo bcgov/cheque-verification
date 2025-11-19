@@ -25,8 +25,8 @@ A web application for BC Government to verify cheque numbers, amounts, and issue
 ## Architecture Overview
 
 - **Frontend (`frontend/`)** &mdash; React + TypeScript single-page app served by Vite. Responsible for rendering the cheque verification form and displaying results.
-- **Backend (`backend/`)** &mdash; Express + TypeScript API that validates requests, applies rate limiting/logging, and calls the upstream cheque API. The frontend never talks to the upstream service directly.
-- **External API (`api/`)** &mdash; Internal service (Node.js + Oracle DB integration) that returns authoritative cheque data. Credentials and access remain server-side.
+- **Backend (`backend/`)** &mdash; Express + TypeScript API that validates requests, applies rate limiting/logging, and calls the upstream cheque API.
+- **External API (`api/`)** &mdash; Internal service that returns authoritative cheque data. Credentials and access remain server-side.
 
 > For a deeper dive, including sequence diagrams, see `docs/architecture.md`.
 
@@ -36,7 +36,7 @@ A web application for BC Government to verify cheque numbers, amounts, and issue
 
 - Node.js **18.x** or later
 - npm (ships with Node.js)
-- Oracle client connectivity if you plan to run the upstream `api/` service locally (optional)
+- Database client connectivity if you plan to run the upstream `api/` service locally (optional)
 
 ### First-Time Setup
 
@@ -55,10 +55,10 @@ Fill in the `.env` files with values appropriate for your environment. Do **not*
 ### Running the Stack
 
 ```bash
-# In one terminal, start the backend (defaults to http://localhost:4000)
+# In one terminal, start the backend
 npm run dev backend
 
-# In another terminal, start the frontend (defaults to http://localhost:5173)
+# In another terminal, start the frontend
 npm run dev frontend
 ```
 
@@ -76,27 +76,6 @@ The backend build outputs compiled JavaScript into `backend/dist/`. The frontend
 ## Environment Configuration
 
 Never commit secrets to source control. Use `.env` files for local development only.
-
-### Backend (`backend/.env`)
-
-| Variable       | Required | Default                 | Purpose                                                             |
-| -------------- | -------- | ----------------------- | ------------------------------------------------------------------- |
-| `PORT`         | No       | `4000`                  | Port the Express server listens on.                                 |
-| `API_URL`      | Yes      | `http://localhost:3000` | Base URL of the upstream cheque API (internal).                     |
-| `FRONTEND_URL` | No       | `http://localhost:5173` | Origin allowed by CORS. Set to deployed frontend URL in production. |
-| `NODE_ENV`     | No       | `development`           | Used for environment-aware logging/config.                          |
-| `JWT_SECRET`   | Optional | _unset_                 | Shared secret to mint a short-lived JWT for upstream API access.    |
-| `JWT_ISSUER`   | Optional | `cheque-example`        | JWT issuer claim when `JWT_SECRET` is set.                          |
-| `JWT_AUDIENCE` | Optional | `api-example`           | JWT audience claim when `JWT_SECRET` is set.                        |
-| `JWT_TTL`      | Optional | `120` (seconds)         | Token lifetime for upstream calls.                                  |
-
-### Frontend (`frontend/.env`)
-
-| Variable       | Required | Default                 | Purpose                                                                      |
-| -------------- | -------- | ----------------------- | ---------------------------------------------------------------------------- |
-| `VITE_API_URL` | No       | `http://localhost:4000` | Backend base URL for API calls. Vite exposes `import.meta.env.VITE_API_URL`. |
-
-> See `.env.example` files in each package for templated defaults.
 
 ## Testing
 
@@ -124,15 +103,15 @@ Refer to sub-package READMEs or scripts for additional details.
 
 ## Security & Privacy Notes
 
-- Sensitive configuration (API credentials, JWT secrets, database handles) must stay outside of the repo.
-- The backend enforces rate limiting, input validation, and JWT-based authentication before calling the upstream API.
-- Avoid logging personal information; the backend currently logs only metadata (presence and length of fields, not the actual values).
-- When contributing documentation, redact internal URLs, infrastructure identifiers, and any credentials.
+- **Rate Limiting**: The backend enforces strict rate limiting (global and per-route) with progressive delays to prevent brute-force attacks.
+- **Error Handling**: API returns generic error messages to avoid leaking implementation details or validation rules.
+- **Logging**: Caddy and backend logs capture metadata (IP, status, latency) for security monitoring but exclude sensitive personal information.
+- **Configuration**: Sensitive configuration (API credentials, JWT secrets, database handles) must stay outside of the repo.
+- **Authentication**: The backend uses JWT-based authentication for internal communication with the upstream API.
 
 ## Additional Documentation
 
 - `docs/architecture.md` &mdash; System diagram, request flow, and deployment considerations.
-- `docs/backend-api.md` &mdash; Backend endpoint contract, expected payloads, and error handling.
 - Additional docs can be added under `docs/` as the system evolves (runbooks, ADRs, etc.).
 
 ## Contributing
