@@ -50,16 +50,15 @@ Key characteristics:
 
 ### Upstream Cheque API (`api/`)
 
-- Internal service owned by the payment team. Implementation details can vary by environment.
-- Hosts `/api/v1/cheque/:chequeNumber`, returning cheque metadata (status, issue date, amount).
-- Connects to Oracle and encapsulates all SQL access and error handling.
-- Exposes structured JSON responses matching `ApiResponse<ChequeStatusResponse>`.
+- Internal service that returns authoritative cheque data.
+- Connects to the database and encapsulates all data access and error handling.
+- Returns structured JSON responses with cheque metadata.
 
 ## Request Lifecycle
 
 1. End user submits the web form.
 2. Frontend posts to the backend (`/api/cheque/verify`) with the supplied details.
-3. Backend validates the payload. If validation fails, it returns a `400` with contextual errors.
+3. Backend validates the payload. If validation fails, it returns a `400` with generic error messages to prevent information leakage.
 4. Backend fetches the cheque record from the upstream API using a GET request.
 5. Backend compares the amount and date provided by the user with the canonical data.
 6. Backend returns:
