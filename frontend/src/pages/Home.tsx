@@ -6,6 +6,47 @@ import InlineAlert from "../components/InlineAlert";
 import VerificationResult from "../components/VerificationResult";
 import DataNotice from "../components/DataNotice.tsx";
 
+/**
+ * Formats rate limiting error message with user-friendly wait time
+ */
+const formatRateLimitError = (retryAfter: number): string => {
+  const waitMinutes = Math.ceil(retryAfter / 60);
+  return `Too many requests. Please wait ${waitMinutes} ${
+    waitMinutes === 1 ? "minute" : "minutes"
+  } before trying again.`;
+};
+
+/**
+ * Formats validation errors with bullet points
+ */
+const formatValidationErrors = (details: string[]): string => {
+  const formattedErrors = details
+    .map((detail: string) => `• ${detail}`)
+    .join("\n");
+  return `Verification failed:\n${formattedErrors}`;
+};
+
+/**
+ * Handles axios error responses and returns appropriate error message
+ */
+const handleAxiosError = (err: unknown): string => {
+  if (!axios.isAxiosError(err) || !err.response) {
+    return "Failed to verify cheque. Please try again later.";
+  }
+
+  const errorData = err.response.data;
+
+  if (err.response.status === 429 && errorData.retryAfter) {
+    return formatRateLimitError(errorData.retryAfter);
+  }
+
+  if (errorData.details && Array.isArray(errorData.details)) {
+    return formatValidationErrors(errorData.details);
+  }
+
+  return errorData.error || "Verification failed";
+};
+
 function Home() {
   const [status, setStatus] = useState<ApiResponse<CheckStatus> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -52,29 +93,11 @@ function Home() {
       );
       setStatus(response.data);
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        const errorData = err.response.data;
+      const errorMessage = handleAxiosError(err);
+      setError(errorMessage);
 
-        // Handle rate limiting with user-friendly wait time
-        if (err.response.status === 429 && errorData.retryAfter) {
-          const waitMinutes = Math.ceil(errorData.retryAfter / 60);
-          setError(
-            `Too many requests. Please wait ${waitMinutes} ${
-              waitMinutes === 1 ? "minute" : "minutes"
-            } before trying again.`
-          );
-        } else if (errorData.details && Array.isArray(errorData.details)) {
-          // Format multiple errors with bullet points for better readability
-          const formattedErrors = errorData.details
-            .map((detail: string) => `• ${detail}`)
-            .join("\n");
-          setError(`Verification failed:\n${formattedErrors}`);
-        } else {
-          setError(errorData.error || "Verification failed");
-        }
+      if (axios.isAxiosError(err) && err.response) {
         setStatus(err.response.data as ApiResponse<CheckStatus>);
-      } else {
-        setError("Failed to verify cheque. Please try again later.");
       }
     } finally {
       setLoading(false);
