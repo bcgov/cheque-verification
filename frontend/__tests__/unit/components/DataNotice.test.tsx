@@ -19,7 +19,7 @@ describe("DataNotice Component", () => {
 
     expect(
       screen.getByText(
-        /Cheques issued within the last 24 hours may not appear until the next business day/
+        /Cheques issued within the last 24 business hours may not appear until the next business day/
       )
     ).toBeInTheDocument();
   });

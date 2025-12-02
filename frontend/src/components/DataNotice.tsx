@@ -45,7 +45,8 @@ const DataNotice = () => {
         }}
       >
         Cheque Verification results updates daily at 6 a.m. PT. Cheques issued
-        within the last 24 hours may not appear until the next business day.
+        within the last 24 business hours may not appear until the next business
+        day.
       </p>
     </div>
   );
