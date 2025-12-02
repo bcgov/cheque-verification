@@ -16,7 +16,7 @@ exports[`DataNotice Component > matches snapshot for visual consistency 1`] = `
   <p
     style="margin: 0px; font-family: BCSans, sans-serif; font-size: 16px; line-height: 1.5;"
   >
-    Cheque Verification results updates daily at 6 a.m. PT. Cheques issued within the last 24 hours may not appear until the next business day.
+    Cheque Verification results updates daily at 6 a.m. PT. Cheques issued within the last 24 business hours may not appear until the next business day.
   </p>
 </div>
 `;
