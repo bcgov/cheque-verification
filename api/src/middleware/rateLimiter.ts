@@ -6,8 +6,8 @@ import logger from "../config/logger.js";
  * Rate limiter for cheque verification endpoints
  */
 export const chequeRateLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 5, // 5 requests per 5 minutes per pod
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 50, // 50 requests per 15 minutes per pod
   message: {
     success: false,
     error:
@@ -32,7 +32,7 @@ export const chequeRateLimiter = rateLimit({
       success: false,
       error:
         "Too many cheque verification requests. Please wait before trying again.",
-      retryAfter: 300, // 5 minutes in seconds
+      retryAfter: 900, // 15 minutes in seconds
     });
   },
 });
