@@ -4,7 +4,7 @@ import { logger } from "../config/logger";
 
 export const globalRequestLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 20, // 20 requests per 15 minutes per pod
+  limit: 50, // 50 requests per 15 minutes per pod
   message: {
     success: false,
     error: "Too many requests. Please try again later.",
@@ -34,7 +34,7 @@ export const globalRequestLimiter = rateLimit({
  */
 export const chequeVerifyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 20, // 20 requests per 15 minutes per pod
+  limit: 50, // 50 requests per 15 minutes per pod
   message: {
     success: false,
     error: "Too many requests. Please try again later.",
