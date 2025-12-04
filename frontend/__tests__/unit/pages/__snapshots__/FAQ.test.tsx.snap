@@ -11,13 +11,13 @@ exports[`FAQ Page > matches snapshot for visual consistency 1`] = `
       style="background-color: var(--bcgov-blue); padding: 24px; display: flex; align-items: center; border-bottom-width: var(--bcgov-gold); border-bottom-style: var(--bcgov-gold); border-bottom-color: var(--bcgov-gold);"
     >
       <h1
-        style="color: var(--bcgov-text-white); font-size: 28px; font-family: BCSans, sans-serif; font-weight: 600; margin: 0px;"
+        style="color: var(--bcgov-text-white); font-size: 28px; font-weight: 600; margin: 0px;"
       >
         Frequently Asked Questions (FAQ)
       </h1>
     </div>
     <div
-      style="padding: 32px; font-family: BCSans, sans-serif; line-height: 1.6;"
+      style="padding: 32px; line-height: 1.6;"
     >
       <div
         style="margin-bottom: 32px;"

@@ -7,7 +7,7 @@ exports[`DataNotice Component > matches snapshot for visual consistency 1`] = `
   style="padding: 16px; background-color: #F4E1E2; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #CE3E39; margin: 24px auto; max-width: 800px;"
 >
   <p
-    style="margin: 0px 0px 8px; font-family: BCSans, sans-serif; font-size: 16px; line-height: 1.5;"
+    style="margin: 0px 0px 8px; font-size: 16px; line-height: 1.5;"
   >
     <strong>
       Important data notice

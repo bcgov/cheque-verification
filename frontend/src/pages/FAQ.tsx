@@ -31,7 +31,6 @@ const Faq = () => {
             style={{
               color: "var(--bcgov-text-white)",
               fontSize: "28px",
-              fontFamily: "BCSans, sans-serif",
               fontWeight: 600,
               margin: "0",
             }}
@@ -43,7 +42,6 @@ const Faq = () => {
         <div
           style={{
             padding: "32px",
-            fontFamily: "BCSans, sans-serif",
             lineHeight: 1.6,
           }}
         >

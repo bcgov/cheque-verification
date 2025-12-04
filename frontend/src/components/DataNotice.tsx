@@ -22,7 +22,6 @@ const DataNotice = () => {
         style={{
           margin: "0 0 8px 0",
           color: "#CE3E39 !important",
-          fontFamily: "BCSans, sans-serif",
           fontSize: "16px",
           lineHeight: 1.5,
         }}

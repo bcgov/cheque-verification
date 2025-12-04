@@ -138,7 +138,6 @@ function Home() {
             style={{
               color: "var(--bcgov-text-white)",
               fontSize: "20px",
-              fontFamily: "BCSans, sans-serif",
               fontWeight: 600,
               margin: "0",
             }}

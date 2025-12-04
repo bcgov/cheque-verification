@@ -57,7 +57,7 @@ export default {
         },
       },
       fontFamily: {
-        BCSans: ["BCSans", "sans-serif"],
+        BCSans: ["BC Sans", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
