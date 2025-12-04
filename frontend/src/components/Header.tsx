@@ -29,7 +29,7 @@ const Header = () => {
     <BCGovHeader title="Cheque Verification">
       <Button
         variant="primary"
-        onClick={handleNavigation}
+        onPress={handleNavigation}
         style={{
           backgroundColor: "var(--bcgov-blue)",
           border: "1px solid var(--bcgov-blue)",

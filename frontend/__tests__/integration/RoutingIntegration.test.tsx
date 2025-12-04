@@ -206,6 +206,4 @@ describe("Routing Integration Tests", () => {
       expect(backButton).not.toBeDisabled();
     });
   });
-
-  // The design-system button warns about `onClick`; this remains until upstream migrates to onPress
 });

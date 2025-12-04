@@ -21,19 +21,19 @@ vi.mock("@bcgov/design-system-react-components", () => ({
   ),
   Button: ({
     variant,
-    onClick,
+    onPress,
     style,
     children,
   }: {
     variant: string;
-    onClick: () => void;
+    onPress: () => void;
     style: object;
     children: React.ReactNode;
   }) => (
     <button
       data-testid="nav-button"
       data-variant={variant}
-      onClick={onClick}
+      onClick={onPress}
       style={style}
     >
       {children}
