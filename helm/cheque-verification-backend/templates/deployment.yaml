@@ -5,7 +5,9 @@ metadata:
   labels:
     app.kubernetes.io/name: cheque-verification-backend
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: cheque-verification-backend
@@ -14,10 +16,19 @@ spec:
       labels:
         app.kubernetes.io/name: cheque-verification-backend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: github-docker-registry
       containers:
         - name: cheque-verification-backend
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -58,4 +69,20 @@ spec:
                   name: cheque-verification-backend-secrets
                   key: JWT_TTL
                   optional: true
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
       restartPolicy: Always
