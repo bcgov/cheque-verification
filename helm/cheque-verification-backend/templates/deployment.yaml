@@ -89,10 +89,10 @@ spec:
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 5
-            periodSeconds: 2
+            periodSeconds: 10
             timeoutSeconds: 2
             successThreshold: 1
-            failureThreshold: 30
+            failureThreshold: 6
           livenessProbe:
             httpGet:
               path: /health
