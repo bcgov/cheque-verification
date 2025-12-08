@@ -9,7 +9,11 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    # Allow traffic only from frontend pods
+    # Allow health probes from kubelet (host network)
+    - ports:
+        - protocol: TCP
+          port: 3000
+    # Allow traffic from frontend pods
     - from:
         - podSelector:
             matchLabels:

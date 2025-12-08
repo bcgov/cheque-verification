@@ -11,7 +11,7 @@ service:
   port: 80
   targetPort: 3000
 
-# Resource limits - aligned with template and actual usage
+# Resource limits - aligned with Openshift template
 resources:
   requests:
     memory: "75Mi"
@@ -25,10 +25,8 @@ autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 3
-  # Scale up when CPU usage exceeds 70%
-  targetCPUUtilizationPercentage: 70
-  # Scale up when memory usage exceeds 80%
-  targetMemoryUtilizationPercentage: 80
+  # Scale up when CPU usage exceeds 80%
+  targetCPUUtilizationPercentage: 80
 
 # Pod Disruption Budget - ensures availability during cluster maintenance
 podDisruptionBudget:
