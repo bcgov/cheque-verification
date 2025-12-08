@@ -66,10 +66,11 @@ export const chequeVerifyLimiter = rateLimit({
 
 /**
  * Rate limiter for health checks
+ * Set high to allow Kubernetes probes (readiness every 2s, liveness every 30s)
  */
 export const healthLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  limit: 10, // 10 requests per minute per pod (reduced from 60)
+  limit: 120, // 120 requests per minute per pod (allows probes + some buffer)
   message: {
     success: false,
     error: "Too many requests. Please try again later.",
