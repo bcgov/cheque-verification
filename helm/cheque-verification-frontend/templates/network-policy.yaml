@@ -3,8 +3,15 @@ kind: NetworkPolicy
 metadata:
   name: cheque-verification-frontend-network-policy
 spec:
-  podSelector: {}
-  ingress:
-    - {}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cheque-verification-frontend
   policyTypes:
     - Ingress
+  ingress:
+    # Allow health probes from kubelet and all external traffic
+    - ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 3001
