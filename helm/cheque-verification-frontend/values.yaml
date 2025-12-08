@@ -32,15 +32,14 @@ route:
     # Disable sticky sessions for better rate limiting
     haproxy.router.openshift.io/disable_cookies: "true"
 
-# Resource limits - based on actual usage (~40 MiB per pod)
-# Combined budget: 500 MiB / 100m CPU for frontend + backend
+# Resource limits - aligned with template and actual usage
 resources:
   requests:
-    memory: "40Mi"
-    cpu: "5m"
+    memory: "50Mi"
+    cpu: "30m"
   limits:
-    memory: "80Mi"
-    cpu: "15m"
+    memory: "256Mi"
+    cpu: "100m"
 
 # Horizontal Pod Autoscaler configuration
 autoscaling:
