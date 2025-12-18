@@ -36,31 +36,3 @@ export const chequeRateLimiter = rateLimit({
     });
   },
 });
-
-/**
- * Rate limiter for health check endpoint
- */
-export const healthRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  limit: 10, // 10 requests per minute per pod
-  message: {
-    success: false,
-    error: "Too many health check requests.",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req: Request, res: Response): void => {
-    logger.warn(
-      {
-        ip: req.ip,
-        path: req.path,
-      },
-      "Health check rate limit exceeded"
-    );
-    res.status(429).json({
-      success: false,
-      error: "Too many health check requests.",
-      retryAfter: 60, // 1 minute in seconds
-    });
-  },
-});

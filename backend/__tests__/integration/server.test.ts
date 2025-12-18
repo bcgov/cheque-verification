@@ -18,11 +18,12 @@ describe("Backend Server Integration", () => {
       expect(response.headers["x-powered-by"]).toBeUndefined();
     });
 
-    it("should apply rate limiting middleware", async () => {
+    it("should skip rate limiting for health checks", async () => {
       const response = await request(app).get("/health");
 
-      // Should have rate limit headers (different format than expected)
-      expect(response.headers).toHaveProperty("ratelimit-limit");
+      // Health checks bypass rate limiting (no ratelimit headers)
+      expect(response.headers["ratelimit-limit"]).toBeUndefined();
+      expect(response.status).toBe(200);
     });
 
     it("should handle JSON requests", async () => {
