@@ -11,6 +11,10 @@ export const globalRequestLimiter = rateLimit({
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  // Skip rate limiting for health checks
+  skip: (req: Request): boolean => {
+    return req.path === "/health" || req.path.startsWith("/health/");
+  },
   handler: (req: Request, res: Response): void => {
     logger.warn(
       {
@@ -56,36 +60,6 @@ export const chequeVerifyLimiter = rateLimit({
       "Cheque verification rate limit exceeded"
     );
     const retryAfter = res.getHeader("Retry-After") || 900;
-    res.status(429).json({
-      success: false,
-      error: "Too many requests. Please try again later.",
-      retryAfter: Number(retryAfter),
-    });
-  },
-});
-
-/**
- * Rate limiter for health checks
- * Set high to allow Kubernetes probes (readiness every 2s, liveness every 30s)
- */
-export const healthLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  limit: 120, // 120 requests per minute per pod (allows probes + some buffer)
-  message: {
-    success: false,
-    error: "Too many requests. Please try again later.",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req: Request, res: Response): void => {
-    logger.warn(
-      {
-        ip: req.ip,
-        path: req.path,
-      },
-      "Health check rate limit exceeded"
-    );
-    const retryAfter = res.getHeader("Retry-After") || 60;
     res.status(429).json({
       success: false,
       error: "Too many requests. Please try again later.",

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ChequeController } from "../controllers/chequeController";
-import { chequeVerifyLimiter, healthLimiter } from "../middleware/rateLimiter";
+import { chequeVerifyLimiter } from "../middleware/rateLimiter";
 import { chequeVerifySlowDown } from "../middleware/slowDown";
 
 /**
@@ -34,10 +34,8 @@ export const createHealthRoutes = (
 ): Router => {
   const router = Router();
 
-  // Health check endpoint
-  router.get("/", healthLimiter, (req, res) =>
-    chequeController.healthCheck(req, res)
-  );
+  // Health check endpoint - no rate limiting (internal cluster traffic only)
+  router.get("/", (req, res) => chequeController.healthCheck(req, res));
 
   return router;
 };

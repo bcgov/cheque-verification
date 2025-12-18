@@ -1,3 +1,4 @@
+import { Request } from "express";
 import slowDown from "express-slow-down";
 
 export const chequeVerifySlowDown = slowDown({
@@ -16,4 +17,8 @@ export const globalSlowDown = slowDown({
   delayAfter: 40, // Allow 40 requests per window at full speed
   delayMs: (hits) => (hits - 40) * 500, // Add 500ms delay per request after delayAfter
   maxDelayMs: 5000, // Maximum delay of 5 seconds
+  // Skip slow-down for health checks (Kubernetes probes)
+  skip: (req: Request): boolean => {
+    return req.path === "/health" || req.path.startsWith("/health/");
+  },
 });
