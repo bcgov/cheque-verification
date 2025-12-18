@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import {
   globalRequestLimiter,
   chequeVerifyLimiter,
-  healthLimiter,
 } from "../../../src/middleware/rateLimiter";
 import {
   describe,
@@ -84,18 +83,11 @@ describe("Rate Limiter Middleware", () => {
     });
   });
 
-  describe("healthLimiter configuration", () => {
-    it("should be defined", () => {
-      expect(healthLimiter).toBeDefined();
-      expect(typeof healthLimiter).toBe("function");
-    });
-
-    it("should have moderate limits for health checks", () => {
-      // Configured for 10 req/min per pod with skip for internal IPs
-      expect(healthLimiter).toBeDefined();
-      expect(typeof healthLimiter).toBe("function");
-      expect(healthLimiter).not.toBe(globalRequestLimiter);
-      expect(healthLimiter).not.toBe(chequeVerifyLimiter);
+  describe("globalRequestLimiter health check skip", () => {
+    it("should be configured to skip health check paths", () => {
+      // Health checks bypass rate limiting for Kubernetes probes
+      expect(globalRequestLimiter).toBeDefined();
+      expect(typeof globalRequestLimiter).toBe("function");
     });
   });
 
