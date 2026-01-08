@@ -1,5 +1,4 @@
-# replicaCount is ignored when autoscaling is enabled
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/cheque-verification-frontend
@@ -32,21 +31,11 @@ route:
     # Disable sticky sessions for better rate limiting
     haproxy.router.openshift.io/disable_cookies: "true"
 
-# Resource limits - aligned with Openshift template
-resources:
-  requests:
-    memory: "50Mi"
-    cpu: "30m"
-  limits:
-    memory: "256Mi"
-    cpu: "100m"
-
 # Horizontal Pod Autoscaler configuration
 autoscaling:
-  enabled: true
-  minReplicas: 2
+  enabled: false
+  minReplicas: 1
   maxReplicas: 3
-  # Scale up when CPU usage exceeds 80%
   targetCPUUtilizationPercentage: 80
 
 # Pod Disruption Budget - ensures availability during cluster maintenance
@@ -64,4 +53,3 @@ affinity: {}
 # Config for the frontend (API endpoints, etc.)
 config:
   BACKEND_URL: "http://cheque-verification-backend:80"
-  LOG_LEVEL: "INFO"
