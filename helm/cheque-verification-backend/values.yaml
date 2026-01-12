@@ -17,10 +17,9 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
 
-# Pod Disruption Budget - ensures availability during cluster maintenance
+# Pod Disruption Budget
 podDisruptionBudget:
-  enabled: true
-  # Always keep at least 1 pod running during voluntary disruptions
+  enabled: false
   minAvailable: 1
 
 nodeSelector: {}
