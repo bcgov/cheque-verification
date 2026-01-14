@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/bcgov/cheque-verification-backend
-  tag: dev
+  tag: main
   pullPolicy: Always
 
 service:
