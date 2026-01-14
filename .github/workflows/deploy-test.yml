@@ -43,9 +43,6 @@ jobs:
             type=sha,prefix=sha-,format=long
             # Branch name tag
             type=ref,event=branch
-            # SemVer tags for releases
-            type=semver,pattern=v{{version}}
-            type=semver,pattern=v{{major}}.{{minor}}
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -67,9 +64,6 @@ jobs:
             type=sha,prefix=sha-,format=long
             # Branch name tag
             type=ref,event=branch
-            # SemVer tags for releases
-            type=semver,pattern=v{{version}}
-            type=semver,pattern=v{{major}}.{{minor}}
 
       - name: Build and push backend image
         uses: docker/build-push-action@v5
