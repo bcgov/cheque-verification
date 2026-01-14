@@ -7,6 +7,8 @@ on:
     paths:
       - "api/**"
       - ".github/workflows/build-api-image.yml"
+    tags:
+      - "v*"
 
 env:
   REGISTRY: ghcr.io
@@ -38,6 +40,14 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # SHA tag for every build (primary identifier)
+            type=sha,prefix=sha-,format=long
+            # Branch name tag (useful for ArgoCD branch tracking)
+            type=ref,event=branch
+            # SemVer tags for releases
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
 
       - name: Build and push API image
         uses: docker/build-push-action@v5

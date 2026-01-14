@@ -38,6 +38,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+          tags: |
+            # SHA tag for every build (primary identifier)
+            type=sha,prefix=sha-,format=long
+            # Branch name tag
+            type=ref,event=branch
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -54,6 +59,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
+          tags: |
+            # SHA tag for every build (primary identifier)
+            type=sha,prefix=sha-,format=long
+            # Branch name tag
+            type=ref,event=branch
 
       - name: Build and push backend image
         uses: docker/build-push-action@v5
@@ -65,7 +75,7 @@ jobs:
           labels: ${{ steps.meta-backend.outputs.labels }}
 
     outputs:
-      image_tag: ${{ steps.meta-frontend.outputs.version }} #for simplicity, using the same tag for both images
+      image_tag: sha-${{ github.sha }}
 
   deploy:
     needs: build_and_push
