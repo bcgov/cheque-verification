@@ -12,14 +12,18 @@ describe("DataNotice Component", () => {
 
     // Check for the main message
     expect(
+      screen.getByText(/Cheque verification data updates daily at 6 a\.m\./)
+    ).toBeInTheDocument();
+
+    expect(
       screen.getByText(
-        /Cheque Verification results updates daily at 6 a\.m\. PT/
+        /Please call the cheque verification line to verify Imprest account cheques/
       )
     ).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        /Cheques issued within the last 24 business hours may not appear until the next business day/
+        /The status provided on this site cannot be used as grounds for claiming recourse/
       )
     ).toBeInTheDocument();
   });
@@ -54,11 +58,10 @@ describe("DataNotice Component", () => {
     renderWithProviders(<DataNotice />);
 
     const paragraph = screen.getByText(
-      /Cheque Verification results updates daily/
+      /Cheque verification data updates daily/
     );
 
     expect(paragraph).toHaveStyle({
-      margin: "0",
       fontFamily: "BCSans, sans-serif",
       fontSize: "16px",
       lineHeight: 1.5,
@@ -100,7 +103,7 @@ describe("DataNotice Component", () => {
 
     // Should contain a paragraph
     const paragraph = screen.getByText(
-      /Cheque Verification results updates daily/
+      /Cheque verification data updates daily/
     );
     expect(paragraph.tagName).toBe("P");
 

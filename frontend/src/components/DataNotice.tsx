@@ -36,6 +36,19 @@ const DataNotice = () => {
       </p>
       <p
         style={{
+          margin: "0 0 8px 0",
+          color: "#CE3E39 !important",
+          fontFamily: "BCSans, sans-serif",
+          fontSize: "16px",
+          lineHeight: 1.5,
+        }}
+      >
+        Cheque verification data updates daily at 6 a.m. Please call the cheque
+        verification line to verify Imprest account cheques issued today or if
+        you receive a message "Error. Cheque not found"
+      </p>
+      <p
+        style={{
           margin: "0",
           color: "#CE3E39 !important",
           fontFamily: "BCSans, sans-serif",
@@ -43,9 +56,10 @@ const DataNotice = () => {
           lineHeight: 1.5,
         }}
       >
-        Cheque Verification results updates daily at 6 a.m. PT. Cheques issued
-        within the last 24 business hours may not appear until the next business
-        day.
+        The status provided on this site cannot be used as grounds for claiming
+        recourse in the event of the wrongful cashing of a cheque. All
+        applicable Canadian cheque-cashing rules and guidelines continue to
+        apply.
       </p>
     </div>
   );

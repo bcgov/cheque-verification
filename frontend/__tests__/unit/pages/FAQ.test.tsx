@@ -27,9 +27,7 @@ describe("FAQ Page", () => {
       screen.getByText("How often is the information Refreshed?")
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Cheque #: Enter in top right Cheque # Information.")
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Cheque Number:/)).toBeInTheDocument();
 
     expect(
       screen.getByText(
@@ -53,7 +51,7 @@ describe("FAQ Page", () => {
 
     expect(
       screen.getByText(
-        /information captures data from previous day, information cut off at 5pm/
+        /information captures data from previous day, information cut off at 5 p\.m\./
       )
     ).toBeInTheDocument();
   });
