@@ -71,7 +71,12 @@ const Faq = () => {
               </li>
               <li style={{ marginBottom: "8px" }}>
                 This information captures data from previous day, information
-                cut off at 5pm.
+                cut off at 5 p.m.
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                Please call the cheque verification line to verify Imprest
+                account cheques issued today or if you receive a message,
+                "Error. Cheque not found"
               </li>
             </ul>
           </div>
@@ -87,8 +92,35 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
-              Cheque #: Enter in top right Cheque # Information.
+              Cheque Number:{" "}
+              <span style={{ fontWeight: 400 }}>
+                Enter the cheque number found on the top right of the cheque.
+              </span>
             </h2>
+            <p
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginBottom: "8px",
+              }}
+            >
+              Please note:
+            </p>
+            <ul
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginLeft: "24px",
+                marginBottom: "16px",
+              }}
+            >
+              <li style={{ marginBottom: "8px" }}>
+                Monthly income assistance cheques have 7 numbers
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                Imprest account income assistance cheques have 8 numbers
+              </li>
+            </ul>
             <div
               style={{
                 display: "flex",
@@ -163,6 +195,39 @@ const Faq = () => {
                 paddingBottom: "8px",
               }}
             >
+              Who do I call if I have further questions or concerns?
+            </h2>
+            <ul
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginLeft: "24px",
+                marginBottom: "16px",
+              }}
+            >
+              <li style={{ marginBottom: "8px" }}>
+                For questions regarding the status of a cheque or if you receive
+                a message "Error. Cheque not found," please call the cheque
+                verification line.
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                For all other inquiries, please call the Ministry contact center
+                at <strong>1-866-866-0800</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div style={{ marginBottom: "32px" }}>
+            <h2
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "20px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid var(--bcgov-gold)",
+                paddingBottom: "8px",
+              }}
+            >
               Do I have recourse if a cheque is returned to me by the bank?
             </h2>
             <p
@@ -174,8 +239,21 @@ const Faq = () => {
             >
               Yes. All claims for recourse in the wrongful cashing of
               non-fraudulent BC Benefits cheques are reviewed and determined on
-              a case by case basis. Claims can be submitted for reimbursement to
+              a case-by-case basis. Claims can be submitted for reimbursement to
               the Ministry by email to SDPR.FASB.Claims@gov.bc.ca.
+            </p>
+            <p
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginBottom: "8px",
+                fontWeight: 600,
+              }}
+            >
+              The status provided on this site cannot be used as grounds for
+              claiming recourse in the event of the wrongful cashing of a
+              cheque. All applicable Canadian cheque-cashing rules and
+              guidelines continue to apply.
             </p>
           </div>
 
@@ -200,34 +278,9 @@ const Faq = () => {
               }}
             >
               All BC Employment and Assistance Benefits cheques stale-date
-              exactly 6 months after the item’s issue date. Items cashed in a
+              exactly 6 months after the item's issue date. Items cashed in a
               stale-dated state will not be considered as an item for
               reimbursement.
-            </p>
-          </div>
-
-          <div style={{ marginBottom: "32px" }}>
-            <h2
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "20px",
-                fontWeight: 600,
-                marginBottom: "12px",
-                borderBottom: "2px solid var(--bcgov-gold)",
-                paddingBottom: "8px",
-              }}
-            >
-              Who do I call if I have further questions or concerns?
-            </h2>
-            <p
-              style={{
-                color: "var(--bcgov-text-primary)",
-                fontSize: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              Please call the Ministry contact center at{" "}
-              <strong>1-877-815-2363</strong>
             </p>
           </div>
 
