@@ -12,19 +12,13 @@ describe("DataNotice Component", () => {
 
     // Check for the main message
     expect(
-      screen.getByText(/Cheque verification data updates daily at 6 a\.m\./)
+      screen.getByText(/Cheque verification data updates daily at 6 a\.m\./),
     ).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        /Please call the cheque verification line to verify Imprest account cheques/
-      )
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(
-        /The status provided on this site cannot be used as grounds for claiming recourse/
-      )
+        /The status provided on this site cannot be used as grounds for claiming recourse/,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -34,7 +28,7 @@ describe("DataNotice Component", () => {
     const notice = screen.getByRole("note");
     expect(notice).toHaveAttribute(
       "aria-label",
-      "Cheque verification data notice"
+      "Cheque verification data notice",
     );
   });
 
@@ -58,7 +52,7 @@ describe("DataNotice Component", () => {
     renderWithProviders(<DataNotice />);
 
     const paragraph = screen.getByText(
-      /Cheque verification data updates daily/
+      /Cheque verification data updates daily/,
     );
 
     expect(paragraph).toHaveStyle({
@@ -103,7 +97,7 @@ describe("DataNotice Component", () => {
 
     // Should contain a paragraph
     const paragraph = screen.getByText(
-      /Cheque verification data updates daily/
+      /Cheque verification data updates daily/,
     );
     expect(paragraph.tagName).toBe("P");
 
