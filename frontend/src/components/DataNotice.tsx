@@ -43,9 +43,7 @@ const DataNotice = () => {
           lineHeight: 1.5,
         }}
       >
-        Cheque verification data updates daily at 6 a.m. Please call the cheque
-        verification line to verify Imprest account cheques issued today or if
-        you receive a message "Error. Cheque not found"
+        Cheque verification data updates daily at 6 a.m.
       </p>
       <p
         style={{

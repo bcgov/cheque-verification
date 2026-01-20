@@ -89,7 +89,7 @@ function Home() {
           chequeNumber,
           paymentIssueDate,
           appliedAmount,
-        }
+        },
       );
       setStatus(response.data);
     } catch (err) {
@@ -145,6 +145,20 @@ function Home() {
             Verify Your Cheque Details
           </h2>
         </div>
+        <p
+          style={{
+            padding: "16px 16px 0 16px",
+            margin: "0",
+            fontSize: "14px",
+            color: "var(--bcgov-text-dark)",
+            lineHeight: "1.5",
+          }}
+        >
+          Please call the cheque verification line to verify{" "}
+          <strong>BC Employment and Assistance Imprest account - SDPR</strong>{" "}
+          cheques issued today or if you receive a message{" "}
+          <em>"Error. Cheque not found"</em>.
+        </p>
         <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
         <InlineAlert description={error} />
         <VerificationResult status={status} />
