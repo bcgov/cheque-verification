@@ -20,3 +20,15 @@ spec:
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
+    {{- if .Values.route.tls.certificate }}
+    certificate: |
+{{ .Values.route.tls.certificate | indent 6 }}
+    {{- end }}
+    {{- if .Values.route.tls.key }}
+    key: |
+{{ .Values.route.tls.key | indent 6 }}
+    {{- end }}
+    {{- if .Values.route.tls.caCertificate }}
+    caCertificate: |
+{{ .Values.route.tls.caCertificate | indent 6 }}
+    {{- end }}

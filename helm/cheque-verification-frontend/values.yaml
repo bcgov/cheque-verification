@@ -30,6 +30,11 @@ route:
     haproxy.router.openshift.io/rate-limit-connections.rate-tcp: "50"
     # Disable sticky sessions for better rate limiting
     haproxy.router.openshift.io/disable_cookies: "true"
+  # TLS certificate configuration for custom domain
+  tls:
+    certificate: "" # Server certificate (PEM format)
+    key: "" # Private key (PEM format)
+    caCertificate: "" # CA certificate chain (intermediates concatenated, PEM format)
 
 # Horizontal Pod Autoscaler configuration
 autoscaling:
