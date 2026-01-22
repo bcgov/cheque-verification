@@ -107,7 +107,10 @@ jobs:
             --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend \
             --set image.tag=${{ github.ref_name }} \
-            --set route.host=${{ secrets.FRONTEND_HOSTNAME_PROD }}
+            --set route.host=${{ secrets.FRONTEND_HOSTNAME_PROD }} \
+            --set-string route.tls.certificate="${{ secrets.TLS_CERTIFICATE }}" \
+            --set-string route.tls.key="${{ secrets.TLS_KEY }}" \
+            --set-string route.tls.caCertificate="${{ secrets.TLS_CA_CERTIFICATE }}"
 
           helm upgrade --install cheque-verification-backend ./helm/cheque-verification-backend \
             --namespace ${{ secrets.OPENSHIFT_PROD_NAMESPACE_SILVER }} \
