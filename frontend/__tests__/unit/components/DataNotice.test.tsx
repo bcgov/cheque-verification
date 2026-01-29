@@ -12,7 +12,9 @@ describe("DataNotice Component", () => {
 
     // Check for the main message
     expect(
-      screen.getByText(/Cheque verification data updates daily at 6 a\.m\./),
+      screen.getByText(
+        /Cheque verification portal data updates daily at 9 a\.m\./,
+      ),
     ).toBeInTheDocument();
 
     expect(
@@ -52,7 +54,7 @@ describe("DataNotice Component", () => {
     renderWithProviders(<DataNotice />);
 
     const paragraph = screen.getByText(
-      /Cheque verification data updates daily/,
+      /Cheque verification portal data updates daily/,
     );
 
     expect(paragraph).toHaveStyle({
@@ -97,7 +99,7 @@ describe("DataNotice Component", () => {
 
     // Should contain a paragraph
     const paragraph = screen.getByText(
-      /Cheque verification data updates daily/,
+      /Cheque verification portal data updates daily/,
     );
     expect(paragraph.tagName).toBe("P");
 

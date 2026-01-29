@@ -24,21 +24,21 @@ describe("FAQ Page", () => {
 
     // Check for all main FAQ sections using actual content
     expect(
-      screen.getByText("How often is the information Refreshed?")
+      screen.getByText("How often is the information Refreshed?"),
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Cheque Number:/)).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        "Can you tell me why a cheque was issued or details about a client's payment history?"
-      )
+        "Can you tell me why a cheque was issued or details about a client's payment history?",
+      ),
     ).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        "What are the common verification phone numbers for agencies?"
-      )
+        "What are the common verification phone numbers for agencies?",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -46,13 +46,15 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     expect(
-      screen.getByText(/Cheque information is refreshed daily at 6AM/)
+      screen.getByText(
+        /Cheque verification portal data updates daily at 9 a\.m\./,
+      ),
     ).toBeInTheDocument();
 
     expect(
       screen.getByText(
-        /information captures data from previous day, information cut off at 5 p\.m\./
-      )
+        /Please call the cheque verification line if the portal returns the message/,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -61,20 +63,20 @@ describe("FAQ Page", () => {
 
     expect(
       screen.getByText(
-        /Due to privacy regulations, we cannot provide details such as/
-      )
+        /Due to privacy regulations, we cannot provide details such as/,
+      ),
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Why a cheque was issued/)).toBeInTheDocument();
 
     expect(
-      screen.getByText(/How many cheques a client is supposed to receive/)
+      screen.getByText(/How many cheques a client is supposed to receive/),
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Why a cheque was stopped/)).toBeInTheDocument();
 
     expect(
-      screen.getByText(/Whether a client has a history of stopped cheques/)
+      screen.getByText(/Whether a client has a history of stopped cheques/),
     ).toBeInTheDocument();
   });
 
@@ -82,7 +84,7 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     expect(
-      screen.getByText("Here is a quick reference list:")
+      screen.getByText("Here is a quick reference list:"),
     ).toBeInTheDocument();
 
     // Check for specific agency phone numbers - text is split across elements
@@ -94,7 +96,7 @@ describe("FAQ Page", () => {
 
     expect(screen.getByText("Family Maintenance Cheques:")).toBeInTheDocument();
     expect(
-      screen.getByText("1-800-663-9666 or 604-678-5670")
+      screen.getByText("1-800-663-9666 or 604-678-5670"),
     ).toBeInTheDocument();
 
     expect(screen.getByText("Federal Cheques:")).toBeInTheDocument();
@@ -105,7 +107,7 @@ describe("FAQ Page", () => {
     renderWithProviders(<Faq />);
 
     const img = screen.getByAltText(
-      "Sample cheque showing where to find the cheque number in the top right corner"
+      "Sample cheque showing where to find the cheque number in the top right corner",
     );
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("src", "/chequenumber.png");
@@ -173,7 +175,7 @@ describe("FAQ Page", () => {
 
     // Get the parent div that should have the blue background and gold border
     const headerDiv = heading.closest(
-      'div[style*="background-color: var(--bcgov-blue)"]'
+      'div[style*="background-color: var(--bcgov-blue)"]',
     );
     expect(headerDiv).toBeInTheDocument();
 

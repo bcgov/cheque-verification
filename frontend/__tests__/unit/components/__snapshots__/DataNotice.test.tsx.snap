@@ -16,7 +16,7 @@ exports[`DataNotice Component > matches snapshot for visual consistency 1`] = `
   <p
     style="margin: 0px 0px 8px; font-family: BCSans, sans-serif; font-size: 16px; line-height: 1.5;"
   >
-    Cheque verification data updates daily at 6 a.m.
+    Cheque verification portal data updates daily at 9 a.m. with prior day cashed cheque information.
   </p>
   <p
     style="margin: 0px; font-family: BCSans, sans-serif; font-size: 16px; line-height: 1.5;"
