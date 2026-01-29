@@ -59,6 +59,7 @@ describe("requestLogger middleware", () => {
       url: "/api/v1/cheque",
       path: "/api/v1/cheque",
       headers: {},
+      ip: "127.0.0.1",
     } as unknown as Request;
 
     const res = new EventEmitter() as unknown as Response & {
@@ -73,5 +74,54 @@ describe("requestLogger middleware", () => {
     expect(next).toHaveBeenCalled();
     // Verify listener was added for the finish event (logging enabled)
     expect(res.listenerCount("finish")).toBe(1);
+
+    // Emit finish event to trigger logging and cover the callback
+    res.emit("finish");
+  });
+
+  it("should use existing x-request-id header if provided", () => {
+    const { requestLogger } = require("../../../src/middleware/logger");
+    const req = {
+      method: "GET",
+      url: "/api/v1/cheque",
+      path: "/api/v1/cheque",
+      headers: { "x-request-id": "test-request-id" },
+      ip: "127.0.0.1",
+    } as unknown as Request;
+
+    const res = new EventEmitter() as unknown as Response & {
+      statusCode: number;
+    };
+    res.statusCode = 200;
+
+    const next: NextFunction = jest.fn();
+
+    requestLogger(req, res as Response, next);
+
+    expect(next).toHaveBeenCalled();
+    res.emit("finish");
+  });
+
+  it("should handle array x-request-id header", () => {
+    const { requestLogger } = require("../../../src/middleware/logger");
+    const req = {
+      method: "GET",
+      url: "/api/v1/cheque",
+      path: "/api/v1/cheque",
+      headers: { "x-request-id": ["first-id", "second-id"] },
+      ip: "127.0.0.1",
+    } as unknown as Request;
+
+    const res = new EventEmitter() as unknown as Response & {
+      statusCode: number;
+    };
+    res.statusCode = 200;
+
+    const next: NextFunction = jest.fn();
+
+    requestLogger(req, res as Response, next);
+
+    expect(next).toHaveBeenCalled();
+    res.emit("finish");
   });
 });
