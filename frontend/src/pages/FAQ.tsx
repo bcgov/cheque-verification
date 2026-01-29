@@ -67,19 +67,12 @@ const Faq = () => {
               }}
             >
               <li style={{ marginBottom: "8px" }}>
-                Please call the cheque verification line to verify{" "}
-                <strong>
-                  BC Employment and Assistance Imprest account - SDPR
-                </strong>{" "}
-                cheques issued today or if you receive a message{" "}
-                <em>"Error. Cheque not found"</em>.
+                Cheque verification portal data updates daily at 9 a.m. with
+                prior day cashed cheque information.
               </li>
               <li style={{ marginBottom: "8px" }}>
-                Cheque information is refreshed daily at 6AM.
-              </li>
-              <li style={{ marginBottom: "8px" }}>
-                This information captures data from previous day, information
-                cut off at 5 p.m.
+                Please call the cheque verification line if the portal returns
+                the message “Error. Cheque not found.”
               </li>
             </ul>
           </div>
