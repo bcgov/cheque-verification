@@ -43,7 +43,8 @@ const DataNotice = () => {
           lineHeight: 1.5,
         }}
       >
-        Cheque verification data updates daily at 6 a.m.
+        Cheque verification portal data updates daily at 9 a.m. with prior day
+        cashed cheque information.
       </p>
       <p
         style={{
