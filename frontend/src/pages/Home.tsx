@@ -154,10 +154,8 @@ function Home() {
             lineHeight: "1.5",
           }}
         >
-          Please call the cheque verification line to verify{" "}
-          <strong>BC Employment and Assistance Imprest account - SDPR</strong>{" "}
-          cheques issued today or if you receive a message{" "}
-          <em>"Error. Cheque not found"</em>.
+          Please call the cheque verification line if the portal returns the
+          message “Error. Cheque not found.”
         </p>
         <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
         <InlineAlert description={error} />
