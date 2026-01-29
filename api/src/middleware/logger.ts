@@ -12,10 +12,10 @@ import { logger } from "../config/logger.js";
 export const requestLogger = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   // Skip health check endpoints
-  if (req.url === "/health" || req.url.startsWith("/health")) {
+  if (req.url === "/api/v1/health" || req.path === "/api/v1/health") {
     return next();
   }
 
