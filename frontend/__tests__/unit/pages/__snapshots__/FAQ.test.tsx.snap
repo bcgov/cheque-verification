@@ -119,7 +119,7 @@ exports[`FAQ Page > matches snapshot for visual consistency 1`] = `
             <br />
             The cheque number cannot be found, the portal may not yet have been updated to reflect this cheque at this time.
             <br />
-            Please contact the Cheque Verification Line at 778-405-4306
+            Please contact the Cheque Verification Line.
           </li>
           <li
             style="margin-bottom: 12px;"
