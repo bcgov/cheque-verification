@@ -136,6 +136,64 @@ const Faq = () => {
                 }}
               />
             </div>
+            <h2
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "20px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid var(--bcgov-gold)",
+                paddingBottom: "8px",
+              }}
+            >
+              What do the status messages mean?
+            </h2>
+            <ul
+              style={{
+                color: "var(--bcgov-text-primary)",
+                fontSize: "16px",
+                marginLeft: "24px",
+                marginBottom: "16px",
+              }}
+            >
+              <li style={{ marginBottom: "12px" }}>
+                <strong>OK to Cash</strong>
+                <br />
+                OK to Proceed with cashing the cheque
+              </li>
+              <li style={{ marginBottom: "12px" }}>
+                <strong>Not OK to Cash</strong>
+                <br />
+                The cheque is not OK to cash - Cheque may have already been
+                cashed or a stop payment has been placed
+              </li>
+              <li style={{ marginBottom: "12px" }}>
+                <strong>Error: Cheque not found</strong>
+                <br />
+                The cheque number cannot be found, the portal may not yet have
+                been updated to reflect this cheque at this time.
+                <br />
+                Please contact the Cheque Verification Line.
+              </li>
+              <li style={{ marginBottom: "12px" }}>
+                <strong>
+                  Error: Verification Failed: Payment: Issue Date does not match
+                </strong>
+                <br />
+                The cheque exists in the portal however the payment issue date
+                does not match what was entered into the portal, please ensure
+                you have entered the correct payment issue date.
+              </li>
+              <li style={{ marginBottom: "12px" }}>
+                <strong>
+                  Error: Verification Failed: Cheque amount does not match
+                </strong>
+                <br />
+                The cheque exists in the portal however the cheque amount does
+                not match what was entered into the portal, please ensure you
+                have entered the correct cheque amount.
+              </li>
+            </ul>
           </div>
 
           <div style={{ marginBottom: "32px" }}>

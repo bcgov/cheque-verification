@@ -125,7 +125,7 @@ describe("FAQ Page", () => {
     expect(h1).toBeInTheDocument();
 
     const h2Elements = screen.getAllByRole("heading", { level: 2 });
-    expect(h2Elements).toHaveLength(7); // Updated to match actual number of h2 elements
+    expect(h2Elements).toHaveLength(8); // Updated to match actual number of h2 elements
 
     // Should have image
     const img = screen.getByRole("img");
