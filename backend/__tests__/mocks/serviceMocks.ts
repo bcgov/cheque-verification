@@ -188,7 +188,7 @@ export const createMockChequeVerificationService = () => {
           }
 
           return { isValid: true };
-        }
+        },
       ),
 
     fetchChequeData: fetchChequeDataMock,
@@ -211,10 +211,10 @@ export const createMockChequeVerificationService = () => {
         // Use UTC date normalization with explicit error handling
         try {
           const providedDateString = normalizeToUTCDate(
-            userInput.paymentIssueDate
+            userInput.paymentIssueDate,
           );
           const actualDateString = normalizeToUTCDate(
-            actualData.paymentIssueDate
+            actualData.paymentIssueDate,
           );
 
           if (providedDateString !== actualDateString) {
@@ -246,7 +246,7 @@ export const mockHttpResponses = {
     {
       method: "get",
       url: "/api/cheque/verify",
-    }
+    },
   ),
 
   // Invalid cheque response
@@ -259,7 +259,7 @@ export const mockHttpResponses = {
     {
       method: "get",
       url: "/api/cheque/verify",
-    }
+    },
   ),
 
   // Server error response
@@ -271,7 +271,7 @@ export const mockHttpResponses = {
     {
       method: "get",
       url: "/api/cheque/verify",
-    }
+    },
   ),
 
   // Network error simulation with Axios-like properties for axios.get().catch(e => ...)
@@ -295,6 +295,4 @@ export const mockConfig = {
   apiUrl: "http://localhost:3001/api",
   port: 3002,
   corsOrigin: "http://localhost:5173",
-  rateLimitWindowMs: 15 * 60 * 1000,
-  rateLimitMax: 100,
 };
