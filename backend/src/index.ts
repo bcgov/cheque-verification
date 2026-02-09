@@ -34,7 +34,7 @@ export function createApp() {
       origin: config.frontendUrl, // Use configured frontend URL
       methods: ["GET", "POST"], // Allow GET and POST
       credentials: false, // Don't allow credentials
-    })
+    }),
   );
 
   // Simple request logger middleware
@@ -58,7 +58,7 @@ if (require.main === module) {
   const server = app.listen(config.port, () => {
     logger.info(
       { port: config.port, environment: config.environment },
-      "Backend server started"
+      "Backend server started",
     );
   });
 

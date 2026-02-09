@@ -7,15 +7,12 @@ import { ChequeController } from "../controllers/chequeController";
  * @returns Configured Express router
  */
 export const createChequeRoutes = (
-  chequeController: ChequeController
+  chequeController: ChequeController,
 ): Router => {
   const router = Router();
 
   // Cheque verification endpoint
-  router.post(
-    "/verify",
-    (req, res) => chequeController.verifyCheque(req, res)
-  );
+  router.post("/verify", (req, res) => chequeController.verifyCheque(req, res));
 
   return router;
 };
@@ -26,7 +23,7 @@ export const createChequeRoutes = (
  * @returns Configured Express router
  */
 export const createHealthRoutes = (
-  chequeController: ChequeController
+  chequeController: ChequeController,
 ): Router => {
   const router = Router();
 
