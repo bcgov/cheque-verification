@@ -67,16 +67,16 @@ const Faq = () => {
               }}
             >
               <li style={{ marginBottom: "8px" }}>
-                {" "}
-                Will the portal update on the same day a cheque is cashed?
+                Cheque verification portal data updates daily at 9 a.m. with
+                prior day cashed cheque information.
+              </li>
+              <li style={{ marginBottom: "8px" }}>
+                <strong>
+                  Will the portal update on the same day a cheque is cashed?
+                </strong>
                 <br />
                 No. Data related to cashed cheques is processed overnight and
                 will update in the portal the next morning at 9 AM.
-              </li>
-              <li style={{ marginBottom: "8px" }}>
-                {" "}
-                Cheque verification portal data updates daily at 9 a.m. with
-                prior day cashed cheque information.
               </li>
               <li style={{ marginBottom: "8px" }}>
                 Please call the cheque verification line if the portal returns
