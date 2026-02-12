@@ -33,6 +33,15 @@ exports[`FAQ Page > matches snapshot for visual consistency 1`] = `
           <li
             style="margin-bottom: 8px;"
           >
+             
+            Will the portal update on the same day a cheque is cashed?
+            <br />
+            No. Data related to cashed cheques is processed overnight and will update in the portal the next morning at 9 AM.
+          </li>
+          <li
+            style="margin-bottom: 8px;"
+          >
+             
             Cheque verification portal data updates daily at 9 a.m. with prior day cashed cheque information.
           </li>
           <li
