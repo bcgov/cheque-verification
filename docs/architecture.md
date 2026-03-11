@@ -7,6 +7,9 @@ This document describes how the cheque verification platform is structured and h
 ```mermaid
 flowchart TD
     User[End User Browser]
+    Kong["Kong Gateway
+    (Rate Limiting, Correlation ID,
+    Request Size Limiting)"]
     Caddy["Caddy Web Server
     (Reverse Proxy)"]
     FE["React Frontend
@@ -17,24 +20,35 @@ flowchart TD
     (Internal Service)"]
     DB[(Oracle Database)]
 
-    User -->|HTTPS| Caddy
+    User -->|HTTPS| Kong
+    Kong -->|Rate-limited traffic| Caddy
     Caddy -->|Static Assets| FE
     Caddy -->|/api/*| BE
     BE -->|GET /api/v1/cheque/:number| API
     API -->|SQL Query| DB
     API -->|Cheque result| BE
     BE -->|Validated response| Caddy
-    Caddy -->|Response| User
+    Caddy -->|Response| Kong
+    Kong -->|Response| User
 ```
 
 Key characteristics:
 
-- **Caddy** serves as the entry point, handling static assets and reverse-proxying API requests to the backend.
+- **Kong Gateway** sits at the edge, enforcing per-IP and service-level rate limiting, injecting correlation IDs (`X-Request-ID`), and rejecting oversized request payloads before traffic reaches the application.
+- **Caddy** serves as the application entry point behind Kong, handling static assets and reverse-proxying API requests to the backend.
 - The frontend never communicates with the upstream cheque API directly. All sensitive calls are made server-side by the backend.
-- The backend enforces validation, rate limiting, and JWT-based authentication before touching internal services.
+- The backend enforces validation and JWT-based authentication before touching internal services. Rate limiting is handled by Kong at the gateway layer.
 - The upstream API is responsible for business rules and database access; the backend only proxies verified requests and compares user input against authoritative data.
 
 ## Component Responsibilities
+
+### Kong Gateway
+
+- Sits in front of Caddy as the edge gateway.
+- Enforces per-IP and service-level rate limiting via the Rate Limiting plugin.
+- Injects `X-Request-ID` headers via the Correlation ID plugin for end-to-end request tracing.
+- Rejects oversized request payloads via the Request Size Limiting plugin.
+- Returns `429 Too Many Requests` with `Retry-After` headers when rate limits are exceeded.
 
 ### Caddy Web Server
 
@@ -53,7 +67,7 @@ Key characteristics:
 
 - Express application that accepts requests from the frontend.
 - Validates payloads (format, required fields, domain constraints).
-- Applies rate limits and logs metadata for observability without storing personal information.
+- Logs metadata for observability (including Kong-injected `X-Request-ID`) without storing personal information.
 - Fetches authoritative cheque data from the upstream API.
 - Compares user-supplied values with authoritative data and returns either a `success` response or human-readable validation messages.
 - Signs a short-lived JWT when calling the upstream API to avoid sending static credentials.

@@ -25,7 +25,7 @@ A web application for BC Government to verify cheque numbers, amounts, and issue
 ## Architecture Overview
 
 - **Frontend (`frontend/`)** &mdash; React + TypeScript single-page app served by Vite. Responsible for rendering the cheque verification form and displaying results.
-- **Backend (`backend/`)** &mdash; Express + TypeScript API that validates requests, applies rate limiting/logging, and calls the upstream cheque API.
+- **Backend (`backend/`)** &mdash; Express + TypeScript API that validates requests, handles logging, and calls the upstream cheque API.
 - **External API (`api/`)** &mdash; Internal service that returns authoritative cheque data. Credentials and access remain server-side.
 
 > For a deeper dive, including sequence diagrams, see `docs/architecture.md`.
@@ -103,7 +103,9 @@ Refer to sub-package READMEs or scripts for additional details.
 
 ## Security & Privacy Notes
 
-- **Rate Limiting**: The backend enforces strict rate limiting (global and per-route) with progressive delays to prevent brute-force attacks.
+- **Rate Limiting**: Kong Gateway enforces per-IP and service-level rate limiting at the edge. The backend relies on Kong for rate limiting and retains a `100kb` body size limit as defense-in-depth.
+- **Request Tracing**: Kong injects `X-Request-ID` headers (correlation ID plugin) for end-to-end request tracing. The backend propagates this ID in response headers and log entries.
+- **Request Size Limiting**: Kong rejects oversized payloads at the gateway via the request size limiting plugin.
 - **Error Handling**: API returns generic error messages to avoid leaking implementation details or validation rules.
 - **Logging**: Caddy and backend logs capture metadata (IP, status, latency) for security monitoring but exclude sensitive personal information.
 - **Configuration**: Sensitive configuration (API credentials, JWT secrets, database handles) must stay outside of the repo.
