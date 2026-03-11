@@ -71,6 +71,14 @@ const Faq = () => {
                 prior day cashed cheque information.
               </li>
               <li style={{ marginBottom: "8px" }}>
+                <strong>
+                  Will the portal update on the same day a cheque is cashed?
+                </strong>
+                <br />
+                No. Data related to cashed cheques is processed overnight and
+                will update in the portal the next morning at 9 AM.
+              </li>
+              <li style={{ marginBottom: "8px" }}>
                 Please call the cheque verification line if the portal returns
                 the message “Error. Cheque not found.”
               </li>

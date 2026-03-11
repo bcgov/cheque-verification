@@ -47,6 +47,18 @@ describe("FAQ Page", () => {
 
     expect(
       screen.getByText(
+        /Will the portal update on the same day a cheque is cashed\?/,
+      ),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        /No\. Data related to cashed cheques is processed overnight/,
+      ),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
         /Cheque verification portal data updates daily at 9 a\.m\./,
       ),
     ).toBeInTheDocument();
