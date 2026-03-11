@@ -14,18 +14,6 @@ service:
       targetPort: 3000
       protocol: TCP
 
-# Route configuration
-route:
-  host: "" # Leave empty for auto-generated hostname, or specify custom hostname
-  annotations:
-    # Load balancing strategy (distributes traffic evenly)
-    haproxy.router.openshift.io/balance: "roundrobin"
-  # TLS certificate configuration for custom domain
-  tls:
-    certificate: "" # Server certificate (PEM format)
-    key: "" # Private key (PEM format)
-    caCertificate: "" # CA certificate chain (intermediates concatenated, PEM format)
-
 # Horizontal Pod Autoscaler configuration
 autoscaling:
   enabled: false
