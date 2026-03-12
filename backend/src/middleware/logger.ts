@@ -25,6 +25,9 @@ export const requestLogger = (
     ? existingId[0]
     : existingId || uuidv4();
 
+  // Store on request for downstream use (controller/service)
+  req.headers["x-request-id"] = reqId;
+
   // Propagate request ID to response for end-to-end traceability
   res.setHeader("X-Request-ID", reqId);
 
