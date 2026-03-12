@@ -32,14 +32,9 @@ const formatValidationErrors = (details: string[]): string => {
 /**
  * Handles axios error responses and returns appropriate error message
  */
-const handleAxiosError = (
-  err: unknown,
-): { message: string; isRateLimited: boolean } => {
+const handleAxiosError = (err: unknown): string => {
   if (!axios.isAxiosError(err) || !err.response) {
-    return {
-      message: "Failed to verify cheque. Please try again later.",
-      isRateLimited: false,
-    };
+    return "Failed to verify cheque. Please try again later.";
   }
 
   const errorData = err.response.data;
@@ -49,30 +44,20 @@ const handleAxiosError = (
       errorData?.retryAfter ||
       Number(err.response.headers?.["retry-after"]) ||
       0;
-    return {
-      message: formatRateLimitError(retryAfter),
-      isRateLimited: true,
-    };
+    return formatRateLimitError(retryAfter);
   }
 
   if (errorData.details && Array.isArray(errorData.details)) {
-    return {
-      message: formatValidationErrors(errorData.details),
-      isRateLimited: false,
-    };
+    return formatValidationErrors(errorData.details);
   }
 
-  return {
-    message: errorData.error || "Verification failed",
-    isRateLimited: false,
-  };
+  return errorData.error || "Verification failed";
 };
 
 function Home() {
   const [status, setStatus] = useState<ApiResponse<CheckStatus> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isRateLimited, setIsRateLimited] = useState(false);
 
   /**
    * Handles cheque verification form submission
@@ -103,7 +88,6 @@ function Home() {
     try {
       setLoading(true);
       setError("");
-      setIsRateLimited(false);
       setStatus(null);
       // Use relative URL - Caddy handles routing to backend
       const response = await axios.post<ApiResponse<CheckStatus>>(
@@ -116,11 +100,13 @@ function Home() {
       );
       setStatus(response.data);
     } catch (err) {
-      const result = handleAxiosError(err);
-      setError(result.message);
-      setIsRateLimited(result.isRateLimited);
+      setError(handleAxiosError(err));
 
-      if (!result.isRateLimited && axios.isAxiosError(err) && err.response) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response &&
+        err.response.status !== 429
+      ) {
         setStatus(err.response.data as ApiResponse<CheckStatus>);
       }
     } finally {
@@ -182,11 +168,7 @@ function Home() {
           message “Error. Cheque not found.”
         </p>
         <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
-        <InlineAlert
-          variant={isRateLimited ? "warning" : undefined}
-          title={isRateLimited ? "Rate Limit" : undefined}
-          description={error}
-        />
+        <InlineAlert description={error} />
         <VerificationResult status={status} />
       </div>
     </main>

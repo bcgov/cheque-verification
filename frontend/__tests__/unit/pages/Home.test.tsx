@@ -37,22 +37,9 @@ vi.mock("../../../src/components/ChequeForm", () => ({
 }));
 
 vi.mock("../../../src/components/InlineAlert", () => ({
-  default: ({
-    description,
-    variant,
-    title,
-  }: {
-    description: string;
-    variant?: string;
-    title?: string;
-  }) =>
+  default: ({ description }: { description: string }) =>
     description ? (
-      <div
-        data-testid="inline-alert"
-        data-variant={variant}
-        data-title={title}
-        role="alert"
-      >
+      <div data-testid="inline-alert" role="alert">
         {description}
       </div>
     ) : null,
@@ -369,8 +356,6 @@ describe("Home Page", () => {
       expect(alert).toHaveTextContent(
         "Too many requests. Please wait 2 minutes before trying again.",
       );
-      expect(alert).toHaveAttribute("data-variant", "warning");
-      expect(alert).toHaveAttribute("data-title", "Rate Limit");
     });
 
     // Should NOT set verification result status on 429
@@ -399,7 +384,6 @@ describe("Home Page", () => {
       expect(alert).toHaveTextContent(
         "Too many requests. Please wait a few minutes before trying again.",
       );
-      expect(alert).toHaveAttribute("data-variant", "warning");
     });
   });
 
@@ -424,7 +408,6 @@ describe("Home Page", () => {
       expect(alert).toHaveTextContent(
         "Too many requests. Please wait 1 minute before trying again.",
       );
-      expect(alert).toHaveAttribute("data-variant", "warning");
     });
   });
 
@@ -446,9 +429,7 @@ describe("Home Page", () => {
 
     await waitFor(() => {
       const alert = screen.getByTestId("inline-alert");
-      // variant and title are not set — InlineAlert defaults to danger/Error
-      expect(alert).not.toHaveAttribute("data-variant", "warning");
-      expect(alert).not.toHaveAttribute("data-title", "Rate Limit");
+      expect(alert).toBeInTheDocument();
     });
   });
 });
