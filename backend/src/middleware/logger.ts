@@ -2,6 +2,14 @@ import type { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../config/logger";
 
+/** Alphanumerics, hyphens, dots, colons, underscores; max 64 chars. */
+const VALID_REQUEST_ID = /^[A-Za-z0-9._:-]{1,64}$/;
+
+const getRequestId = (req: Request): string => {
+  const candidate = req.get("x-request-id");
+  return candidate && VALID_REQUEST_ID.test(candidate) ? candidate : uuidv4();
+};
+
 /**
  * HTTP request logging middleware
  *
@@ -19,11 +27,8 @@ export const requestLogger = (
     return next();
   }
 
-  // Use Kong-injected X-Request-ID or generate a fallback for local dev
-  const existingId = req.headers["x-request-id"];
-  const reqId = Array.isArray(existingId)
-    ? existingId[0]
-    : existingId || uuidv4();
+  // Sanitize inbound ID to prevent header/log injection; fall back to UUID
+  const reqId = getRequestId(req);
 
   // Store on request for downstream use (controller/service)
   req.headers["x-request-id"] = reqId;
