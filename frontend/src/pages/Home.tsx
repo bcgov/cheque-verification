@@ -10,10 +10,13 @@ import DataNotice from "../components/DataNotice.tsx";
  * Formats rate limiting error message with user-friendly wait time
  */
 const formatRateLimitError = (retryAfter: number): string => {
-  const waitMinutes = Math.ceil(retryAfter / 60);
-  return `Too many requests. Please wait ${waitMinutes} ${
-    waitMinutes === 1 ? "minute" : "minutes"
-  } before trying again.`;
+  if (retryAfter > 0) {
+    const waitMinutes = Math.ceil(retryAfter / 60);
+    return `Too many requests. Please wait ${waitMinutes} ${
+      waitMinutes === 1 ? "minute" : "minutes"
+    } before trying again.`;
+  }
+  return "Too many requests. Please wait a few minutes before trying again.";
 };
 
 /**
@@ -29,28 +32,47 @@ const formatValidationErrors = (details: string[]): string => {
 /**
  * Handles axios error responses and returns appropriate error message
  */
-const handleAxiosError = (err: unknown): string => {
+const handleAxiosError = (
+  err: unknown,
+): { message: string; isRateLimited: boolean } => {
   if (!axios.isAxiosError(err) || !err.response) {
-    return "Failed to verify cheque. Please try again later.";
+    return {
+      message: "Failed to verify cheque. Please try again later.",
+      isRateLimited: false,
+    };
   }
 
   const errorData = err.response.data;
 
-  if (err.response.status === 429 && errorData.retryAfter) {
-    return formatRateLimitError(errorData.retryAfter);
+  if (err.response.status === 429) {
+    const retryAfter =
+      errorData?.retryAfter ||
+      Number(err.response.headers?.["retry-after"]) ||
+      0;
+    return {
+      message: formatRateLimitError(retryAfter),
+      isRateLimited: true,
+    };
   }
 
   if (errorData.details && Array.isArray(errorData.details)) {
-    return formatValidationErrors(errorData.details);
+    return {
+      message: formatValidationErrors(errorData.details),
+      isRateLimited: false,
+    };
   }
 
-  return errorData.error || "Verification failed";
+  return {
+    message: errorData.error || "Verification failed",
+    isRateLimited: false,
+  };
 };
 
 function Home() {
   const [status, setStatus] = useState<ApiResponse<CheckStatus> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isRateLimited, setIsRateLimited] = useState(false);
 
   /**
    * Handles cheque verification form submission
@@ -81,6 +103,7 @@ function Home() {
     try {
       setLoading(true);
       setError("");
+      setIsRateLimited(false);
       setStatus(null);
       // Use relative URL - Caddy handles routing to backend
       const response = await axios.post<ApiResponse<CheckStatus>>(
@@ -93,10 +116,11 @@ function Home() {
       );
       setStatus(response.data);
     } catch (err) {
-      const errorMessage = handleAxiosError(err);
-      setError(errorMessage);
+      const result = handleAxiosError(err);
+      setError(result.message);
+      setIsRateLimited(result.isRateLimited);
 
-      if (axios.isAxiosError(err) && err.response) {
+      if (!result.isRateLimited && axios.isAxiosError(err) && err.response) {
         setStatus(err.response.data as ApiResponse<CheckStatus>);
       }
     } finally {
@@ -158,7 +182,11 @@ function Home() {
           message “Error. Cheque not found.”
         </p>
         <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
-        <InlineAlert description={error} />
+        <InlineAlert
+          variant={isRateLimited ? "warning" : undefined}
+          title={isRateLimited ? "Rate Limit" : undefined}
+          description={error}
+        />
         <VerificationResult status={status} />
       </div>
     </main>
