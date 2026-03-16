@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: ghcr.io/bcgov/cheque-verification-frontend
@@ -14,17 +14,14 @@ service:
       targetPort: 3000
       protocol: TCP
 
-# Horizontal Pod Autoscaler configuration
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-
-# Pod Disruption Budget
-podDisruptionBudget:
-  enabled: false
-  minAvailable: 1
+# Container resource requests and limits
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
 
 nodeSelector: {}
 
