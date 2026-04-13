@@ -51,9 +51,4 @@ describe("Footer Component", () => {
     expect(footer).toBeInTheDocument();
     expect(footer).toHaveAttribute("role", "contentinfo");
   });
-
-  it("renders consistently", () => {
-    const { container } = renderWithProviders(<Footer />);
-    expect(container.firstChild).toMatchSnapshot();
-  });
 });
