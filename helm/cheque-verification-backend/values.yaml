@@ -12,14 +12,14 @@ service:
 
 # Horizontal Pod Autoscaler configuration
 autoscaling:
-  enabled: false
-  minReplicas: 1
+  enabled: true
+  minReplicas: 2
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
 
 # Pod Disruption Budget
 podDisruptionBudget:
-  enabled: false
+  enabled: true
   minAvailable: 1
 
 nodeSelector: {}
@@ -27,3 +27,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Container resource requests and limits
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi

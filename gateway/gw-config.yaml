@@ -1,0 +1,60 @@
+kind: GatewayService
+name: <name-test>
+tags: [ns.gateway.test]
+url: <openshift service url>
+port: <port number>
+protocol: http
+routes:
+  - name: <nameofyour-test-route>
+    tags: [ns.gateway.test]
+    hosts:
+      - <your route name>
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+    strip_path: false
+
+plugins:
+  # --- Per-IP Rate Limiting ---
+  # ~50 requests per 15 minutes per IP
+  - name: rate-limiting
+    tags: [ns.gateway.test]
+    config:
+      limit_by: ip
+      policy: redis
+      hide_client_headers: false # users need to see the limit_by: ip headers
+      second: 5
+      minute: 20
+      hour: 200
+
+  # --- Service-Level Rate Limiting ---
+  - name: rate-limiting_902
+    tags: [ns.gateway.test]
+    config:
+      limit_by: service
+      policy: local
+      hide_client_headers: true # users DO NOT need to see these headers
+      second: 30
+      minute: 300
+      hour: 5000
+
+  # --- Correlation ID ---
+  # Injects X-Request-ID header for end-to-end request tracing
+  # Backend reads this header in its logger middleware
+  - name: correlation-id
+    tags: [ns.gateway.test]
+    config:
+      header_name: X-Request-ID
+      generator: uuid#counter
+      echo_downstream: false
+
+  # --- Request Size Limiting ---
+  # Rejects payloads larger than 16KB at the gateway
+  # Backend also enforces 100KB via express.json()
+  - name: request-size-limiting
+    tags: [ns.gateway.test]
+    config:
+      allowed_payload_size: 16
+      size_unit: kilobytes

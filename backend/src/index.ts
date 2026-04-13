@@ -4,8 +4,6 @@ import { getConfig } from "./config/appConfig";
 import { ChequeVerificationService } from "./services/chequeVerificationService";
 import { ChequeController } from "./controllers/chequeController";
 import { createChequeRoutes, createHealthRoutes } from "./routes/chequeRoutes";
-import { globalRequestLimiter } from "./middleware/rateLimiter";
-import { globalSlowDown } from "./middleware/slowDown";
 import { requestLogger } from "./middleware/logger";
 import { logger } from "./config/logger";
 
@@ -24,10 +22,6 @@ export function createApp() {
   const chequeService = new ChequeVerificationService(config.apiUrl);
   const chequeController = new ChequeController(chequeService);
 
-  // Apply global rate limiting and slow-down to all requests
-  app.use(globalRequestLimiter);
-  app.use(globalSlowDown);
-
   // Enable JSON parsing with size limits
   app.use(express.json({ limit: "100kb" })); // Limiting request body size
 
@@ -40,7 +34,7 @@ export function createApp() {
       origin: config.frontendUrl, // Use configured frontend URL
       methods: ["GET", "POST"], // Allow GET and POST
       credentials: false, // Don't allow credentials
-    })
+    }),
   );
 
   // Simple request logger middleware
@@ -64,7 +58,7 @@ if (require.main === module) {
   const server = app.listen(config.port, () => {
     logger.info(
       { port: config.port, environment: config.environment },
-      "Backend server started"
+      "Backend server started",
     );
   });
 

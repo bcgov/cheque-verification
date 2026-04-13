@@ -10,10 +10,13 @@ import DataNotice from "../components/DataNotice.tsx";
  * Formats rate limiting error message with user-friendly wait time
  */
 const formatRateLimitError = (retryAfter: number): string => {
-  const waitMinutes = Math.ceil(retryAfter / 60);
-  return `Too many requests. Please wait ${waitMinutes} ${
-    waitMinutes === 1 ? "minute" : "minutes"
-  } before trying again.`;
+  if (retryAfter > 0) {
+    const waitMinutes = Math.ceil(retryAfter / 60);
+    return `Too many requests. Please wait ${waitMinutes} ${
+      waitMinutes === 1 ? "minute" : "minutes"
+    } before trying again.`;
+  }
+  return "Too many requests. Please wait a few minutes before trying again.";
 };
 
 /**
@@ -36,8 +39,12 @@ const handleAxiosError = (err: unknown): string => {
 
   const errorData = err.response.data;
 
-  if (err.response.status === 429 && errorData.retryAfter) {
-    return formatRateLimitError(errorData.retryAfter);
+  if (err.response.status === 429) {
+    const retryAfter =
+      errorData?.retryAfter ||
+      Number(err.response.headers?.["retry-after"]) ||
+      0;
+    return formatRateLimitError(retryAfter);
   }
 
   if (errorData.details && Array.isArray(errorData.details)) {
@@ -93,10 +100,13 @@ function Home() {
       );
       setStatus(response.data);
     } catch (err) {
-      const errorMessage = handleAxiosError(err);
-      setError(errorMessage);
+      setError(handleAxiosError(err));
 
-      if (axios.isAxiosError(err) && err.response) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response &&
+        err.response.status !== 429
+      ) {
         setStatus(err.response.data as ApiResponse<CheckStatus>);
       }
     } finally {

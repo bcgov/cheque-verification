@@ -73,7 +73,7 @@ describe("ChequeVerificationService", () => {
     it("should return valid for correct inputs", () => {
       const result = service.validateVerificationFields(
         "1000.50",
-        "2024-01-01"
+        "2024-01-01",
       );
 
       expect(result.isValid).toBe(true);
@@ -102,7 +102,7 @@ describe("ChequeVerificationService", () => {
 
         expect(result.isValid).toBe(false);
         expect(result.error).toContain(
-          "Invalid input. Please check your details and try again."
+          "Invalid input. Please check your details and try again.",
         );
       });
     });
@@ -115,7 +115,7 @@ describe("ChequeVerificationService", () => {
 
         expect(result.isValid).toBe(false);
         expect(result.error).toContain(
-          "Invalid input. Please check your details and try again."
+          "Invalid input. Please check your details and try again.",
         );
       });
     });
@@ -133,7 +133,7 @@ describe("ChequeVerificationService", () => {
 
       for (const invalidNumber of invalidChequeNumbers) {
         await expect(service.fetchChequeData(invalidNumber)).rejects.toThrow(
-          "Invalid cheque number format"
+          "Invalid cheque number format",
         );
       }
     });
@@ -164,9 +164,44 @@ describe("ChequeVerificationService", () => {
           headers: {
             Authorization: "Bearer mocked-jwt-token-for-testing",
           },
-        }
+        },
       );
       expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should forward X-Request-ID when provided", async () => {
+      const mockResponse = {
+        data: { success: true, data: { chequeNumber: "123456" } },
+      };
+
+      mockedAxios.get.mockResolvedValue(mockResponse);
+
+      await service.fetchChequeData("123456", "trace-id-abc");
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${mockApiUrl}/api/v1/cheque/123456`,
+        {
+          timeout: 30000,
+          validateStatus: expect.any(Function),
+          headers: {
+            Authorization: "Bearer mocked-jwt-token-for-testing",
+            "X-Request-ID": "trace-id-abc",
+          },
+        },
+      );
+    });
+
+    it("should not include X-Request-ID when not provided", async () => {
+      const mockResponse = {
+        data: { success: true, data: { chequeNumber: "123456" } },
+      };
+
+      mockedAxios.get.mockResolvedValue(mockResponse);
+
+      await service.fetchChequeData("123456");
+
+      const callHeaders = mockedAxios.get.mock.calls[0][1]?.headers;
+      expect(callHeaders).not.toHaveProperty("X-Request-ID");
     });
 
     it("should handle API errors", async () => {
@@ -174,7 +209,7 @@ describe("ChequeVerificationService", () => {
       mockedAxios.get.mockRejectedValue(mockError);
 
       await expect(service.fetchChequeData("123456")).rejects.toThrow(
-        "Network error"
+        "Network error",
       );
     });
   });

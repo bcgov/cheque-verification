@@ -18,14 +18,6 @@ describe("Backend Server Integration", () => {
       expect(response.headers["x-powered-by"]).toBeUndefined();
     });
 
-    it("should skip rate limiting for health checks", async () => {
-      const response = await request(app).get("/health");
-
-      // Health checks bypass rate limiting (no ratelimit headers)
-      expect(response.headers["ratelimit-limit"]).toBeUndefined();
-      expect(response.status).toBe(200);
-    });
-
     it("should handle JSON requests", async () => {
       const response = await request(app)
         .post("/api/cheque/verify")
@@ -53,8 +45,8 @@ describe("Backend Server Integration", () => {
     it("should have cheque routes configured", async () => {
       const response = await request(app).get("/api/cheque/verify");
 
-      // Should get a response (likely method not allowed for GET, 404 for the route, or rate limited)
-      expect([200, 404, 405, 429]).toContain(response.status);
+      // Should get a response (likely method not allowed for GET or 404 for the route)
+      expect([200, 404, 405]).toContain(response.status);
     });
 
     it("should have health routes configured", async () => {
@@ -81,7 +73,7 @@ describe("Backend Server Integration", () => {
         .post("/api/cheque/verify")
         .send(largePayload);
 
-      expect([400, 413, 429]).toContain(response.status); // Bad request or payload too large or rate limited
+      expect([400, 413]).toContain(response.status); // Bad request or payload too large
     });
   });
 
