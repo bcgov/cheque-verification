@@ -40,7 +40,7 @@ export class ChequeVerificationService {
    */
   validateVerificationFields(
     appliedAmount: string,
-    paymentIssueDate: string
+    paymentIssueDate: string,
   ): { isValid: boolean; error?: string } {
     if (!appliedAmount || !paymentIssueDate) {
       return {
@@ -71,10 +71,12 @@ export class ChequeVerificationService {
   /**
    * Fetches cheque data from the API
    * @param chequeNumber - The cheque number to fetch
+   * @param requestId - Optional correlation ID for end-to-end tracing
    * @returns Promise with API response
    */
   async fetchChequeData(
-    chequeNumber: string
+    chequeNumber: string,
+    requestId?: string,
   ): Promise<ApiResponse<ChequeStatusResponse>> {
     // Validate cheque number format to prevent URL injection attacks
     if (!this.isValidChequeNumber(chequeNumber)) {
@@ -109,6 +111,11 @@ export class ChequeVerificationService {
       logger.warn("No JWT secret configured - making unauthenticated request");
     }
 
+    // Forward correlation ID for end-to-end traceability
+    if (requestId) {
+      headers["X-Request-ID"] = requestId;
+    }
+
     // Safe: chequeNumber has been validated to contain only digits (1-16 chars)
     // This prevents path traversal and URL injection attacks
     const fullUrl = `${this.apiUrl}/api/v1/cheque/${chequeNumber}`;
@@ -120,7 +127,7 @@ export class ChequeVerificationService {
         timeout: 30000,
         validateStatus: (status: number) => status < 500,
         headers,
-      }
+      },
     );
 
     return response.data;
@@ -137,7 +144,7 @@ export class ChequeVerificationService {
       appliedAmount: string;
       paymentIssueDate: string;
     },
-    actualData: ChequeStatusResponse
+    actualData: ChequeStatusResponse,
   ): string[] {
     const verificationErrors: string[] = [];
 

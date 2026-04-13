@@ -5,9 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: cheque-verification-frontend
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: cheque-verification-frontend

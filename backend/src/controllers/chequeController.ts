@@ -34,7 +34,7 @@ export class ChequeController {
       const validationError = this.validateInputs(
         chequeNumber,
         appliedAmount,
-        paymentIssueDate
+        paymentIssueDate,
       );
       if (validationError) {
         res.status(400).json(validationError);
@@ -42,10 +42,12 @@ export class ChequeController {
       }
 
       // Fetch and verify cheque data
+      const requestId = req.headers["x-request-id"] as string | undefined;
       const result = await this.processApiRequest(
         chequeNumber,
         appliedAmount,
-        paymentIssueDate
+        paymentIssueDate,
+        requestId,
       );
       res.status(result.status).json(result.body);
     } catch (error: unknown) {
@@ -58,7 +60,7 @@ export class ChequeController {
    */
   private logIncomingRequest(
     req: Request,
-    data: { chequeNumber: any; appliedAmount: any; paymentIssueDate: any }
+    data: { chequeNumber: any; appliedAmount: any; paymentIssueDate: any },
   ): void {
     logger.info(
       {
@@ -68,7 +70,7 @@ export class ChequeController {
         hasDate: !!data.paymentIssueDate,
         userAgent: req.get("User-Agent") || "unknown",
       },
-      "Received cheque verification request"
+      "Received cheque verification request",
     );
   }
 
@@ -78,7 +80,7 @@ export class ChequeController {
   private validateInputs(
     chequeNumber: any,
     appliedAmount: any,
-    paymentIssueDate: any
+    paymentIssueDate: any,
   ): { success: boolean; error: string } | null {
     if (!chequeNumber) {
       logger.warn("Request missing cheque number");
@@ -91,7 +93,7 @@ export class ChequeController {
 
     const validation = this.chequeService.validateVerificationFields(
       appliedAmount,
-      paymentIssueDate
+      paymentIssueDate,
     );
     if (!validation.isValid) {
       return { success: false, error: validation.error || "Validation failed" };
@@ -106,9 +108,13 @@ export class ChequeController {
   private async processApiRequest(
     chequeNumber: string,
     appliedAmount: any,
-    paymentIssueDate: any
+    paymentIssueDate: any,
+    requestId?: string,
   ): Promise<{ status: number; body: any }> {
-    const apiResponse = await this.chequeService.fetchChequeData(chequeNumber);
+    const apiResponse = await this.chequeService.fetchChequeData(
+      chequeNumber,
+      requestId,
+    );
 
     if (!apiResponse.success || !apiResponse.data) {
       logger.warn(
@@ -116,7 +122,7 @@ export class ChequeController {
           success: !!apiResponse.success,
           hasData: !!apiResponse.data,
         },
-        "Cheque not found in API response"
+        "Cheque not found in API response",
       );
       return {
         status: 404,
@@ -127,7 +133,7 @@ export class ChequeController {
     return this.verifyUserData(
       apiResponse.data,
       appliedAmount,
-      paymentIssueDate
+      paymentIssueDate,
     );
   }
 
@@ -137,11 +143,11 @@ export class ChequeController {
   private verifyUserData(
     chequeData: any,
     appliedAmount: any,
-    paymentIssueDate: any
+    paymentIssueDate: any,
   ): { status: number; body: any } {
     const verificationErrors = this.chequeService.verifyFields(
       { appliedAmount, paymentIssueDate },
-      chequeData
+      chequeData,
     );
 
     if (verificationErrors.length > 0) {

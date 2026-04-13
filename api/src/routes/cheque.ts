@@ -2,13 +2,11 @@ import { Router, Request, Response } from "express";
 import { getChequeFromDatabase } from "../services/chequeService.js";
 import { validateChequeNumber } from "../middleware/validation.js";
 import { authenticateJWT, validateJWTClaims } from "../middleware/auth.js";
-import { chequeRateLimiter } from "../middleware/rateLimiter.js";
 import logger from "../config/logger.js";
 
 const router = Router();
 
-// Apply rate limiting to all cheque routes
-router.use(chequeRateLimiter);
+// Rate limiting is handled by Kong gateway (see gateway/gw-config.yaml)
 
 // Apply JWT authentication to all cheque routes
 router.use(authenticateJWT);
@@ -18,7 +16,7 @@ router.use(
   validateJWTClaims({
     purpose: "cheque-api-access",
     sub: "cheque-backend-service",
-  })
+  }),
 );
 
 // Main endpoint for cheque verification
@@ -33,7 +31,7 @@ router.get(
         chequeNumberLength: chequeNumber?.length || 0,
         hasUserAgent: !!req.get("User-Agent"),
       },
-      "Received cheque verification request"
+      "Received cheque verification request",
     );
 
     // Express-async-errors automatically catches and handles any errors
@@ -43,7 +41,7 @@ router.get(
       success: true,
       data: chequeStatus,
     });
-  }
+  },
 );
 
 export default router;

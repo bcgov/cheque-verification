@@ -6,12 +6,6 @@ import {
 import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 import { ChequeController } from "../../../src/controllers/chequeController";
 
-// Mock the middleware to avoid rate limiting in tests
-jest.mock("../../../src/middleware/rateLimiter", () => ({
-  chequeVerifyLimiter: (req: any, res: any, next: any) => next(),
-  healthLimiter: (req: any, res: any, next: any) => next(),
-}));
-
 describe("Cheque Routes", () => {
   let mockController: ChequeController;
 
@@ -118,8 +112,7 @@ describe("Cheque Routes", () => {
   });
 
   describe("Middleware integration", () => {
-    it("should integrate with rate limiting middleware", () => {
-      // The routes should be created without errors even with middleware
+    it("should create routes without errors", () => {
       expect(() => createChequeRoutes(mockController)).not.toThrow();
       expect(() => createHealthRoutes(mockController)).not.toThrow();
     });

@@ -16,8 +16,7 @@ describe("ChequeController", () => {
     mockService = createMockChequeVerificationService();
     controller = new ChequeController(mockService);
 
-    // Setup routes WITHOUT rate limiting for unit tests
-    // Rate limiting is tested separately in integration tests
+    // Setup routes for unit tests
     app.post("/api/verify", controller.verifyCheque.bind(controller));
     app.get("/health", controller.healthCheck.bind(controller));
   });
@@ -71,7 +70,7 @@ describe("ChequeController", () => {
       expect(response.body.error).toBe("All fields are required.");
       expect(mockService.validateVerificationFields).toHaveBeenCalledWith(
         "",
-        "2024-01-01"
+        "2024-01-01",
       );
     });
 

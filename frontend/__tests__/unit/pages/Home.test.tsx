@@ -126,7 +126,7 @@ describe("Home Page", () => {
     renderWithProviders(<Home />);
 
     const header = document.querySelector(
-      'div[style*="background-color: var(--bcgov-blue)"]'
+      'div[style*="background-color: var(--bcgov-blue)"]',
     ) as HTMLElement;
     expect(header).toBeInTheDocument();
 
@@ -153,7 +153,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(screen.getByTestId("verification-result")).toBeInTheDocument();
       expect(screen.getByTestId("verification-result")).toHaveTextContent(
-        "Success"
+        "Success",
       );
     });
 
@@ -184,7 +184,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(screen.getByTestId("inline-alert")).toBeInTheDocument();
       expect(screen.getByTestId("inline-alert")).toHaveTextContent(
-        "Verification failed: • Cheque number is invalid • Amount must be positive"
+        "Verification failed: • Cheque number is invalid • Amount must be positive",
       );
     });
   });
@@ -208,7 +208,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(screen.getByTestId("inline-alert")).toBeInTheDocument();
       expect(screen.getByTestId("inline-alert")).toHaveTextContent(
-        "Server error"
+        "Server error",
       );
     });
   });
@@ -225,7 +225,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(screen.getByTestId("inline-alert")).toBeInTheDocument();
       expect(screen.getByTestId("inline-alert")).toHaveTextContent(
-        "Failed to verify cheque. Please try again later."
+        "Failed to verify cheque. Please try again later.",
       );
     });
   });
@@ -249,7 +249,7 @@ describe("Home Page", () => {
     expect(screen.getByText("Verifying...")).toBeInTheDocument();
     expect(screen.getByTestId("cheque-form")).toHaveAttribute(
       "data-loading",
-      "true"
+      "true",
     );
 
     // Resolve the promise
@@ -274,7 +274,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(mockAxios.post).toHaveBeenCalledWith(
         "/api/cheque/verify",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -317,7 +317,7 @@ describe("Home Page", () => {
     await waitFor(() => {
       expect(screen.queryByText("First error")).not.toBeInTheDocument();
       expect(screen.getByTestId("verification-result")).toHaveTextContent(
-        "Success"
+        "Success",
       );
     });
   });
@@ -332,5 +332,104 @@ describe("Home Page", () => {
     // Should have proper heading
     const heading = screen.getByRole("heading", { level: 2 });
     expect(heading).toBeInTheDocument();
+  });
+
+  it("handles Kong gateway 429 with Retry-After header", async () => {
+    const mockError = {
+      response: {
+        status: 429,
+        data: { message: "API rate limit exceeded" },
+        headers: { "retry-after": "120" },
+      },
+    };
+    mockAxios.post.mockRejectedValueOnce(mockError);
+    mockAxios.isAxiosError.mockReturnValue(true);
+
+    renderWithProviders(<Home />);
+
+    const submitButton = screen.getByText("Verify Cheque");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const alert = screen.getByTestId("inline-alert");
+      expect(alert).toBeInTheDocument();
+      expect(alert).toHaveTextContent(
+        "Too many requests. Please wait 2 minutes before trying again.",
+      );
+    });
+
+    // Should NOT set verification result status on 429
+    expect(screen.queryByTestId("verification-result")).not.toBeInTheDocument();
+  });
+
+  it("handles Kong gateway 429 without Retry-After header", async () => {
+    const mockError = {
+      response: {
+        status: 429,
+        data: { message: "API rate limit exceeded" },
+        headers: {},
+      },
+    };
+    mockAxios.post.mockRejectedValueOnce(mockError);
+    mockAxios.isAxiosError.mockReturnValue(true);
+
+    renderWithProviders(<Home />);
+
+    const submitButton = screen.getByText("Verify Cheque");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const alert = screen.getByTestId("inline-alert");
+      expect(alert).toBeInTheDocument();
+      expect(alert).toHaveTextContent(
+        "Too many requests. Please wait a few minutes before trying again.",
+      );
+    });
+  });
+
+  it("handles backend 429 with retryAfter in body", async () => {
+    const mockError = {
+      response: {
+        status: 429,
+        data: { retryAfter: 60 },
+        headers: {},
+      },
+    };
+    mockAxios.post.mockRejectedValueOnce(mockError);
+    mockAxios.isAxiosError.mockReturnValue(true);
+
+    renderWithProviders(<Home />);
+
+    const submitButton = screen.getByText("Verify Cheque");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const alert = screen.getByTestId("inline-alert");
+      expect(alert).toHaveTextContent(
+        "Too many requests. Please wait 1 minute before trying again.",
+      );
+    });
+  });
+
+  it("uses default variant for non-rate-limit errors", async () => {
+    const mockError = {
+      response: {
+        data: {
+          error: "Server error",
+        },
+      },
+    };
+    mockAxios.post.mockRejectedValueOnce(mockError);
+    mockAxios.isAxiosError.mockReturnValue(true);
+
+    renderWithProviders(<Home />);
+
+    const submitButton = screen.getByText("Verify Cheque");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const alert = screen.getByTestId("inline-alert");
+      expect(alert).toBeInTheDocument();
+    });
   });
 });
