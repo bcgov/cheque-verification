@@ -43,8 +43,9 @@ const DataNotice = () => {
           lineHeight: 1.5,
         }}
       >
-        Cheque verification portal data updates daily at 9 a.m. with prior day
-        cashed cheque information.
+        The cheque verification portal refreshes with live data every 15
+        minutes. Information on cheques cashed the previous day is updated at
+        9:00 a.m., Monday through Friday.
       </p>
       <p
         style={{

@@ -71,6 +71,17 @@ const Faq = () => {
                 prior day cashed cheque information.
               </li>
               <li style={{ marginBottom: "8px" }}>
+                The cheque verification portal refreshes with live data every 15
+                minutes.
+                <ul style={{ marginLeft: "24px", marginTop: "8px" }}>
+                  <li style={{ marginBottom: "8px" }}>
+                    If a cheque issued on the same day shows a result of "Not ok
+                    to cash", please wait 15 minutes for the next refresh and
+                    search the cheque again
+                  </li>
+                </ul>
+              </li>
+              <li style={{ marginBottom: "8px" }}>
                 <strong>
                   Will the portal update on the same day a cheque is cashed?
                 </strong>
