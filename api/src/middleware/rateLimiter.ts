@@ -7,7 +7,7 @@ import logger from "../config/logger.js";
  */
 export const chequeRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 50, // 50 requests per 15 minutes per pod
+  limit: 500, // 500 requests per 15 minutes per pod (global ceiling)
   message: {
     success: false,
     error:
@@ -26,7 +26,7 @@ export const chequeRateLimiter = rateLimit({
           "x-real-ip": req.get("X-Real-IP"),
         },
       },
-      "Cheque API rate limit exceeded"
+      "Cheque API rate limit exceeded",
     );
     res.status(429).json({
       success: false,

@@ -4,7 +4,7 @@ import { logger } from "../config/logger";
 
 export const globalRequestLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 50, // 50 requests per 15 minutes per pod
+  limit: 500, // 500 requests per 15 minutes per pod (global ceiling)
   message: {
     success: false,
     error: "Too many requests. Please try again later.",
@@ -22,7 +22,7 @@ export const globalRequestLimiter = rateLimit({
         path: req.path,
         userAgent: req.get("User-Agent"),
       },
-      "Global rate limit exceeded"
+      "Global rate limit exceeded",
     );
     const retryAfter = res.getHeader("Retry-After") || 900;
     res.status(429).json({
@@ -57,7 +57,7 @@ export const chequeVerifyLimiter = rateLimit({
           "x-real-ip": req.get("X-Real-IP"),
         },
       },
-      "Cheque verification rate limit exceeded"
+      "Cheque verification rate limit exceeded",
     );
     const retryAfter = res.getHeader("Retry-After") || 900;
     res.status(429).json({
