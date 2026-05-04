@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: ghcr.io/bcgov/cheque-verification-backend
@@ -9,13 +9,6 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 3000
-
-# Horizontal Pod Autoscaler configuration
-autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
 
 # Pod Disruption Budget
 podDisruptionBudget:
