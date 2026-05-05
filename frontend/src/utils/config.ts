@@ -8,16 +8,21 @@ export interface AppConfig {
  * Returns banner toggle states based on environment variables set in OpenShift.
  * Fails safely — returns all banners disabled on error.
  */
+interface RawConfig {
+  bannerUpdateIssue: boolean;
+  bannerOutage: boolean;
+}
+
 export async function fetchConfig(): Promise<AppConfig> {
   try {
     const response = await fetch("/config.json");
     if (!response.ok) {
       return { bannerUpdateIssue: false, bannerOutage: false };
     }
-    const data = await response.json();
+    const data = (await response.json()) as RawConfig;
     return {
-      bannerUpdateIssue: data.bannerUpdateIssue === "true",
-      bannerOutage: data.bannerOutage === "true",
+      bannerUpdateIssue: data.bannerUpdateIssue === true,
+      bannerOutage: data.bannerOutage === true,
     };
   } catch {
     return { bannerUpdateIssue: false, bannerOutage: false };

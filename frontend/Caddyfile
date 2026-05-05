@@ -8,9 +8,17 @@
 		format json
 		level INFO
 	}
+	map {$BANNER_UPDATE_ISSUE:} {banner_update_issue} {
+		"true" "true"
+		default "false"
+	}
+	map {$BANNER_OUTAGE:} {banner_outage} {
+		"true" "true"
+		default "false"
+	}
 	handle /config.json {
 		header Content-Type "application/json"
-		respond `{"bannerUpdateIssue":"{$BANNER_UPDATE_ISSUE:}","bannerOutage":"{$BANNER_OUTAGE:}"}`
+		respond `{"bannerUpdateIssue":{banner_update_issue},"bannerOutage":{banner_outage}}`
 	}
 	root * /srv
 	encode zstd gzip
