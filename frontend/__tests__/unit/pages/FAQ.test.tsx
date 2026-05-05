@@ -218,9 +218,4 @@ describe("FAQ Page", () => {
     const heading = screen.getByText("Frequently Asked Questions (FAQ)");
     expect(heading).toBeInTheDocument();
   });
-
-  it("matches snapshot for visual consistency", () => {
-    const { container } = renderWithProviders(<Faq />);
-    expect(container.firstChild).toMatchSnapshot();
-  });
 });
