@@ -56,7 +56,7 @@ export const MOCK_API_RESPONSES = {
  */
 export function renderWithProviders(
   ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
+  options?: Omit<RenderOptions, "wrapper">,
 ) {
   // Add any providers here (Router, Context, etc.) if your app needs them
   const Wrapper = ({ children }: { children: ReactNode }) => {
@@ -119,8 +119,8 @@ export const mockEnvironment = (overrides: Record<string, string> = {}) => {
     writable: true,
   });
 
-  process.env.VITE_API_URL = nextEnv.VITE_API_URL as string;
-  process.env.MODE = nextEnv.MODE as string;
+  process.env.VITE_API_URL = overrides.VITE_API_URL ?? "http://localhost:4000";
+  process.env.MODE = overrides.MODE ?? "test";
 
   return () => {
     Object.defineProperty(meta, "env", {

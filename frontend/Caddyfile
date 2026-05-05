@@ -8,6 +8,10 @@
 		format json
 		level INFO
 	}
+	handle /config.json {
+		header Content-Type "application/json"
+		respond `{"bannerUpdateIssue":"{$BANNER_UPDATE_ISSUE:}","bannerOutage":"{$BANNER_OUTAGE:}"}`
+	}
 	root * /srv
 	encode zstd gzip
 	file_server

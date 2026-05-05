@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import AlertBanners from "./components/AlertBanners";
 import Home from "./pages/Home";
 import Faq from "./pages/FAQ";
 
@@ -18,6 +19,7 @@ function App() {
         }}
       >
         <Header />
+        <AlertBanners />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/faq" element={<Faq />} />
