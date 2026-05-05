@@ -84,10 +84,7 @@ describe("AlertBanners", () => {
   });
 
   it("renders nothing when config fetch fails", async () => {
-    mockFetchConfig.mockResolvedValue({
-      bannerUpdateIssue: false,
-      bannerOutage: false,
-    });
+    mockFetchConfig.mockRejectedValue(new Error("Network error"));
 
     let container!: HTMLElement;
     await act(async () => {
