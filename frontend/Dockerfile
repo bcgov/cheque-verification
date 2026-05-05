@@ -14,7 +14,7 @@ COPY . ./
 RUN npm run build
 
 # Production stage - serve with Caddy
-FROM caddy:2.10.2-alpine
+FROM caddy:2.11.2-alpine
 
 # Install ca-certificates for HTTPS
 RUN apk add --no-cache ca-certificates

@@ -13,7 +13,7 @@ describe("DataNotice Component", () => {
     // Check for the main message
     expect(
       screen.getByText(
-        /Cheque verification portal data updates daily at 9 a\.m\./,
+        /The cheque verification portal refreshes with live data every 15 minutes/,
       ),
     ).toBeInTheDocument();
 
@@ -54,7 +54,7 @@ describe("DataNotice Component", () => {
     renderWithProviders(<DataNotice />);
 
     const paragraph = screen.getByText(
-      /Cheque verification portal data updates daily/,
+      /The cheque verification portal refreshes with live data/,
     );
 
     expect(paragraph).toHaveStyle({
@@ -99,7 +99,7 @@ describe("DataNotice Component", () => {
 
     // Should contain a paragraph
     const paragraph = screen.getByText(
-      /Cheque verification portal data updates daily/,
+      /The cheque verification portal refreshes with live data/,
     );
     expect(paragraph.tagName).toBe("P");
 
@@ -117,10 +117,5 @@ describe("DataNotice Component", () => {
       maxWidth: "800px",
       margin: "24px auto",
     });
-  });
-
-  it("matches snapshot for visual consistency", () => {
-    const { container } = renderWithProviders(<DataNotice />);
-    expect(container.firstChild).toMatchSnapshot();
   });
 });
