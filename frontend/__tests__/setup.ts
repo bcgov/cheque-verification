@@ -126,6 +126,7 @@ vi.mock("@bcgov/design-system-react-components", async () => {
   const AlertBanner = ({
     children,
     variant,
+    isCloseable,
     ...alertProps
   }: {
     children?: ReactNode;
@@ -134,7 +135,12 @@ vi.mock("@bcgov/design-system-react-components", async () => {
   } & Record<string, unknown>) =>
     createElement(
       "div",
-      { role: "alert", "data-variant": variant, ...alertProps },
+      {
+        role: "alert",
+        "data-variant": variant,
+        "data-closeable": isCloseable === true ? "true" : "false",
+        ...alertProps,
+      },
       children ?? null,
     );
 
