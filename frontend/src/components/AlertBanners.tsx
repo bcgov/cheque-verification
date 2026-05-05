@@ -3,11 +3,6 @@ import { AlertBanner } from "@bcgov/design-system-react-components";
 import { fetchConfig } from "../utils/config";
 import type { AppConfig } from "../utils/config";
 
-const defaultConfig: AppConfig = {
-  bannerUpdateIssue: false,
-  bannerOutage: false,
-};
-
 /**
  * Inner component that suspends until runtime config is resolved.
  * Renders warning banners based on environment variables set in OpenShift:
@@ -15,9 +10,7 @@ const defaultConfig: AppConfig = {
  * - BANNER_OUTAGE="true" — shows the system outage banner
  */
 function AlertBannersContent() {
-  const [configPromise] = useState<Promise<AppConfig>>(() =>
-    fetchConfig().catch(() => defaultConfig),
-  );
+  const [configPromise] = useState<Promise<AppConfig>>(() => fetchConfig());
   const config = use(configPromise);
 
   if (!config.bannerUpdateIssue && !config.bannerOutage) {
