@@ -39,10 +39,6 @@ spec:
           env:
             - name: BACKEND_URL
               value: {{ .Values.config.BACKEND_URL | quote }}
-            - name: BANNER_UPDATE_ISSUE
-              value: {{ .Values.config.BANNER_UPDATE_ISSUE | quote }}
-            - name: BANNER_OUTAGE
-              value: {{ .Values.config.BANNER_OUTAGE | quote }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
