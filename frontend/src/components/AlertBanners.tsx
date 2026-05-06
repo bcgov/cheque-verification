@@ -1,18 +1,7 @@
-import { use, Suspense } from "react";
+import { use, useState, Suspense } from "react";
 import { AlertBanner } from "@bcgov/design-system-react-components";
 import { fetchConfig } from "../utils/config";
 import type { AppConfig } from "../utils/config";
-
-const defaultConfig: AppConfig = {
-  bannerUpdateIssue: false,
-  bannerOutage: false,
-};
-
-// Module-level singleton — created once on load, never re-fetched on re-render.
-// This is the correct pattern for use() with Suspense.
-const configPromise: Promise<AppConfig> = fetchConfig().catch(
-  () => defaultConfig,
-);
 
 /**
  * Inner component that suspends until runtime config is resolved.
@@ -21,6 +10,7 @@ const configPromise: Promise<AppConfig> = fetchConfig().catch(
  * - BANNER_OUTAGE="true" — shows the system outage banner
  */
 function AlertBannersContent() {
+  const [configPromise] = useState<Promise<AppConfig>>(() => fetchConfig());
   const config = use(configPromise);
 
   if (!config.bannerUpdateIssue && !config.bannerOutage) {
