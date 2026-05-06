@@ -37,3 +37,7 @@ affinity: {}
 # Config for the frontend (API endpoints, etc.)
 config:
   BACKEND_URL: "http://cheque-verification-backend:80"
+  # Set to "true" to show the update issue warning banner
+  BANNER_UPDATE_ISSUE: ""
+  # Set to "true" to show the system outage warning banner
+  BANNER_OUTAGE: ""
