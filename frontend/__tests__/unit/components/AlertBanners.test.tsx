@@ -83,8 +83,11 @@ describe("AlertBanners", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders nothing when config fetch fails", async () => {
-    mockFetchConfig.mockRejectedValue(new Error("Network error"));
+  it("renders nothing when config fetch returns all-disabled defaults", async () => {
+    mockFetchConfig.mockResolvedValue({
+      bannerUpdateIssue: false,
+      bannerOutage: false,
+    });
 
     let container!: HTMLElement;
     await act(async () => {
