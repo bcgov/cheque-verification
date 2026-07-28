@@ -101,7 +101,7 @@ const ChequeForm = ({
           <InlineAlert description={localError} />
         </div>
       )}
-      <div style={{ width: "100%" }}>
+      <div className="cheque-form-actions">
         <Button
           type="submit"
           variant="primary"
@@ -111,6 +111,22 @@ const ChequeForm = ({
         >
           Verify Cheque
         </Button>
+        <p className="cheque-form-help">
+          <strong>
+            Having trouble finding a cheque or seeing the expected status?
+          </strong>
+          <br />
+          The portal refreshes every 15 minutes. If 15 minutes have passed and
+          the issue persists, please{" "}
+          <a
+            href="https://submit.digital.gov.bc.ca/app/form/submit?f=7d2f8c2e-7107-4273-8d53-a81c1b76fb44"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            request help
+          </a>{" "}
+          it for review.
+        </p>
       </div>
     </form>
   );
