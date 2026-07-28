@@ -155,18 +155,6 @@ function Home() {
             Verify Your Cheque Details
           </h2>
         </div>
-        <p
-          style={{
-            padding: "16px 16px 0 16px",
-            margin: "0",
-            fontSize: "14px",
-            color: "var(--bcgov-text-dark)",
-            lineHeight: "1.5",
-          }}
-        >
-          Please call the cheque verification line if the portal returns the
-          message “Error. Cheque not found.”
-        </p>
         <ChequeForm onSubmit={handleChequeSubmit} loading={loading} />
         <InlineAlert description={error} />
         <VerificationResult status={status} />

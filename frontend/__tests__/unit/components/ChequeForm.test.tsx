@@ -19,7 +19,17 @@ describe("ChequeForm", () => {
         "Having trouble finding a cheque or seeing the expected status?",
       ),
     ).toBeInTheDocument();
-    const helpLink = screen.getByRole("link", { name: "request help" });
+    expect(
+      screen.getByText(
+        /The portal refreshes every 15 minutes\. If the expected cheque information is still unavailable after 15 minutes, please submit a/,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /If the issue is urgent and affecting client service, please contact the Cheque Verification Line\./,
+      ),
+    ).toBeInTheDocument();
+    const helpLink = screen.getByRole("link", { name: "Report an Issue" });
     expect(helpLink).toHaveAttribute(
       "href",
       "https://submit.digital.gov.bc.ca/app/form/submit?f=7d2f8c2e-7107-4273-8d53-a81c1b76fb44",
