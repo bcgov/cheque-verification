@@ -116,16 +116,18 @@ const ChequeForm = ({
             Having trouble finding a cheque or seeing the expected status?
           </strong>
           <br />
-          The portal refreshes every 15 minutes. If 15 minutes have passed and
-          the issue persists, please{" "}
+          The portal refreshes every 15 minutes. If the expected cheque
+          information is still unavailable after 15 minutes, please submit a{" "}
           <a
+            className="cheque-form-help-link"
             href="https://submit.digital.gov.bc.ca/app/form/submit?f=7d2f8c2e-7107-4273-8d53-a81c1b76fb44"
             target="_blank"
             rel="noopener noreferrer"
           >
-            request help
+            <strong>Report an Issue</strong>
           </a>{" "}
-          it for review.
+          request for investigation. If the issue is urgent and affecting client
+          service, please contact the Cheque Verification Line.
         </p>
       </div>
     </form>
