@@ -19,10 +19,13 @@ describe("ChequeForm", () => {
         "Having trouble finding a cheque or seeing the expected status?",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "report" })).toHaveAttribute(
+    const helpLink = screen.getByRole("link", { name: "request help" });
+    expect(helpLink).toHaveAttribute(
       "href",
-      "#report",
+      "https://submit.digital.gov.bc.ca/app/form/submit?f=7d2f8c2e-7107-4273-8d53-a81c1b76fb44",
     );
+    expect(helpLink).toHaveAttribute("target", "_blank");
+    expect(helpLink).toHaveAttribute("rel", "noopener noreferrer");
   });
 
   it("blocks submission and shows validation feedback when fields are empty", async () => {
